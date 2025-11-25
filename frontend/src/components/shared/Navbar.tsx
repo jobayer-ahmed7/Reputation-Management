@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -71,9 +72,9 @@ const Navbar = () => {
               </a>
 
               {/* Login/Signup Button */}
-              <button className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200">
+              <Link href={'/login'} className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200">
                 Login/Signup
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
