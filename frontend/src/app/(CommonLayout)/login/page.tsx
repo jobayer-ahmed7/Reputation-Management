@@ -1,10 +1,9 @@
-"use client";
-
+"use client"
 import { useForm, Controller } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { Mail, Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input"
 

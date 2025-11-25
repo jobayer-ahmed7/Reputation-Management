@@ -9,7 +9,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "#home" },
+    { name: "Home", href: "/" },
     { name: "Services", href: "#services" },
     { name: "About", href: "about-us" },
     { name: "Pricing", href: "#pricing" },
@@ -33,7 +33,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href={'/'} className="shrink-0">
-              <Image alt="Company logo" width={150} height={300} src={'/logo.webp'}/>
+              <Image alt="Company logo" width={150} height={55} src={'/logo.webp'}/>
             </Link>
 
             {/* Desktop Navigation */}

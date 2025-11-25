@@ -1,6 +1,7 @@
 import React from "react";
 import { Facebook, Linkedin, Instagram } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -125,12 +126,12 @@ const Footer = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <a
-                href="#privacy"
+              <Link
+                href="privacy-policy"
                 className="text-gray-300 hover:text-pblue text-sm transition-colors"
               >
                 Privacy Policy
-              </a>
+              </Link>
 
               {/* Payment Icons */}
               <div className="flex items-center gap-2 ml-4">
