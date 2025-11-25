@@ -62,7 +62,7 @@ const LoginPage = () => {
                 <div className="relative h-10 w-10 rounded-full overflow-hidden border border-white/30">
                   <Image
                     src="/logo.webp"
-                    alt="BuyReviewz logo"
+                    alt="Reputation Manage logo"
                     fill
                     className="object-contain bg-white/90 p-1"
                   />
