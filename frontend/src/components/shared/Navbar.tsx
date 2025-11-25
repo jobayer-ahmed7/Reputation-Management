@@ -32,7 +32,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="shrink-0">
-              <Image alt="Company logo" width={150} height={300} src={'/logo.png'}/>
+              <Image alt="Company logo" width={150} height={300} src={'/logo.webp'}/>
             </div>
 
             {/* Desktop Navigation */}
