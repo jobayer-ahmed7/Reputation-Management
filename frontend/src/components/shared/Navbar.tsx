@@ -4,15 +4,16 @@ import React, { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Services", href: "#services" },
+    { name: "Services", href: "services" },
     { name: "About", href: "about-us" },
-    { name: "Pricing", href: "#pricing" },
   ];
 
   return (
@@ -22,7 +23,7 @@ const Navbar = () => {
         <span>
           10% Off! Use Code: <span className="font-bold">REVIEZ10</span>
         </span>
-        <button className="ml-4 bg-white text-pblue px-4 py-1 rounded-md font-semibold hover:bg-gray-100 transition-colors">
+        <button className="ml-4 cursor-pointer bg-white text-pblue px-4 py-1 rounded-md font-semibold hover:bg-gray-100 transition-colors">
           Buy Now
         </button>
       </div>
@@ -32,30 +33,41 @@ const Navbar = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href={'/'} className="shrink-0">
-              <Image alt="Company logo" width={150} height={55} src={'/logo.webp'}/>
+            <Link href={"/"} className="shrink-0">
+              <Image
+                alt="Company logo"
+                width={150}
+                height={55}
+                src={"/logo.webp"}
+              />
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className={`px-6 py-2 text-gray-700 font-medium hover:text-pblue transition-colors relative group ${
-                    link.name === "Home" ? "text-pblue" : ""
-                  }`}
-                >
-                  {link.name}
-                  <span
-                    className={`absolute bottom-0 left-0 w-full h-0.5 bg-pblue transform origin-left transition-transform ${
-                      link.name === "Home"
-                        ? "scale-x-100"
-                        : "scale-x-0 group-hover:scale-x-100"
+              {navLinks.map((link) => {
+                const isActive =
+                  pathname === link.href ||
+                  (link.href === "/" && pathname === "/") ||
+                  (link.href !== "/" && pathname.startsWith("/" + link.href));
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`px-6 py-2 font-medium transition-colors relative group ${
+                      isActive ? "text-pblue" : "text-gray-700 hover:text-pblue"
                     }`}
-                  ></span>
-                </a>
-              ))}
+                  >
+                    {link.name}
+                    <span
+                      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-pblue transition-all ${
+                        isActive
+                          ? "w-2/3"
+                          : "w-0 group-hover:w-2/3"
+                      }`}
+                    ></span>
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Contact & Auth */}
@@ -72,7 +84,10 @@ const Navbar = () => {
               </a>
 
               {/* Login/Signup Button */}
-              <Link href={'/login'} className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200">
+              <Link
+                href={"/login"}
+                className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200"
+              >
                 Login
               </Link>
             </div>
@@ -95,18 +110,26 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-4 py-4 space-y-3">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className={`block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-gray-50 hover:text-pblue transition-colors ${
-                    link.name === "Home" ? "bg-blue-50 text-pblue" : ""
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  pathname === link.href ||
+                  (link.href === "/" && pathname === "/") ||
+                  (link.href !== "/" && pathname.startsWith("/" + link.href));
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                      isActive
+                        ? "bg-blue-50 text-pblue"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-pblue"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
 
               {/* Mobile Contact */}
               <a

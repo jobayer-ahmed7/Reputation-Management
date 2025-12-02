@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Check} from "lucide-react";
 
 interface ServiceCardProps {
@@ -28,7 +29,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   badge,
 }) => {
   return (
-    <div className="relative group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md hover:shadow-xl transition-all duration-300">
+    <Card className="relative group overflow-hidden border-slate-200 hover:shadow-xl transition-all duration-300">
       {/* Gradient overlay on hover */}
       <div className="absolute inset-0 bg-linear-to-br from-pblue/5 via-transparent to-bluegray/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -41,9 +42,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
       )}
 
-      <div className="relative z-10 p-6 sm:p-8">
+      <CardHeader className="relative z-10">
         {/* Icon & Platform */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-4">
           <div className="p-3 rounded-xl bg-linear-to-br from-pblue/10 to-bluegray/10 text-pblue">
             {icon}
           </div>
@@ -56,12 +57,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
 
         {/* Description */}
-        <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+        <CardDescription className="text-sm text-slate-600 leading-relaxed">
           {description}
-        </p>
+        </CardDescription>
+      </CardHeader>
 
+      <CardContent className="relative z-10 space-y-6">
         {/* Pricing */}
-        <div className="flex items-baseline gap-2 mb-6">
+        <div className="flex items-baseline gap-2">
           <span className="text-3xl font-bold text-pblue">{price}</span>
           {originalPrice && (
             <span className="text-sm text-slate-400 line-through">{originalPrice}</span>
@@ -70,7 +73,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
 
         {/* Features List */}
-        <ul className="space-y-2.5 mb-8">
+        <ul className="space-y-2.5">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
               <Check className="w-4 h-4 text-pblue mt-0.5 shrink-0" />
@@ -88,11 +91,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </Button>
 
         {/* Additional Info */}
-        <p className="text-xs text-slate-500 text-center mt-4">
+        <p className="text-xs text-slate-500 text-center">
           Fast delivery • Quality guaranteed • 24/7 support
         </p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

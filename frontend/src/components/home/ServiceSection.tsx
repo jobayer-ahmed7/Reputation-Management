@@ -117,10 +117,7 @@ const ServiceSection = () => {
   ];
 
   return (
-    <section
-      id="services"
-      className="py-16 lg:py-24 bg-linear-to-b from-white via-blue-50 to-slate-50"
-    >
+    <section className="py-16 lg:py-24 bg-linear-to-b from-white via-blue-50 to-slate-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center space-y-4">
@@ -158,7 +155,7 @@ const ServiceSection = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-16 rounded-2xl border border-slate-200 bg-linear-to-r from-pblue/10 via-transparent to-bluegray/10 p-8 sm:p-12 text-center">
+        {/* <div className="mt-16 rounded-2xl border border-slate-200 bg-linear-to-r from-pblue/10 via-transparent to-bluegray/10 p-8 sm:p-12 text-center">
           <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
             Ready to Grow Your Online Reputation?
           </h3>
@@ -170,7 +167,7 @@ const ServiceSection = () => {
             Contact Our Sales Team
             <span>→</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -75,8 +75,8 @@ const Testimonial = () => {
   };
 
   return (
-    <section className="my-8">
-      <div className="container mx-auto">
+    <section className="my-12">
+      <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -128,11 +128,11 @@ const Testimonial = () => {
         </div>
 
         {/* Read More Button */}
-        <div className="text-center">
+        {/* <div className="text-center">
           <button className="bg-linear-to-r from-pblue to-bluegray text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
             Read More
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
