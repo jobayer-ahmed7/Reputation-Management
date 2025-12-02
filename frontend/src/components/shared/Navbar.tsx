@@ -29,7 +29,7 @@ const Navbar = () => {
 
       {/* Main Navbar */}
       <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href={'/'} className="shrink-0">
@@ -73,7 +73,7 @@ const Navbar = () => {
 
               {/* Login/Signup Button */}
               <Link href={'/login'} className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200">
-                Login/Signup
+                Login
               </Link>
             </div>
 

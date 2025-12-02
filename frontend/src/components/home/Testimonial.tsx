@@ -75,8 +75,8 @@ const Testimonial = () => {
   };
 
   return (
-    <section className="py-16 px-4 bg-linear-to-b from-white to-gray-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="my-8">
+      <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">

@@ -17,7 +17,7 @@ const Hero = () => {
       <div className="absolute top-20 right-32 w-96 h-96 bg-yellow-200 rounded-full opacity-20 blur-3xl"></div>
       <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-blue-200 rounded-full opacity-20 blur-3xl"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
         {/* Left Content */}
         <div className="space-y-8">
           {/* Subtitle */}

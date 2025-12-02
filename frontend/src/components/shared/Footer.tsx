@@ -7,17 +7,17 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const aboutLinks = [
-    { name: "Jobs", href: "#jobs" },
-    { name: "FAQs", href: "#faqs" },
-    { name: "Blogs", href: "#blogs" },
-    { name: "Contact Us", href: "#contact" },
+    { name: "Jobs", href: "jobs" },
+    { name: "FAQs", href: "faqs" },
+    { name: "Blogs", href: "blogs" },
+    { name: "Contact Us", href: "contact" },
   ];
 
   const policyLinks = [
-    { name: "Privacy Policy", href: "#privacy" },
-    { name: "Terms of Service", href: "#terms" },
-    { name: "Refund Policy", href: "#refund" },
-    { name: "Working Policy", href: "#working" },
+    { name: "Privacy Policy", href: "privacy-policy" },
+    { name: "Terms of Service", href: "terms" },
+    { name: "Refund Policy", href: "refund" },
+    { name: "Working Policy", href: "working" },
   ];
 
   const paymentMethods = [
@@ -31,7 +31,7 @@ const Footer = () => {
   return (
     <footer className="bg-linear-to-b from-[#2c3e50] to-[#1a252f] text-white">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Company Info Section */}
           <div className="space-y-6">
@@ -84,12 +84,12 @@ const Footer = () => {
             <ul className="space-y-3 mt-8">
               {aboutLinks.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-gray-300 hover:text-pblue hover:translate-x-2 transition-all duration-300 inline-block"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -104,12 +104,12 @@ const Footer = () => {
             <ul className="space-y-3 mt-8">
               {policyLinks.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-gray-300 hover:text-pblue hover:translate-x-2 transition-all duration-300 inline-block"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -119,7 +119,7 @@ const Footer = () => {
 
       {/* Payment Methods Bar */}
       <div className="bg-black/30 border-t border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-gray-300 text-sm">
               © {currentYear} Reputation Manage, All Rights Reserved.
@@ -154,15 +154,6 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Copyright Bar */}
-      <div className="bg-[#1a252f] border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <p className="text-center text-gray-400 text-sm">
-            Copyright © {currentYear} All Rights Reserved
-          </p>
         </div>
       </div>
     </footer>

@@ -1,4 +1,4 @@
-"use client"
+"use client" 
 import { useForm, Controller } from "react-hook-form";
 import { Mail, Lock } from "lucide-react";
 import Image from "next/image";
@@ -37,19 +37,19 @@ const LoginPage = () => {
       <div className="w-full max-w-6xl bg-white/90 backdrop-blur shadow-xl rounded-2xl border border-slate-100 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left illustration / marketing panel (hidden on mobile) */}
-          <div className="hidden lg:flex flex-col justify-between bg-linear-to-b from-pblue to-bluegray text-white p-10 space-y-8">
+          <div className="hidden lg:flex flex-col justify-between bg-linear-to-tl from-[#F0F8FF] via-[#E6F4FF] to-[#FFF7ED] p-10 space-y-8 text-slate-900">
             <div className="space-y-4">
-              <div className="bg-white/10 rounded-full px-4 py-1 inline-flex items-center gap-2 text-xs font-medium">
+              <div className="bg-white/10 rounded-full px-4 py-1 inline-flex items-center gap-2 text-xs font-medium text-slate-800">
                 <span className="size-2 rounded-full bg-emerald-400" />
                 Trusted reputation management platform
               </div>
-              <h1 className="text-3xl xl:text-4xl font-semibold leading-tight">
+              <h1 className="text-3xl xl:text-4xl font-semibold leading-tight text-slate-900">
                 Welcome back to
-                <span className="block font-bold text-yellow-200">
+                <span className="block font-bold text-pblue">
                   Reputation Manage
                 </span>
               </h1>
-              <p className="text-sm text-blue-50/90 max-w-md leading-relaxed">
+              <p className="text-sm text-slate-700 max-w-md leading-relaxed">
                 Monitor, manage, and grow your brand reputation across
                 platforms. Get real-time insights, reply to reviews faster, and
                 build trust with your customers.
@@ -67,26 +67,26 @@ const LoginPage = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold">
+                  <p className="text-sm font-semibold text-slate-900">
                     24/7 live performance tracking
                   </p>
-                  <p className="text-xs text-blue-50/80">
+                  <p className="text-xs text-slate-700">
                     Login to see your latest stats and respond to customer
                     feedback.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 text-xs text-blue-50/80">
+              <div className="flex items-center gap-4 text-xs text-slate-700">
                 <div className="flex -space-x-2">
-                  <span className="size-8 rounded-full border border-white/40 bg-white/10 flex items-center justify-center text-[10px] font-semibold">
+                  <span className="size-8 rounded-full border border-white/40 bg-white/10 flex items-center justify-center text-[10px] font-semibold text-slate-900">
                     +100
                   </span>
-                  <span className="size-8 rounded-full border border-white/40 bg-white/10 flex items-center justify-center text-[10px] font-semibold">
+                  <span className="size-8 rounded-full border border-white/40 bg-white/10 flex items-center justify-center text-[10px] font-semibold text-slate-900">
                     4.9★
                   </span>
                 </div>
-                <p>
+                <p className="text-slate-800">
                   Teams rely on BuyReviewz to keep their reputation ahead of the
                   curve.
                 </p>
@@ -203,7 +203,7 @@ const LoginPage = () => {
                   disabled={isSubmitting}
                   className="w-full h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
                 >
-                  {isSubmitting ? "Signing in..." : "Sign in"}
+                  {isSubmitting ? "Loging in..." : "Log in"}
                 </Button>
                 <FieldSeparator className="mb-4">Or continue with</FieldSeparator>
 
