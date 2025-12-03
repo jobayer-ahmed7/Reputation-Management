@@ -5,10 +5,14 @@ import mongoose from "mongoose";
 
 let server: Server;
 
+// Main application entry point
 async function main() {
   try {
+    // Connect to MongoDB database
     await mongoose.connect(config.databaseUrl as string);
     console.log("Connected to the database");
+
+    // Start Express server
     server = app.listen(config.port, () => {
       console.log(`Example app listening on port ${config.port}`);
     });
@@ -19,6 +23,7 @@ async function main() {
 
 main();
 
+// Handle unhandled promise rejections
 process.on("unhandledRejection", (err) => {
   console.log(`Unahandled rejection is detected , shutting down ...`, err);
   if (server) {
@@ -29,6 +34,7 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
+// Handle uncaught exceptions
 process.on("uncaughtException", () => {
   console.log(`Uncaught Exception is detected , shutting down ...`);
   process.exit(1);

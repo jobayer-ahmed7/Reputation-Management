@@ -1,8 +1,11 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import router from "./app/routes";
 
+// Initialize Express application
 const app: Application = express();
 
+// Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -12,6 +15,10 @@ app.use(
   })
 );
 
+// API routes
+app.use("/api", router);
+
+// Health check endpoint
 app.get("/", (req: Request, res: Response) => {
   try {
     res.status(200).send({
