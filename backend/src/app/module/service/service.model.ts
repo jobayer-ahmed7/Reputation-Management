@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { IService } from "./service.interface";
 
 // Define the service schema
@@ -7,7 +7,6 @@ const ServiceSchema = new Schema<IService>(
     category: {
       type: String,
       required: true,
-      enum: ["reviews", "engagement", "growth"],
     },
     title: {
       type: String,
@@ -44,4 +43,4 @@ const ServiceSchema = new Schema<IService>(
 );
 
 // Create and export the Service model
-export const Service = mongoose.model<IService>("Service", ServiceSchema);
+export const Service = model<IService>("Service", ServiceSchema);

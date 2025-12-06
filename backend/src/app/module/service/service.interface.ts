@@ -7,7 +7,7 @@ export interface IFeature {
 export interface IService {
   _id?: string;
   category: string;
-  title: string;
+  title: string; 
   description: string;
   platform: string;
   price: string;

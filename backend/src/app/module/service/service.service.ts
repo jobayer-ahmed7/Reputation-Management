@@ -7,3 +7,6 @@ export const getAllServices = async (): Promise<IService[]> => {
   return services;
 };
 
+export const ServiceServices = {
+  getAllServices,
+};

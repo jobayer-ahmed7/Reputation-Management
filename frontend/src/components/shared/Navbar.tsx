@@ -59,7 +59,7 @@ const Navbar = () => {
                   >
                     {link.name}
                     <span
-                      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-pblue transition-all ${
+                      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-pblue transition-all duration-500 ${
                         isActive
                           ? "w-2/3"
                           : "w-0 group-hover:w-2/3"
