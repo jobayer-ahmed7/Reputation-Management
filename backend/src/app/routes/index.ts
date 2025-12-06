@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ServiceRoutes } from "../module/service/service.route";
+import { TestimonialRoutes } from "../module/testimonial/testimonial.route";
 
 const router = Router();
 
@@ -8,10 +9,13 @@ const moduleRoutes = [
     path: "/service",
     route: ServiceRoutes,
   },
+  {
+    path: "/testimonial",
+    route: TestimonialRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => {
-  // console.log('📦 Registering route:', route.path);
   router.use(route.path, route.route);
 });
 
