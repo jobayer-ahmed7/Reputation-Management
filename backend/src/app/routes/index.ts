@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ServiceRoutes } from "../module/service/service.route";
-import { TestimonialRoutes } from "../module/testimonial/testimonial.route";
+import { ServiceRoutes } from "../modules/service/service.route";
+import { TestimonialRoutes } from "../modules/testimonial/testimonial.route";
 
 const router = Router();
 
