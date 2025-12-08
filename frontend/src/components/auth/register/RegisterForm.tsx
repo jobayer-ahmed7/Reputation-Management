@@ -1,0 +1,246 @@
+"use client";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FieldSeparator } from "@/components/ui/field";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeClosed, Mail, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { registrationSchema } from "./registerValidation";
+
+const RegisterForm = () => {
+  // react hook form
+  const form = useForm({
+    resolver: zodResolver(registrationSchema),
+  });
+
+  const {
+    formState: { isSubmitting, errors },
+  } = form;
+
+  // router
+  const router = useRouter();
+
+  // toggle password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const password = form.watch("password");
+  const passwordConfirm = form.watch("passwordConfirm");
+
+  // handle submit
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log(data)
+    // try {
+    //   const res = await registerUser(data);
+    //   if (res?.success) {
+    //     toast.success(res?.message);
+    //     form.reset(); // reset form
+    //     router.push("/login"); // redirect to login
+    //   } else {
+    //     toast.error(res?.message);
+    //   }
+    // } catch (err: any) {
+    //   console.error(err);
+    // }
+  };
+
+  return (
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-slate-700">
+                  Full name
+                </FormLabel>
+                <FormControl>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 bg-white transition-all ${
+                      errors.name
+                        ? "border-b-2 border-b-red-500"
+                        : "border-b border-b-slate-200"
+                    } focus-within:border-b-2 focus-within:border-b-pblue`}
+                  >
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder="Your full name"
+                      className="w-full bg-transparent text-sm placeholder:text-slate-400 border-0 shadow-none focus-visible:ring-0"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs text-red-500 mt-1" />
+              </FormItem>
+            )}
+          />
+
+          {/* Email */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-slate-700">
+                  Email address
+                </FormLabel>
+                <FormControl>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 bg-white transition-all ${
+                      errors.email
+                        ? "border-b-2 border-b-red-500"
+                        : "border-b border-b-slate-200"
+                    } focus-within:border-b-2 focus-within:border-b-pblue`}
+                  >
+                    <Mail className="w-4 h-4 text-slate-400" />
+                    <Input
+                      {...field}
+                      type="email"
+                      value={field.value || ""}
+                      placeholder="you@example.com"
+                      className="w-full bg-transparent text-sm placeholder:text-slate-400 border-0 shadow-none focus-visible:ring-0"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs text-red-500 mt-1" />
+              </FormItem>
+            )}
+          />
+
+          {/* Password */}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-slate-700">
+                  Password
+                </FormLabel>
+                <FormControl>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 bg-white transition-all ${
+                      errors.password
+                        ? "border-b-2 border-b-red-500"
+                        : "border-b border-b-slate-200"
+                    } focus-within:border-b-2 focus-within:border-b-pblue`}
+                  >
+                    <Lock className="w-4 h-4 text-slate-400" />
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      value={field.value || ""}
+                      placeholder="Create a password"
+                      className="w-full bg-transparent text-sm placeholder:text-slate-400 border-0 shadow-none focus-visible:ring-0"
+                    />
+                    <button
+                      type="button"
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <EyeClosed className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs text-red-500 mt-1" />
+              </FormItem>
+            )}
+          />
+
+          {/* Confirm Password */}
+          <FormField
+            control={form.control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-slate-700">
+                  Confirm password
+                </FormLabel>
+                <FormControl>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 bg-white transition-all ${
+                      errors.passwordConfirm
+                        ? "border-b-2 border-b-red-500"
+                        : "border-b border-b-slate-200"
+                    } focus-within:border-b-2 focus-within:border-b-pblue`}
+                  >
+                    <Lock className="w-4 h-4 text-slate-400" />
+                    <Input
+                      {...field}
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={field.value || ""}
+                      placeholder="Confirm password"
+                      className="w-full bg-transparent text-sm placeholder:text-slate-400 border-0 shadow-none focus-visible:ring-0"
+                    />
+                    <button
+                      type="button"
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    >
+                      {showConfirmPassword ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <EyeClosed className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                {passwordConfirm && password !== passwordConfirm ? (
+                  <FormMessage className="text-xs text-red-500 mt-1">
+                    Password does not match
+                  </FormMessage>
+                ) : (
+                  <FormMessage className="text-xs text-red-500 mt-1" />
+                )}
+              </FormItem>
+            )}
+          />
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={
+              isSubmitting ||
+              Boolean(passwordConfirm && password !== passwordConfirm)
+            }
+            className="w-full h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
+          >
+            {isSubmitting ? "Creating account..." : "Create account"}
+          </Button>
+
+          <FieldSeparator className="mb-4">Or continue with</FieldSeparator>
+
+          <div className="grid grid-cols-1 gap-3">
+            <button
+              type="button"
+              className="flex items-center justify-center w-full cursor-pointer gap-1 rounded-lg border border-slate-200 bg-white py-2.5 hover:bg-slate-50 transition-colors"
+            >
+              <span className="text-2xl">G</span>
+              <span className="font-medium text-slate-700">Google</span>
+            </button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+export default RegisterForm;
