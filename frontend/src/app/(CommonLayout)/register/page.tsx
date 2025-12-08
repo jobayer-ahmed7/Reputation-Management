@@ -237,7 +237,7 @@ const RegisterPage = () => {
                     </Link>
                   </label>
                 </div>
-
+ 
                 <Button
                   type="submit"
                   disabled={isSubmitting}
