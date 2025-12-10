@@ -2,7 +2,6 @@ import Hero from "@/components/home/Hero";
 import ServiceSection from "@/components/home/ServiceSection";
 import Testimonial from "@/components/home/Testimonial";
 
-
 const HomePage = () => {
   return (
     <div>
@@ -14,3 +13,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+ 

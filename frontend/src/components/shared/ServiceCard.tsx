@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { Check} from "lucide-react";
 
 interface ServiceCardProps {
-  icon: React.ReactNode;
   title: string;
   description: string;
   platform: string;
@@ -14,11 +13,10 @@ interface ServiceCardProps {
   originalPrice?: string;
   features: string[];
   onBuyNow?: () => void;
-  badge?: string;
+  badge?: string; 
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
-  icon,
   title,
   description,
   platform,
@@ -45,9 +43,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <CardHeader className="relative z-10">
         {/* Icon & Platform */}
         <div className="flex items-center gap-4 mb-4">
-          <div className="p-3 rounded-xl bg-linear-to-br from-pblue/10 to-bluegray/10 text-pblue">
-            {icon}
-          </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-pblue/80 mb-0.5">
               {platform}
