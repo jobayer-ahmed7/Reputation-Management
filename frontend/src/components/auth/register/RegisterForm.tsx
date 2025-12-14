@@ -18,6 +18,7 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registrationSchema } from "./registerValidation";
+import { registerUser } from "@/services/authService";
 
 const RegisterForm = () => {
   // react hook form
@@ -35,25 +36,26 @@ const RegisterForm = () => {
   // toggle password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+ 
   const password = form.watch("password");
-  const passwordConfirm = form.watch("passwordConfirm");
+  const confirmPassword = form.watch("confirmPassword");
 
   // handle submit
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data)
-    // try {
-    //   const res = await registerUser(data);
-    //   if (res?.success) {
-    //     toast.success(res?.message);
-    //     form.reset(); // reset form
-    //     router.push("/login"); // redirect to login
-    //   } else {
-    //     toast.error(res?.message);
-    //   }
-    // } catch (err: any) {
-    //   console.error(err);
-    // }
+    try {
+      const res = await registerUser(data);
+      console.log(res)
+      if (res?.success) {
+        toast.success(res?.message);
+        form.reset(); // reset form
+        router.push("/login"); // redirect to login
+      } else {
+        toast.error(res?.message);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
   };
 
   return (
@@ -62,7 +64,7 @@ const RegisterForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           {/* Name */}
           <FormField
-            control={form.control}
+            control={form.control} 
             name="name"
             render={({ field }) => (
               <FormItem>
@@ -168,7 +170,7 @@ const RegisterForm = () => {
           {/* Confirm Password */}
           <FormField
             control={form.control}
-            name="passwordConfirm"
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-slate-700">
@@ -177,7 +179,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <div
                     className={`flex items-center gap-2 px-3 py-2 bg-white transition-all ${
-                      errors.passwordConfirm
+                      errors.confirmPassword
                         ? "border-b-2 border-b-red-500"
                         : "border-b border-b-slate-200"
                     } focus-within:border-b-2 focus-within:border-b-pblue`}
@@ -203,7 +205,7 @@ const RegisterForm = () => {
                     </button>
                   </div>
                 </FormControl>
-                {passwordConfirm && password !== passwordConfirm ? (
+                {confirmPassword && password !== confirmPassword ? (
                   <FormMessage className="text-xs text-red-500 mt-1">
                     Password does not match
                   </FormMessage>
@@ -219,7 +221,7 @@ const RegisterForm = () => {
             type="submit"
             disabled={
               isSubmitting ||
-              Boolean(passwordConfirm && password !== passwordConfirm)
+              Boolean(confirmPassword && password !== confirmPassword)
             }
             className="w-full h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
           >

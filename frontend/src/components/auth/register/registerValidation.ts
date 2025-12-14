@@ -15,11 +15,11 @@ export const registrationSchema = z
       .string()
       .min(4, "Password must be at least 4 characters"),
 
-    passwordConfirm: z
+    confirmPassword: z
       .string()
       .min(1, "Please confirm your password"),
   })
-  .refine((data) => data.password === data.passwordConfirm, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["passwordConfirm"],
+    path: ["confirmPassword"],
   });

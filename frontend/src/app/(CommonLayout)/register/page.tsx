@@ -10,7 +10,7 @@ type RegisterFormValues = {
   password: string;
   confirm: string;
   agree: boolean;
-};
+}; 
 
 const RegisterPage = () => {
  
