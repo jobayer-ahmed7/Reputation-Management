@@ -8,7 +8,7 @@ router.get('/', ServiceController.getAllServices);
 
 // Create a new service
 router.post('/', ServiceController.createService); 
-
+ 
 // Get service by ID
 router.get('/:id', ServiceController.getServiceById);
 

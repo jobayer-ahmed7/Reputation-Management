@@ -12,7 +12,7 @@ authRouter.post(
   '/register',
   validateRequest(userValidations.userValidationSchema),
   authController.register,
-);
+); 
 authRouter.post( 
   '/login',
   validateRequest(authValidation.loginValidationSchema),  

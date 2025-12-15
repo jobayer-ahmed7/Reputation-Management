@@ -9,7 +9,7 @@ export const getAllServices = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const services = await ServiceServices.getAllServices();
+  const services = await ServiceServices.getAllServicesFromDB();
   sendResponse.sendDataResponse<IService>(res, {
     statusCode: statusCode.OK,
     success: true,
@@ -25,7 +25,7 @@ export const getServiceById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const service = await ServiceServices.getServiceById(id as string);
+    const service = await ServiceServices.getServiceByIdFromDB(id as string);
 
     if (!service) {
       sendResponse.sendDataResponse<null>(res, {
@@ -61,7 +61,7 @@ export const createService = async (
   try {
     const serviceData = req.body;
 
-    const newService = await ServiceServices.createService(serviceData);
+    const newService = await ServiceServices.createServiceFromDB(serviceData);
 
     sendResponse.sendCreateDataResponse<IService>(res, {
       statusCode: statusCode.CREATED,
@@ -88,7 +88,7 @@ export const updateService = async (
     const { id } = req.params;
     const serviceData = req.body;
 
-    const updatedService = await ServiceServices.updateService(id as string, serviceData);
+    const updatedService = await ServiceServices.updateServiceIntoDB(id as string, serviceData);
 
     if (!updatedService) {
       sendResponse.sendDataResponse<null>(res, {
@@ -124,7 +124,7 @@ export const deleteService = async (
   try {
     const { id } = req.params;
 
-    const deletedService = await ServiceServices.deleteService(id as string);
+    const deletedService = await ServiceServices.deleteServiceFromDB(id as string);
 
     if (!deletedService) {
       sendResponse.sendDataResponse<null>(res, {
@@ -155,7 +155,7 @@ export const deleteService = async (
 export const ServiceController = {
   getAllServices,
   getServiceById,
-  createService,
+  createService, 
   updateService,
   deleteService,
 };

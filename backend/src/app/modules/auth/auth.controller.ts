@@ -82,5 +82,5 @@ export const authController = {
   register,
   login,
   refreshToken,
-  changePassword,
+  changePassword, 
 };
