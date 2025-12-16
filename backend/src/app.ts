@@ -6,7 +6,16 @@ import router from "./app/routes";
 const app: Application = express();
 
 // Middleware setup
-app.use(express.json());
+// Capture raw request body for Stripe webhooks signature verification.
+app.use(
+  express.json({
+    verify: (req: any, _res, buf) => {
+      if (req.originalUrl?.startsWith("/api/orders/webhook")) {
+        req.rawBody = buf;
+      }
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
