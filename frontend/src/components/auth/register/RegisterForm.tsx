@@ -18,7 +18,7 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registrationSchema } from "./registerValidation";
-import { registerUser } from "@/services/authService";
+import { registerUser } from "@/services/AuthService";
 
 const RegisterForm = () => {
   // react hook form
@@ -39,6 +39,7 @@ const RegisterForm = () => {
  
   const password = form.watch("password");
   const confirmPassword = form.watch("confirmPassword");
+
 
   // handle submit
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {

@@ -5,7 +5,7 @@ import { loginSchema } from "./loginValidation";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
-import { loginUser } from "@/services/authService";
+import { loginUser } from "@/services/AuthService";
 import {
   Form,
   FormControl,

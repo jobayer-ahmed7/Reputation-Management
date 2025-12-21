@@ -125,6 +125,8 @@ const Footer = () => {
               © {currentYear} Reputation Manage, All Rights Reserved.
             </div>
 
+             <Link className="text-xs" target="_blank" href="https://jobayerahmed.vercel.app">Developed by Jobayer Ahmed</Link>
+
             <div className="flex items-center gap-4">
               <Link
                 href="privacy-policy"
@@ -132,6 +134,8 @@ const Footer = () => {
               >
                 Privacy Policy
               </Link>
+
+              
 
               {/* Payment Icons */}
               <div className="flex items-center gap-2 ml-4">
