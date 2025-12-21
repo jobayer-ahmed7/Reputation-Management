@@ -1,20 +1,37 @@
 "use client";
 
 import React, { useState } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, Badge } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/contexts/userContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { logout } from "@/services/AuthService";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-
+  const { user, isLoading, setIsLoading, setUser } = useUser();
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Services", href: "services" },
     { name: "About", href: "about-us" },
   ];
+
+  const handleLogOut = async () => {
+    await logout();
+    setUser(null);
+    setIsLoading(true);
+  };
 
   return (
     <>
@@ -60,9 +77,7 @@ const Navbar = () => {
                     {link.name}
                     <span
                       className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-pblue transition-all duration-500 ${
-                        isActive
-                          ? "w-2/3"
-                          : "w-0 group-hover:w-2/3"
+                        isActive ? "w-2/3" : "w-0 group-hover:w-2/3"
                       }`}
                     ></span>
                   </Link>
@@ -83,13 +98,53 @@ const Navbar = () => {
                 <span className="font-semibold text-sm">8801722291667</span>
               </a>
 
-              {/* Login/Signup Button */}
-              <Link
-                href={"/login"}
-                className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200"
-              >
-                Login
-              </Link>
+              {/* Login/Signup and logout Button */}
+
+              {/* kab jab */}
+
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Avatar>
+                      <AvatarImage
+                        className="cursor-pointer"
+                        src="https://github.com/shadcn.png"
+                      />
+                      <AvatarFallback>User</AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link
+                        href={user?.role === "admin" ? `/admin` : `/customer`}
+                      >
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleLogOut();
+                      }}
+                    >
+                      {/* <LogOut /> */}
+                      <span>Log Out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  href={"/login"}
+                  className="bg-linear-to-r from-pblue to-bluegray text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200"
+                >
+                  Login
+                </Link>
+              )}
+
+              {/* ghfdhdgh */}
             </div>
 
             {/* Mobile Menu Button */}
