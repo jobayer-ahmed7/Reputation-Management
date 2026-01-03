@@ -11,7 +11,7 @@ const orderItemSchema = new Schema<TOrderedservice>({
     price: { 
         type: Number, required: [true, 'Price is required'],
         min: [0, 'Price cannot be negative']
-    }
+    } 
 })
 
 const orderSchema = new Schema<TOrder>({ 

@@ -8,7 +8,7 @@ export type TOrderedservice = {
     product: Types.ObjectId,
     quantity: number, 
     price: number
-}
+} 
  
 export type TOrder = {
     products: TOrderedservice[];

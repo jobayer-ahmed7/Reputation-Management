@@ -16,7 +16,7 @@ const orderValidationSchema = z.object({
     transactionId: z.string().optional(),
     isDeleted: z.boolean().optional(),
 })
-const updateOrderValidationSchema = z.object({
+const updateOrderValidationSchema = z.object({ 
     products: z.array(orderItemValidationSchema).optional(),
     user: z.string().optional(),
     totalPrice: z.number().optional(),

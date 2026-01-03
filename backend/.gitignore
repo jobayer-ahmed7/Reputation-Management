@@ -9,3 +9,5 @@ dist/
 # Environment / secrets
 .env
 
+.vercel
+.env*.local

@@ -4,19 +4,11 @@ import { ITestimonial } from './testimonial.interface';
 // Define the testimonial schema
 const TestimonialSchema = new Schema<ITestimonial>(
   {
-    clientName: {
-      type: String,
-      required: true,
-    },
-    clientImage: {
-      type: String,
-      default: null,
-    },
     title: {
       type: String,
       required: true,
     },
-    description: {
+    content: {
       type: String,
       required: true,
     },
@@ -26,9 +18,9 @@ const TestimonialSchema = new Schema<ITestimonial>(
       min: 1,
       max: 5,
     },
-    platform: {
+    clientName: {
       type: String,
-      default: null,
+      required: true,
     },
   },
   {

@@ -11,7 +11,7 @@ const getStripeClient = () => {
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
       'STRIPE_SECRET_KEY is not configured'
-    );
+    ); 
   }
 
   return new Stripe(config.stripe_secret_key);

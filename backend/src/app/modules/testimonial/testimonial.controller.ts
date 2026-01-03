@@ -143,7 +143,7 @@ export const deleteTestimonial = async (
         success: false,
         message: 'Testimonial not found',
         data: null,
-      });
+      }); 
       return;
     }
 

@@ -19,7 +19,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://reputation-management-frontend.vercel.app",
     credentials: true,
   })
 );
