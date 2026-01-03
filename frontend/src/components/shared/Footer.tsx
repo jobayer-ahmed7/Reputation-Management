@@ -7,17 +7,17 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const aboutLinks = [
-    { name: "Jobs", href: "jobs" },
-    { name: "FAQs", href: "faqs" },
-    { name: "Blogs", href: "blogs" },
-    { name: "Contact Us", href: "contact" },
+    { name: "Jobs", href: "#" },
+    { name: "FAQs", href: "#" },
+    { name: "Blogs", href: "#" },
+    { name: "Contact Us", href: "#" },
   ];
 
   const policyLinks = [
     { name: "Privacy Policy", href: "privacy-policy" },
-    { name: "Terms of Service", href: "terms" },
-    { name: "Refund Policy", href: "refund" },
-    { name: "Working Policy", href: "working" },
+    { name: "Terms of Service", href: "#" },
+    { name: "Refund Policy", href: "#" },
+    { name: "Working Policy", href: "#" },
   ];
 
   const paymentMethods = [

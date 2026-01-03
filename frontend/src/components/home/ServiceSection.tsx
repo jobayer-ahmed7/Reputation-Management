@@ -14,7 +14,7 @@ type TService = {
   price: string;
   originalPrice: string;
   badge: string | null;
-  features: string[];
+  features: string[]; 
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -26,7 +26,7 @@ const ServiceSection = () => {
     try {
       const response = await getAllServices({});
       const allServices = response?.data || [];
-      console.log(response);
+      // console.log(response);
       setServices(allServices);
     } catch (error) {
       console.error("Failed to fetch services:", error);
@@ -35,7 +35,7 @@ const ServiceSection = () => {
     }
   };
 
-  console.log(services);
+  // console.log(services);
 
   useEffect(() => {
     fetchServices();

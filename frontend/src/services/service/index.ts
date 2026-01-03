@@ -15,7 +15,7 @@ export const getAllServices = async (filters: Record<string, any>) => {
         next: {
           tags: ["SERVICE"],
         },
-      }
+      } 
     );
     const data = await res.json();
     
