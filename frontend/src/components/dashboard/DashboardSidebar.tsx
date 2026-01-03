@@ -43,15 +43,20 @@ const dashboardRoute = {
 };
 
 const DashboardSidebar = () => {
-
-    const userRole = "admin"; // Example: 'admin' or 'user'
-    const routes = userRole === "admin" ? dashboardRoute.adminRoute : dashboardRoute.userRoute;
+  const userRole = "admin"; // Example: 'admin' or 'user'
+  const routes =
+    userRole === "admin" ? dashboardRoute.adminRoute : dashboardRoute.userRoute;
 
   return (
     <Sidebar>
       <SidebarHeader className="flex items-center mb-4">
         <Link href="/">
-        <Image alt="Company logo" width={150} height={300} src={"/logo.webp"} />
+          <Image
+            alt="Company logo"
+            width={150}
+            height={300}
+            src={"/logo.webp"}
+          />
         </Link>
       </SidebarHeader>
       <SidebarContent>
@@ -67,11 +72,10 @@ const DashboardSidebar = () => {
         </SidebarMenu>
       </SidebarContent>
       {/* bottom navigation */}
-           <SidebarFooter>
-        
-        <Button className="bg-pblue">
-          <Link href="/">Back To Home</Link>
-        </Button>
+      <SidebarFooter>
+        <Link className="w-full " href="/">
+          <Button className="bg-pblue hover:bg-bluegray w-full cursor-pointer transition-colors duration-300">Back To Home</Button>
+        </Link>
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,12 +1,7 @@
 "use client";
-import { useForm, Controller } from "react-hook-form";
-import { Mail, Lock } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { FieldSeparator } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import LoginForm from "@/components/auth/login/LoginForm";
+import Link from "next/link";
 
 const LoginPage = () => {
   return (
@@ -72,9 +67,56 @@ const LoginPage = () => {
           </div>
 
           {/* Right login form panel */}
-          <div className="p-4">
+          <div className="flex flex-col justify-center bg-white p-6 sm:p-10">
+            <div className="w-full max-w-md mx-auto space-y-6">
+              <div className="space-y-2 text-center lg:text-left">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Login to your dashboard
+                </h2>
+              </div>
 
-          <LoginForm />
+              <LoginForm />
+
+                      {/* Don't have an account section */}
+        <div className="text-center pt-4">
+          <p className="text-sm text-slate-600">
+            Don't have an account?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-pblue hover:text-bluegray transition-colors"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+
+              <div className="space-y-3 pt-2 mt-4 border-t border-slate-100">
+                <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                  Why teams use Reputation Manage
+                </p>
+                <ul className="grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 size-2 rounded-full bg-emerald-400" />
+                    <span>Monitor reviews from Google, Facebook and more in real time.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 size-2 rounded-full bg-emerald-400" />
+                    <span>Reply faster with pre-approved response templates.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 size-2 rounded-full bg-emerald-400" />
+                    <span>Track sentiment trends across locations and channels.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 size-2 rounded-full bg-emerald-400" />
+                    <span>Share clean performance reports with your leadership team.</span>
+                  </li>
+                </ul>
+                <p className="text-[11px] text-slate-500">
+                  Need help logging in? Feel free to contact us.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -148,7 +148,7 @@ const LoginForm = () => {
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
-
+{/* 
         <FieldSeparator className="mb-4">Or continue with</FieldSeparator>
 
         <div className="grid grid-cols-1 gap-3">
@@ -159,7 +159,7 @@ const LoginForm = () => {
             <span className="text-2xl">G</span>
             <span className="font-medium text-slate-700">Google</span>
           </button>
-        </div>
+        </div> */}
       </form>
     </Form>
   );

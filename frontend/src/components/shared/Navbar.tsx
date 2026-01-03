@@ -200,9 +200,11 @@ const Navbar = () => {
               </a>
 
               {/* Mobile Login Button */}
-              <button className="w-full bg-linear-to-r from-pblue to-bluegray text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
-                Login/Signup
-              </button>
+              <Link onClick={()=> setIsMobileMenuOpen(false)} href="/login">
+                <button className="w-full bg-linear-to-r from-pblue to-bluegray text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                  Login
+                </button>
+              </Link>
             </div>
           </div>
         )}
