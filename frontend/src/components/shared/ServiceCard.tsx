@@ -59,13 +59,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 
       <CardContent className="relative z-10 space-y-6">
         {/* Pricing */}
-        <div className="flex items-baseline gap-2">
+        {/* <div className="flex items-baseline gap-2">
           <span className="text-3xl font-bold text-pblue">{price}</span>
           {originalPrice && (
             <span className="text-sm text-slate-400 line-through">{originalPrice}</span>
           )}
           <span className="text-xs text-slate-500 ml-auto">per order</span>
-        </div>
+        </div> */}
 
         {/* Features List */}
         <ul className="space-y-2.5">

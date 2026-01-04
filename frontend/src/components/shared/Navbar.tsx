@@ -87,16 +87,7 @@ const Navbar = () => {
 
             {/* Contact & Auth */}
             <div className="hidden md:flex items-center space-x-4">
-              {/* WhatsApp Contact */}
-              <a
-                href="https://wa.me/8801722291667"
-                className="flex items-center gap-2 text-gray-700 hover:text-[#25D366] transition-colors"
-              >
-                <div className="w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-semibold text-sm">8801722291667</span>
-              </a>
+   
 
               {/* Login/Signup and logout Button */}
 
