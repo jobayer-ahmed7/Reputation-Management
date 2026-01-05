@@ -1,13 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  MessageCircle,
-  Users,
-  TrendingUp,
-  CheckCircle,
-  X,
-} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { MessageCircle, Users, TrendingUp, CheckCircle, X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -23,25 +18,33 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+type OrderFormValues = {
+  packageId: string;
+  quantity: number;
+};
 
 const ServicePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedPlatform, setSelectedPlatform] = useState(null);
-  const [selectedPackage, setSelectedPackage] = useState(null);
-  const [formData, setFormData] = useState({
-    package: "",
-    price: 0,
-    quantity: 1,
-    totalPrice: 0,
+  const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
+
+  const form = useForm<OrderFormValues>({
+    defaultValues: {
+      packageId: "",
+      quantity: 1,
+    },
   });
 
-  const categories = [
-    { id: "all", label: "All Services" },
-    { id: "reviews", label: "Reviews" },
-    { id: "engagement", label: "Engagement" },
-    { id: "growth", label: "Growth" },
-  ];
+  const watchPackageId = form.watch("packageId");
+  const watchQuantity = form.watch("quantity") || 1;
 
   const services = [
     {
@@ -109,57 +112,49 @@ const ServicePage = () => {
     },
   ];
 
-  const handlePlatformClick = (service) => {
+  const selectedServicePackages = selectedPlatform?.packages || [];
+  const selectedPkg = selectedServicePackages.find(
+    (pkg: any) => pkg.id === watchPackageId
+  );
+  const unitPrice = selectedPkg?.price || 0;
+  const totalPrice = unitPrice * watchQuantity;
+
+  const handlePlatformClick = (service: any) => {
     setSelectedPlatform(service);
-    setSelectedPackage(null);
-    setFormData({
-      package: "",
-      price: 0,
+    form.reset({
+      packageId: "",
       quantity: 1,
-      totalPrice: 0,
     });
   };
 
-  const handlePackageChange = (packageId) => {
-    const service = services.find((s) => s.platform === selectedPlatform.platform);
-    const pkg = service.packages.find((p) => p.id === packageId);
-    
-    if (pkg) {
-      setSelectedPackage(pkg);
-      setFormData({
-        package: packageId,
-        price: pkg.price,
-        quantity: 1,
-        totalPrice: pkg.price,
-      });
-    }
-  };
+  const onSubmit = (values: OrderFormValues) => {
+    if (!selectedPlatform) return;
 
-  const handleQuantityChange = (e) => {
-    const qty = parseInt(e.target.value) || 1;
-    setFormData({
-      ...formData,
-      quantity: qty,
-      totalPrice: formData.price * qty,
-    });
-  };
+    const service = services.find(
+      (s) => s.platform === selectedPlatform.platform
+    );
+    const pkg = service?.packages.find((p) => p.id === values.packageId);
 
-  const handleSubmit = () => {
     console.log("Order submitted:", {
       platform: selectedPlatform.platform,
-      ...formData,
+      packageId: values.packageId,
+      quantity: values.quantity,
+      pricePerUnit: pkg?.price ?? 0,
+      totalPrice,
     });
-    alert(`Order placed for ${selectedPlatform.platform}!\nTotal: $${formData.totalPrice}`);
+
+    alert(
+      `Order placed for ${
+        selectedPlatform.platform
+      }!\nTotal: $${totalPrice.toFixed(2)}`
+    );
   };
 
   const closeForm = () => {
     setSelectedPlatform(null);
-    setSelectedPackage(null);
-    setFormData({
-      package: "",
-      price: 0,
+    form.reset({
+      packageId: "",
       quantity: 1,
-      totalPrice: 0,
     });
   };
 
@@ -186,143 +181,201 @@ const ServicePage = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-white border-b border-slate-200">
+      {/* Platform Section */}
+      <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-3 justify-center">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
-                  selectedCategory === category.id
-                    ? "bg-linear-to-r from-pblue to-bluegray text-white shadow-lg"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                }`}
-              >
-                {category.label}
-              </button>
-            ))}
+          <div className="flex items-center justify-center mb-8">
+            <p className="inline-flex items-center rounded-full  border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
+              Choose platform
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6 sm:gap-6">
+            {services.map((service) => {
+              const isActive = selectedPlatform?.platform === service.platform;
+
+              return (
+                <button
+                  key={service.id}
+                  onClick={() => handlePlatformClick(service)}
+                  className={`group relative flex h-full flex-col justify-between rounded-2xl border bg-white/90 p-4 text-left text-sm backdrop-blur-sm transition-all duration-200
+            ${
+              isActive
+                ? "border-pblue shadow-[0_16px_40px_rgba(37,99,235,0.25)] -translate-y-1"
+                : "border-slate-200 hover:-translate-y-1 hover:border-pblue/50 hover:shadow-md"
+            }`}
+                >
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-900">
+                      {service.platform}
+                    </h3>
+                    <p className="mt-1 text-[11px] text-slate-500">
+                      {service.packages.length} packages
+                    </p>
+                  </div>
+
+                  <span className="mt-3 inline-flex items-center justify-between rounded-full bg-slate-50 px-3 py-1 text-[10px] font-medium text-slate-500">
+                    Choose
+                    <span className="ml-1 text-pblue transition-transform group-hover:translate-x-0.5">
+                      &gt;
+                    </span>
+                  </span>
+
+                  {isActive && (
+                    <span className="absolute right-3 top-3 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-emerald-100" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-16 lg:py-24">
+      {/* Service Choosing & Order Form */}
+      <section className="py-16 lg:py-20 bg-linear-to-b from-white via-blue-50/30 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {services.map((service) => (
-              <button
-                key={service.id}
-                onClick={() => handlePlatformClick(service)}
-                className={`p-8 rounded-2xl border-2 transition-all duration-200 text-left ${
-                  selectedPlatform?.platform === service.platform
-                    ? "border-pblue bg-blue-50 shadow-lg"
-                    : "border-slate-200 bg-white hover:border-pblue hover:shadow-md"
-                }`}
-              >
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                  {service.platform}
-                </h3>
-                <p className="text-slate-600">
-                  {service.packages.length} packages available
-                </p>
-              </button>
-            ))}
-          </div>
-
-          {/* Order Form */}
           {selectedPlatform && (
-            <div className="max-w-2xl mx-auto bg-white rounded-2xl border-2 border-pblue shadow-xl p-8 relative">
-              <button
-                onClick={closeForm}
-                className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                <X className="w-5 h-5 text-slate-600" />
-              </button>
-
-              <div className="mb-6">
-                <h3 className="text-3xl font-bold text-slate-900 mb-2">
-                  Order {selectedPlatform.platform} Service
-                </h3>
-                <p className="text-slate-600">
-                  Select a package and quantity to place your order
+            <>
+              <div className="mb-8 text-center">
+                <p className="inline-flex items-center rounded-full border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
+                  Choose package & order
                 </p>
               </div>
-
-              <div className="space-y-6">
-                {/* Package Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="package" className="text-slate-900 font-semibold">
-                    Select Package
-                  </Label>
-                  <Select onValueChange={handlePackageChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Choose a package" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {selectedPlatform.packages.map((pkg) => (
-                        <SelectItem key={pkg.id} value={pkg.id}>
-                          {pkg.description} - ${pkg.price}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Price Field */}
-                <div className="space-y-2">
-                  <Label htmlFor="price" className="text-slate-900 font-semibold">
-                    Price per Unit
-                  </Label>
-                  <Input
-                    id="price"
-                    type="text"
-                    value={formData.price > 0 ? `$${formData.price}` : "$0"}
-                    readOnly
-                    className="bg-slate-50"
-                  />
-                </div>
-
-                {/* Quantity Field */}
-                <div className="space-y-2">
-                  <Label htmlFor="quantity" className="text-slate-900 font-semibold">
-                    Quantity
-                  </Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    min="1"
-                    value={formData.quantity}
-                    onChange={handleQuantityChange}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* Total Price Field */}
-                <div className="space-y-2">
-                  <Label htmlFor="totalPrice" className="text-slate-900 font-semibold">
-                    Total Price
-                  </Label>
-                  <Input
-                    id="totalPrice"
-                    type="text"
-                    value={formData.totalPrice > 0 ? `$${formData.totalPrice}` : "$0"}
-                    readOnly
-                    className="bg-slate-50 text-xl font-bold text-pblue"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!selectedPackage}
-                  className="w-full bg-linear-to-r from-pblue to-bluegray text-white py-6 text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              <div className="relative mx-auto max-w-2xl rounded-2xl border border-slate-100 bg-white/95 p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+                {/* Close */}
+                <button
+                  onClick={closeForm}
+                  className="absolute top-4 right-4 rounded-md p-2 transition hover:bg-slate-100"
                 >
-                  Buy Now
-                </Button>
+                  <X className="h-5 w-5 text-slate-500" />
+                </button>
+
+                {/* Header */}
+                <div className="mb-8">
+                  <h3 className="text-2xl font-semibold text-slate-900">
+                    {selectedPlatform.platform} Service
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Choose a package and quantity to continue.
+                  </p>
+                </div>
+
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    <div className="grid gap-6 md:grid-cols-2">
+                      {/* Package */}
+                      <div className="md:col-span-2 space-y-3">
+                        <FormField
+                          control={form.control}
+                          name="packageId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">
+                                Package
+                              </FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a package" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {selectedPlatform.packages.map((pkg: any) => (
+                                    <SelectItem key={pkg.id} value={pkg.id}>
+                                      {pkg.description} c ${pkg.price}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {selectedPkg && (
+                          <div className="rounded-xl bg-slate-50 p-3">
+                            <p className="text-[11px] font-semibold text-slate-600">
+                              Package details
+                            </p>
+                            <p className="mt-1 text-[12px] text-slate-600">
+                              {selectedPkg.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Unit Price */}
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium">
+                          Unit Price
+                        </FormLabel>
+                        <Input
+                          readOnly
+                          value={unitPrice ? `$${unitPrice.toFixed(2)}` : "$0"}
+                          className="bg-slate-50"
+                        />
+                      </FormItem>
+
+                      {/* Quantity */}
+                      <FormField
+                        control={form.control}
+                        name="quantity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">
+                              Quantity
+                            </FormLabel>
+                            <Input
+                              type="number"
+                              min={1}
+                              {...field}
+                              value={field.value ?? 1}
+                              onChange={(e) =>
+                                field.onChange(
+                                  Math.max(1, Number(e.target.value))
+                                )
+                              }
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Total */}
+                      <div className="md:col-span-2 border-t pt-6">
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            Total
+                          </FormLabel>
+                          <Input
+                            readOnly
+                            value={
+                              totalPrice ? `$${totalPrice.toFixed(2)}` : "$0"
+                            }
+                            className="bg-slate-50 text-lg font-semibold text-pblue"
+                          />
+                        </FormItem>
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <Button
+                      type="submit"
+                      disabled={!selectedPkg}
+                      className="w-full h-12 text-base font-semibold bg-linear-to-r from-pblue to-bluegray hover:brightness-110 hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Continue to Payment
+                    </Button>
+                  </form>
+                </Form>
               </div>
-            </div>
+            </>
           )}
         </div>
       </section>
