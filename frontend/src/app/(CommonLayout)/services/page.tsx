@@ -1,17 +1,40 @@
 "use client";
 
-import  { useState } from "react";
-import ServiceCard from "@/components/shared/ServiceCard";
-import { MessageCircle, Users, TrendingUp, Share2, Heart, Star, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import {
+  MessageCircle,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  X,
+} from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const ServicePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [formData, setFormData] = useState({
+    package: "",
+    price: 0,
+    quantity: 1,
+    totalPrice: 0,
+  });
 
   const categories = [
     { id: "all", label: "All Services" },
@@ -23,124 +46,122 @@ const ServicePage = () => {
   const services = [
     {
       id: 1,
-      category: "reviews",
-      icon: <Star className="w-6 h-6" />,
-      title: "Google Reviews",
-      description:
-        "Boost your Google business profile with authentic, high-quality reviews that improve your visibility and attract more customers.",
       platform: "Google",
-      price: "$49",
-      originalPrice: "$79",
-      badge: "Popular",
-      features: [
-        "5-star authentic reviews",
-        "Rapid delivery (24-48 hours)",
-        "USA/Global reviewers",
-        "Boost local SEO ranking",
-        "Money-back guarantee",
+      packages: [
+        {
+          id: "google-1",
+          description: "5 Google Reviews - Basic Package",
+          price: 49,
+        },
+        {
+          id: "google-2",
+          description: "10 Google Reviews - Standard Package",
+          price: 89,
+        },
+        {
+          id: "google-3",
+          description: "25 Google Reviews - Premium Package",
+          price: 199,
+        },
       ],
     },
     {
       id: 2,
-      category: "reviews",
-      icon: <Users className="w-6 h-6" />,
-      title: "Facebook Reviews",
-      description:
-        "Increase credibility and social proof on Facebook with genuine reviews from verified accounts.",
       platform: "Facebook",
-      price: "$39",
-      originalPrice: "$69",
-      badge: null,
-      features: [
-        "Verified Facebook reviews",
-        "Real accounts only",
-        "Safe & secure delivery",
-        "Boost social credibility",
-        "Quick turnaround",
+      packages: [
+        {
+          id: "facebook-1",
+          description: "50 Facebook Likes - Starter Package",
+          price: 29,
+        },
+        {
+          id: "facebook-2",
+          description: "100 Facebook Likes - Growth Package",
+          price: 49,
+        },
+        {
+          id: "facebook-3",
+          description: "500 Facebook Likes - Pro Package",
+          price: 199,
+        },
       ],
     },
     {
       id: 3,
-      category: "engagement",
-      icon: <Heart className="w-6 h-6" />,
-      title: "Instagram Engagement Package",
-      description:
-        "Grow your Instagram presence with real followers, likes, and comments from genuine accounts.",
       platform: "Instagram",
-      price: "$44",
-      originalPrice: "$74",
-      badge: null,
-      features: [
-        "Real Instagram followers",
-        "Post likes & comments",
-        "Story interactions",
-        "No bot activity",
-        "Instant activation",
-      ],
-    },
-    {
-      id: 4,
-      category: "growth",
-      icon: <MessageCircle className="w-6 h-6" />,
-      title: "TikTok Viral Boost",
-      description:
-        "Accelerate your TikTok growth with authentic views, likes, and followers to help your videos go viral.",
-      platform: "TikTok",
-      price: "$34",
-      originalPrice: "$64",
-      badge: "Trending",
-      features: [
-        "Real TikTok views & likes",
-        "Active followers",
-        "Video engagement boost",
-        "Algorithm-friendly",
-        "Quick & safe setup",
-      ],
-    },
-    {
-      id: 5,
-      category: "growth",
-      icon: <TrendingUp className="w-6 h-6" />,
-      title: "LinkedIn Profile Credibility",
-      description:
-        "Establish professional authority on LinkedIn with endorsements, recommendations, and connection growth.",
-      platform: "LinkedIn",
-      price: "$54",
-      originalPrice: "$84",
-      badge: null,
-      features: [
-        "Professional endorsements",
-        "Connection growth",
-        "Post engagement",
-        "Recommendations",
-        "Industry authority boost",
-      ],
-    },
-    {
-      id: 6,
-      category: "reviews",
-      icon: <Share2 className="w-6 h-6" />,
-      title: "YouTube Comments",
-      description:
-        "Increase video credibility with authentic comments, likes, and engagement from real YouTube accounts.",
-      platform: "YouTube",
-      price: "$59",
-      originalPrice: "$89",
-      badge: null,
-      features: [
-        "Authentic video comments",
-        "Video likes boost",
-        "Channel subscription help",
-        "View increase",
-        "Comment moderation friendly",
+      packages: [
+        {
+          id: "instagram-1",
+          description: "100 Instagram Followers - Basic Package",
+          price: 39,
+        },
+        {
+          id: "instagram-2",
+          description: "500 Instagram Followers - Standard Package",
+          price: 149,
+        },
+        {
+          id: "instagram-3",
+          description: "1000 Instagram Followers - Premium Package",
+          price: 279,
+        },
       ],
     },
   ];
 
-  const filteredServices =
-    selectedCategory === "all"
-      ? services
-      : services.filter((s) => s.category === selectedCategory);
+  const handlePlatformClick = (service) => {
+    setSelectedPlatform(service);
+    setSelectedPackage(null);
+    setFormData({
+      package: "",
+      price: 0,
+      quantity: 1,
+      totalPrice: 0,
+    });
+  };
+
+  const handlePackageChange = (packageId) => {
+    const service = services.find((s) => s.platform === selectedPlatform.platform);
+    const pkg = service.packages.find((p) => p.id === packageId);
+    
+    if (pkg) {
+      setSelectedPackage(pkg);
+      setFormData({
+        package: packageId,
+        price: pkg.price,
+        quantity: 1,
+        totalPrice: pkg.price,
+      });
+    }
+  };
+
+  const handleQuantityChange = (e) => {
+    const qty = parseInt(e.target.value) || 1;
+    setFormData({
+      ...formData,
+      quantity: qty,
+      totalPrice: formData.price * qty,
+    });
+  };
+
+  const handleSubmit = () => {
+    console.log("Order submitted:", {
+      platform: selectedPlatform.platform,
+      ...formData,
+    });
+    alert(`Order placed for ${selectedPlatform.platform}!\nTotal: $${formData.totalPrice}`);
+  };
+
+  const closeForm = () => {
+    setSelectedPlatform(null);
+    setSelectedPackage(null);
+    setFormData({
+      package: "",
+      price: 0,
+      quantity: 1,
+      totalPrice: 0,
+    });
+  };
 
   return (
     <main className="bg-linear-to-b from-white via-slate-50 to-slate-100 min-h-screen">
@@ -157,15 +178,16 @@ const ServicePage = () => {
             </h1>
 
             <p className="text-slate-600 text-lg max-w-3xl mx-auto">
-              Choose from our comprehensive suite of services to boost your online presence, build
-              credibility, and grow your social media profiles across all major platforms.
+              Choose from our comprehensive suite of services to boost your
+              online presence, build credibility, and grow your social media
+              profiles across all major platforms.
             </p>
           </div>
         </div>
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 bg-white  border-b border-slate-200">
+      <section className="py-8 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (
@@ -188,26 +210,118 @@ const ServicePage = () => {
       {/* Services Grid */}
       <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredServices.map((service) => (
-              <ServiceCard
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {services.map((service) => (
+              <button
                 key={service.id}
-                icon={service.icon}
-                title={service.title}
-                description={service.description}
-                platform={service.platform}
-                price={service.price}
-                originalPrice={service.originalPrice}
-                features={service.features}
-                badge={service.badge || undefined}
-                onBuyNow={() => console.log(`Buy ${service.title}`)}
-              />
+                onClick={() => handlePlatformClick(service)}
+                className={`p-8 rounded-2xl border-2 transition-all duration-200 text-left ${
+                  selectedPlatform?.platform === service.platform
+                    ? "border-pblue bg-blue-50 shadow-lg"
+                    : "border-slate-200 bg-white hover:border-pblue hover:shadow-md"
+                }`}
+              >
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                  {service.platform}
+                </h3>
+                <p className="text-slate-600">
+                  {service.packages.length} packages available
+                </p>
+              </button>
             ))}
           </div>
 
-          {filteredServices.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-slate-600 text-lg">No services found in this category.</p>
+          {/* Order Form */}
+          {selectedPlatform && (
+            <div className="max-w-2xl mx-auto bg-white rounded-2xl border-2 border-pblue shadow-xl p-8 relative">
+              <button
+                onClick={closeForm}
+                className="absolute top-4 right-4 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5 text-slate-600" />
+              </button>
+
+              <div className="mb-6">
+                <h3 className="text-3xl font-bold text-slate-900 mb-2">
+                  Order {selectedPlatform.platform} Service
+                </h3>
+                <p className="text-slate-600">
+                  Select a package and quantity to place your order
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Package Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="package" className="text-slate-900 font-semibold">
+                    Select Package
+                  </Label>
+                  <Select onValueChange={handlePackageChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose a package" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectedPlatform.packages.map((pkg) => (
+                        <SelectItem key={pkg.id} value={pkg.id}>
+                          {pkg.description} - ${pkg.price}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Price Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-slate-900 font-semibold">
+                    Price per Unit
+                  </Label>
+                  <Input
+                    id="price"
+                    type="text"
+                    value={formData.price > 0 ? `$${formData.price}` : "$0"}
+                    readOnly
+                    className="bg-slate-50"
+                  />
+                </div>
+
+                {/* Quantity Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="quantity" className="text-slate-900 font-semibold">
+                    Quantity
+                  </Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    value={formData.quantity}
+                    onChange={handleQuantityChange}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Total Price Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="totalPrice" className="text-slate-900 font-semibold">
+                    Total Price
+                  </Label>
+                  <Input
+                    id="totalPrice"
+                    type="text"
+                    value={formData.totalPrice > 0 ? `$${formData.totalPrice}` : "$0"}
+                    readOnly
+                    className="bg-slate-50 text-xl font-bold text-pblue"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!selectedPackage}
+                  className="w-full bg-linear-to-r from-pblue to-bluegray text-white py-6 text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Buy Now
+                </Button>
+              </div>
             </div>
           )}
         </div>
@@ -229,7 +343,8 @@ const ServicePage = () => {
             {[
               {
                 title: "100% Authentic",
-                description: "Real accounts, real engagement, no bots or fake activity",
+                description:
+                  "Real accounts, real engagement, no bots or fake activity",
                 icon: <CheckCircle className="w-8 h-8" />,
               },
               {
@@ -257,7 +372,9 @@ const ServicePage = () => {
                     {feature.icon}
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">
+                  {feature.title}
+                </h3>
                 <p className="text-slate-600 text-sm">{feature.description}</p>
               </div>
             ))}
@@ -279,22 +396,26 @@ const ServicePage = () => {
               {
                 step: "1",
                 title: "Choose Service",
-                description: "Select the social media service and package that fits your needs",
+                description:
+                  "Select the social media service and package that fits your needs",
               },
               {
                 step: "2",
                 title: "Make Payment",
-                description: "Complete secure payment using your preferred payment method",
+                description:
+                  "Complete secure payment using your preferred payment method",
               },
               {
                 step: "3",
                 title: "Provide Details",
-                description: "Enter your profile information and service requirements",
+                description:
+                  "Enter your profile information and service requirements",
               },
               {
                 step: "4",
                 title: "Get Results",
-                description: "Sit back and watch your engagement and reviews grow",
+                description:
+                  "Sit back and watch your engagement and reviews grow",
               },
             ].map((item, index) => (
               <div key={index} className="text-center">
@@ -303,7 +424,9 @@ const ServicePage = () => {
                     {item.step}
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">
+                  {item.title}
+                </h3>
                 <p className="text-slate-600 text-sm">{item.description}</p>
               </div>
             ))}
@@ -312,7 +435,7 @@ const ServicePage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 lg:py-24 bg-white ">
+      <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
@@ -347,7 +470,11 @@ const ServicePage = () => {
                 a: "Yes! Contact our sales team for custom bulk pricing and enterprise packages.",
               },
             ].map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-slate-200 rounded-lg px-4">
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border border-slate-200 rounded-lg px-4"
+              >
                 <AccordionTrigger className="text-slate-900 font-semibold cursor-pointer">
                   {item.q}
                 </AccordionTrigger>
@@ -359,8 +486,6 @@ const ServicePage = () => {
           </Accordion>
         </div>
       </section>
-
- 
     </main>
   );
 };
