@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { MessageCircle, Users, TrendingUp, CheckCircle, X } from "lucide-react";
+import { X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -26,10 +26,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 
 type OrderFormValues = {
   packageId: string;
   quantity: number;
+  note: string;
 };
 
 const ServicePage = () => {
@@ -40,6 +42,7 @@ const ServicePage = () => {
     defaultValues: {
       packageId: "",
       quantity: 1,
+      note: "",
     },
   });
 
@@ -124,6 +127,7 @@ const ServicePage = () => {
     form.reset({
       packageId: "",
       quantity: 1,
+      note: "",
     });
   };
 
@@ -141,6 +145,7 @@ const ServicePage = () => {
       quantity: values.quantity,
       pricePerUnit: pkg?.price ?? 0,
       totalPrice,
+      note: values.note,
     });
 
     alert(
@@ -155,6 +160,7 @@ const ServicePage = () => {
     form.reset({
       packageId: "",
       quantity: 1,
+      note: "",
     });
   };
 
@@ -182,7 +188,7 @@ const ServicePage = () => {
       </section>
 
       {/* Platform Section */}
-      <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100">
+      <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center mb-8">
             <p className="inline-flex items-center rounded-full  border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
@@ -232,9 +238,12 @@ const ServicePage = () => {
       </section>
 
       {/* Service Choosing & Order Form */}
+      {selectedPlatform && (
+
+
       <section className="py-16 lg:py-20 bg-linear-to-b from-white via-blue-50/30 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {selectedPlatform && (
+         
             <>
               <div className="mb-8 text-center">
                 <p className="inline-flex items-center rounded-full border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
@@ -346,6 +355,25 @@ const ServicePage = () => {
                           </FormItem>
                         )}
                       />
+                      {/* Note */}
+                      <FormField
+                        control={form.control}
+                        name="note"
+                        render={({ field }) => (
+                          <FormItem className="md:col-span-2">
+                            <FormLabel className="text-sm font-medium">
+                              Order Note (Optional)
+                            </FormLabel>
+                            <Textarea
+                              {...field}
+                              value={field.value ?? ""}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              placeholder="Type your message here." 
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
                       {/* Total */}
                       <div className="md:col-span-2 border-t pt-6">
@@ -376,64 +404,12 @@ const ServicePage = () => {
                 </Form>
               </div>
             </>
-          )}
+       
         </div>
       </section>
+      )}
 
-      {/* Why Choose Us Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-              Why Choose Our Services?
-            </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-              We stand out with quality, reliability, and customer satisfaction.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: "100% Authentic",
-                description:
-                  "Real accounts, real engagement, no bots or fake activity",
-                icon: <CheckCircle className="w-8 h-8" />,
-              },
-              {
-                title: "Fast Delivery",
-                description: "Most orders delivered within 24-48 hours",
-                icon: <TrendingUp className="w-8 h-8" />,
-              },
-              {
-                title: "Money-Back Guarantee",
-                description: "Not satisfied? We offer a full refund guarantee",
-                icon: <Users className="w-8 h-8" />,
-              },
-              {
-                title: "24/7 Support",
-                description: "Our dedicated team is always ready to help you",
-                icon: <MessageCircle className="w-8 h-8" />,
-              },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-slate-200 bg-linear-to-br from-white to-slate-50 p-6 text-center hover:shadow-lg transition-shadow"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 rounded-xl bg-linear-to-br from-pblue/10 to-bluegray/10 text-pblue">
-                    {feature.icon}
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-slate-600 text-sm">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* How It Works Section */}
       <section className="py-16 lg:py-24 bg-linear-to-b from-slate-50 to-white">
@@ -451,18 +427,18 @@ const ServicePage = () => {
                 title: "Choose Service",
                 description:
                   "Select the social media service and package that fits your needs",
-              },
+                },
+                {
+                  step: "2",
+                  title: "Provide Details",
+                  description:
+                    "Enter your profile information and service requirements",
+                },
               {
-                step: "2",
+                step: "3",
                 title: "Make Payment",
                 description:
                   "Complete secure payment using your preferred payment method",
-              },
-              {
-                step: "3",
-                title: "Provide Details",
-                description:
-                  "Enter your profile information and service requirements",
               },
               {
                 step: "4",
