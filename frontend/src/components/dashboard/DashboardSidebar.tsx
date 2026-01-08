@@ -23,8 +23,8 @@ const dashboardRoute = {
       url: "#",
     },
     {
-      title: "All Orders",
-      url: "#",
+      title: "Services",
+      url: "/admin/services",
       isActive: true,
     },
   ],
