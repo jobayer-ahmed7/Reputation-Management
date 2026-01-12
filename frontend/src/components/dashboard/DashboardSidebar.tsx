@@ -41,13 +41,14 @@ const dashboardRoute = {
       title: "Orders",
       url: "/customer/orders",
     },
-  ], 
+  ],
 };
 
 const DashboardSidebar = () => {
+  
   const pathname = usePathname();
-    const { user } = useUser();
-    // curent user role
+  const { user } = useUser();
+  // curent user role
   const userRole = user?.role; // Example: 'admin' or 'user'
   const routes =
     userRole === "admin" ? dashboardRoute.adminRoute : dashboardRoute.userRoute;
@@ -62,8 +63,6 @@ const DashboardSidebar = () => {
     return pathname === url || pathname.startsWith(`${url}/`);
   };
 
-  console.log(user)
-
   return (
     <Sidebar>
       <SidebarHeader className="flex items-center mb-4">
@@ -76,7 +75,7 @@ const DashboardSidebar = () => {
           />
         </Link>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="p-2">
         <SidebarMenu>
           {/* dynamic route */}
           {routes.map((item) => (
@@ -91,7 +90,9 @@ const DashboardSidebar = () => {
       {/* bottom navigation */}
       <SidebarFooter>
         <Link className="w-full " href="/">
-          <Button className="bg-pblue hover:bg-bluegray w-full cursor-pointer transition-colors duration-300">Back To Home</Button>
+          <Button className="bg-pblue hover:bg-bluegray w-full cursor-pointer transition-colors duration-300">
+            Back To Home
+          </Button>
         </Link>
       </SidebarFooter>
     </Sidebar>
