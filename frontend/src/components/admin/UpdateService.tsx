@@ -26,50 +26,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { suggestedPlatforms } from "@/constants/service";
+import { TServiceFormData, TUpdateService, UpdateServiceProps } from "@/types/service";
 
 /* ---------------- Types ---------------- */
 
-export type TUpdateService = {
-  _id?: string;
-  platform: string;
-  name: string;
-  count: string;
-  price: number;
-  deliveryTimeRange: string;
-  type: "Standard" | "Monthly";
-  isFeatured: boolean;
-};
 
-type TServiceFormData = {
-  platform: string;
-  name: string;
-  count: string;
-  price: number;
-  deliveryTimeRange: string;
-  type: "Standard" | "Monthly";
-  isFeatured: boolean;
-};
 
-const suggestedPlatforms = [
-  { value: "Google", label: "Google" },
-  { value: "Facebook", label: "Facebook" },
-  { value: "Trustpilot", label: "Trustpilot" },
-  { value: "Yelp", label: "Yelp" },
-  { value: "IMDB", label: "IMDB" },
-  { value: "Zillow", label: "Zillow" },
-  { value: "Tripadvisor", label: "Tripadvisor" },
-  { value: "Apps-Android", label: "Apps-Android" },
-  { value: "Apps-iPhone", label: "Apps-iPhone" },
-  { value: "Glassdoor", label: "Glassdoor" },
-  { value: "Indeed", label: "Indeed" },
-  { value: "BusinessYab", label: "BusinessYab" },
-];
+
+
+
 
 /* ---------------- Component ---------------- */
 
-interface UpdateServiceProps {
-  service: TUpdateService;
-}
+
 
 const UpdateService = ({ service }: UpdateServiceProps) => {
   const [open, setOpen] = useState(false);
