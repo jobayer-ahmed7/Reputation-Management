@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { PlusCircle } from "lucide-react";
+import CreatableSelect from "react-select/creatable";
 
 import { Button } from "@/components/ui/button";
-
 import {
+  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,25 +27,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
-const PLATFORM_OPTIONS = [
-  "Google",
-  "Facebook",
-  "Trustpilot",
-  "Yelp",
-  "IMDB",
-  "Zillow",
-  "Tripadvisor",
-  "Apps-Android",
-  "Apps-iPhone",
-  "Glassdoor",
-  "Indeed",
-  "BusinessYab",
-  "Custom",
-];
+/* ---------------- Types ---------------- */
 
-type ServiceFormData = {
+type TServiceFormData = {
   platform: string;
-  customPlatform?: string;
   name: string;
   count: string;
   price: number;
@@ -52,9 +40,32 @@ type ServiceFormData = {
   isActive: boolean;
 };
 
+
+  const suggestedPlatforms = [
+  { value: "Google", label: "Google" },
+  { value: "Facebook", label: "Facebook" },
+  { value: "Trustpilot", label: "Trustpilot" }, 
+  { value: "Yelp", label: "Yelp" },
+  { value: "IMDB", label: "IMDB" },
+  { value: "Zillow", label: "Zillow" },
+  { value: "Tripadvisor", label: "Tripadvisor" },
+  { value: "Apps-Android", label: "Apps-Android" },
+  { value: "Apps-iPhone", label: "Apps-iPhone" },
+  { value: "Glassdoor", label: "Glassdoor" },
+  { value: "Indeed", label: "Indeed" },
+  { value: "BusinessYab", label: "BusinessYab" },
+  ];
+
+
+/* ---------------- Component ---------------- */
+
 const AddService = () => {
   const [open, setOpen] = useState(false);
-  const [showCustomPlatform, setShowCustomPlatform] = useState(false);
+
+  // Creatable select options for platforms
+  const [platformOptions, setPlatformOptions] = useState(
+    suggestedPlatforms,
+  );
 
   const {
     register,
@@ -62,11 +73,11 @@ const AddService = () => {
     setValue,
     watch,
     reset,
+    control,
     formState: { errors },
-  } = useForm<ServiceFormData>({
+  } = useForm<TServiceFormData>({
     defaultValues: {
       platform: "",
-      customPlatform: "",
       name: "",
       count: "",
       price: 0,
@@ -77,230 +88,214 @@ const AddService = () => {
     },
   });
 
-  const selectedPlatform = watch("platform");
   const isFeatured = watch("isFeatured");
   const isActive = watch("isActive");
 
-  const onSubmit = (data: ServiceFormData) => {
-    // Use custom platform if "Custom" was selected
+  const onSubmit = (data: TServiceFormData) => {
     const finalData = {
       ...data,
-      platform:
-        data.platform === "Custom" ? data.customPlatform : data.platform,
       price: Number(data.price),
     };
 
-    // Remove customPlatform field from final data
-    delete finalData.customPlatform;
-
     console.log("Service Data:", finalData);
 
-    // Reset form and close dialog
     reset();
-    setShowCustomPlatform(false);
     setOpen(false);
   };
 
   return (
-    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogHeader>
-          <DialogTitle>Add New Service</DialogTitle>
-          <DialogDescription>
-            Fill in the details below to create a new service. Click save when
-            you're done.
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+          <PlusCircle className="h-4 w-4" />
+          Add New Service
+        </Button>
+      </DialogTrigger>
 
-        <div className="grid gap-4 py-4">
-          {/* Platform Selection */}
-          <div className="grid gap-2">
-            <Label htmlFor="platform">
-              Platform <span className="text-red-500">*</span>
-            </Label>
-            <Select
-              value={selectedPlatform}
-              onValueChange={(value) => {
-                setValue("platform", value);
-                setShowCustomPlatform(value === "Custom");
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select platform" />
-              </SelectTrigger>
-              <SelectContent>
-                {PLATFORM_OPTIONS.map((platform) => (
-                  <SelectItem key={platform} value={platform}>
-                    {platform}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.platform && (
-              <p className="text-xs text-red-500">Platform is required</p>
-            )}
-          </div>
+      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Add New Service</DialogTitle>
+            <DialogDescription>
+              Create a new service offering for your platform.
+            </DialogDescription>
+          </DialogHeader>
 
-          {/* Custom Platform Input */}
-          {showCustomPlatform && (
+          <div className="grid gap-4 py-4">
+
+            {/* Platform */}
             <div className="grid gap-2">
-              <Label htmlFor="customPlatform">
-                Custom Platform Name <span className="text-red-500">*</span>
+              <Label>
+                Platform <span className="text-red-500">*</span>
+              </Label>
+
+              <Controller
+                name="platform"
+                control={control}
+                rules={{ required: "Platform is required" }}
+                render={({ field }) => {
+                  const selectedOption = field.value
+                    ?
+                        platformOptions.find(
+                          (opt) => opt.value === field.value,
+                        ) || { value: field.value, label: field.value }
+                    : null;
+
+                  return (
+                    <CreatableSelect
+                      isClearable
+                      options={platformOptions}
+                      value={selectedOption}
+                      placeholder="Select or create platform"
+                      onChange={(newValue) => {
+                        const option = newValue as
+                          | { value: string; label: string }
+                          | null;
+                        const value = option?.value ?? "";
+                        field.onChange(value);
+
+                        if (
+                          value &&
+                          !platformOptions.some((opt) => opt.value === value)
+                        ) {
+                          setPlatformOptions((prev) => [
+                            ...prev,
+                            { value, label: value },
+                          ]);
+                        }
+                      }}
+                      onCreateOption={(inputValue) => {
+                        const value = inputValue.trim();
+                        if (!value) return;
+
+                        const newOption = { value, label: value };
+                        setPlatformOptions((prev) => [...prev, newOption]);
+                        field.onChange(value);
+                      }}
+                    />
+                  );
+                }}
+              />
+
+              {errors.platform && (
+                <p className="text-xs text-red-500">
+                  {errors.platform.message || "Platform is required"}
+                </p>
+              )}
+            </div>
+
+            {/* Service Name */}
+            <div className="grid gap-2">
+              <Label>
+                Service Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="customPlatform"
-                placeholder="Enter custom platform name"
-                {...register("customPlatform", {
-                  required: showCustomPlatform,
+                placeholder="e.g. Google 5 Star Reviews"
+                {...register("name", { required: true })}
+              />
+              {errors.name && (
+                <p className="text-xs text-red-500">
+                  Service name is required
+                </p>
+              )}
+            </div>
+
+            {/* Count */}
+            <div className="grid gap-2">
+              <Label>
+                Count / Quantity <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                placeholder="e.g. 1, 10, 20-25"
+                {...register("count", { required: true })}
+              />
+            </div>
+
+            {/* Price */}
+            <div className="grid gap-2">
+              <Label>
+                Price ($) <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                type="number"
+                step="0.01"
+                {...register("price", {
+                  required: true,
+                  min: 0,
+                  valueAsNumber: true,
                 })}
               />
             </div>
-          )}
 
-          {/* Service Name */}
-          <div className="grid gap-2">
-            <Label htmlFor="name">
-              Service Name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              placeholder="e.g., World Wide, County Based"
-              {...register("name", { required: true })}
-            />
-            {errors.name && (
-              <p className="text-xs text-red-500">Name is required</p>
-            )}
-          </div>
-
-          {/* Count */}
-          <div className="grid gap-2">
-            <Label htmlFor="count">
-              Count/Quantity <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="count"
-              placeholder="e.g., 1, 10, 20-25"
-              {...register("count", { required: true })}
-            />
-            <p className="text-xs text-slate-500">
-              Can be a number or range (e.g., "20-25")
-            </p>
-            {errors.count && (
-              <p className="text-xs text-red-500">Count is required</p>
-            )}
-          </div>
-
-          {/* Price */}
-          <div className="grid gap-2">
-            <Label htmlFor="price">
-              Price ($) <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              placeholder="49.99"
-              {...register("price", {
-                required: true,
-                min: 0,
-                valueAsNumber: true,
-              })}
-            />
-            {errors.price && (
-              <p className="text-xs text-red-500">Valid price is required</p>
-            )}
-          </div>
-
-          {/* Delivery Time Range */}
-          <div className="grid gap-2">
-            <Label htmlFor="deliveryTimeRange">
-              Delivery Time <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="deliveryTimeRange"
-              placeholder="e.g., 3-5 Days, 30 Days"
-              {...register("deliveryTimeRange", { required: true })}
-            />
-            {errors.deliveryTimeRange && (
-              <p className="text-xs text-red-500">Delivery time is required</p>
-            )}
-          </div>
-
-          {/* Service Type */}
-          <div className="grid gap-2">
-            <Label htmlFor="type">
-              Service Type <span className="text-red-500">*</span>
-            </Label>
-            <Select
-              value={watch("type")}
-              onValueChange={(value: "Standard" | "Monthly") =>
-                setValue("type", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Standard">Standard</SelectItem>
-                <SelectItem value="Monthly">Monthly Pack</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Featured Toggle */}
-          <div className="flex items-center justify-between rounded-lg border p-3">
-            <div className="space-y-0.5">
-              <Label htmlFor="isFeatured" className="text-sm font-medium">
-                Featured Service
+            {/* Delivery */}
+            <div className="grid gap-2">
+              <Label>
+                Delivery Time <span className="text-red-500">*</span>
               </Label>
-              <p className="text-xs text-slate-500">
-                Highlight this service on the homepage
-              </p>
+              <Input
+                placeholder="e.g. 3-5 Days, 30 Days"
+                {...register("deliveryTimeRange", { required: true })}
+              />
             </div>
-            <Switch
-              id="isFeatured"
-              checked={isFeatured}
-              onCheckedChange={(checked) => setValue("isFeatured", checked)}
-            />
+
+            {/* Service Type */}
+            <div className="grid gap-2">
+              <Label>Service Type</Label>
+              <Select
+                value={watch("type")}
+                onValueChange={(value: "Standard" | "Monthly") =>
+                  setValue("type", value)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Standard">Standard</SelectItem>
+                  <SelectItem value="Monthly">Monthly Pack</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Featured */}
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <Label>Featured Service</Label>
+              <Switch
+                checked={isFeatured}
+                onCheckedChange={(checked) =>
+                  setValue("isFeatured", checked)
+                }
+              />
+            </div>
+
+            {/* Active */}
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <Label>Active Status</Label>
+              <Switch
+                checked={isActive}
+                onCheckedChange={(checked) =>
+                  setValue("isActive", checked)
+                }
+              />
+            </div>
           </div>
 
-          {/* Active Toggle */}
-          <div className="flex items-center justify-between rounded-lg border p-3">
-            <div className="space-y-0.5">
-              <Label htmlFor="isActive" className="text-sm font-medium">
-                Active Status
-              </Label>
-              <p className="text-xs text-slate-500">
-                Make service visible to customers
-              </p>
-            </div>
-            <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={(checked) => setValue("isActive", checked)}
-            />
-          </div>
-        </div>
-
-        <DialogFooter>
-          <DialogClose asChild>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
+            </DialogClose>
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset();
-                setShowCustomPlatform(false);
-              }}
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700"
             >
-              Cancel
+              Save Service
             </Button>
-          </DialogClose>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Save Service
-          </Button>
-        </DialogFooter>
-      </form>
-    </DialogContent>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
