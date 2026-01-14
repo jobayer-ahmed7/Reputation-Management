@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import AddService from "@/components/admin/AddService";
+import UpdateService from "@/components/admin/UpdateService";
 
 type TService = {
   _id?: string;
@@ -54,11 +55,6 @@ const mockServices: TService[] = [
 ];
 
 const AdminServices = () => {
-  const handleEdit = (service: TService) => {
-    // Later: open edit dialog and pass this service data
-    console.log("Edit service", service);
-  };
-
   return (
     <div className="p-4 space-y-6">
       {/* Header */}
@@ -124,14 +120,7 @@ const AdminServices = () => {
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3 align-top text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-3 text-xs"
-                      onClick={() => handleEdit(service)}
-                    >
-                      Edit service
-                    </Button>
+                    <UpdateService service={service} />
                   </TableCell>
                 </TableRow>
               ))}
