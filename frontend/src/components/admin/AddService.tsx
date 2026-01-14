@@ -37,14 +37,12 @@ type TServiceFormData = {
   deliveryTimeRange: string;
   type: "Standard" | "Monthly";
   isFeatured: boolean;
-  isActive: boolean;
 };
 
-
-  const suggestedPlatforms = [
+const suggestedPlatforms = [
   { value: "Google", label: "Google" },
   { value: "Facebook", label: "Facebook" },
-  { value: "Trustpilot", label: "Trustpilot" }, 
+  { value: "Trustpilot", label: "Trustpilot" },
   { value: "Yelp", label: "Yelp" },
   { value: "IMDB", label: "IMDB" },
   { value: "Zillow", label: "Zillow" },
@@ -54,8 +52,7 @@ type TServiceFormData = {
   { value: "Glassdoor", label: "Glassdoor" },
   { value: "Indeed", label: "Indeed" },
   { value: "BusinessYab", label: "BusinessYab" },
-  ];
-
+];
 
 /* ---------------- Component ---------------- */
 
@@ -63,9 +60,7 @@ const AddService = () => {
   const [open, setOpen] = useState(false);
 
   // Creatable select options for platforms
-  const [platformOptions, setPlatformOptions] = useState(
-    suggestedPlatforms,
-  );
+  const [platformOptions, setPlatformOptions] = useState(suggestedPlatforms);
 
   const {
     register,
@@ -84,12 +79,10 @@ const AddService = () => {
       deliveryTimeRange: "",
       type: "Standard",
       isFeatured: false,
-      isActive: true,
     },
   });
 
   const isFeatured = watch("isFeatured");
-  const isActive = watch("isActive");
 
   const onSubmit = (data: TServiceFormData) => {
     const finalData = {
@@ -122,7 +115,6 @@ const AddService = () => {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-
             {/* Platform */}
             <div className="grid gap-2">
               <Label>
@@ -135,10 +127,9 @@ const AddService = () => {
                 rules={{ required: "Platform is required" }}
                 render={({ field }) => {
                   const selectedOption = field.value
-                    ?
-                        platformOptions.find(
-                          (opt) => opt.value === field.value,
-                        ) || { value: field.value, label: field.value }
+                    ? platformOptions.find(
+                        (opt) => opt.value === field.value
+                      ) || { value: field.value, label: field.value }
                     : null;
 
                   return (
@@ -148,9 +139,10 @@ const AddService = () => {
                       value={selectedOption}
                       placeholder="Select or create platform"
                       onChange={(newValue) => {
-                        const option = newValue as
-                          | { value: string; label: string }
-                          | null;
+                        const option = newValue as {
+                          value: string;
+                          label: string;
+                        } | null;
                         const value = option?.value ?? "";
                         field.onChange(value);
 
@@ -194,9 +186,7 @@ const AddService = () => {
                 {...register("name", { required: true })}
               />
               {errors.name && (
-                <p className="text-xs text-red-500">
-                  Service name is required
-                </p>
+                <p className="text-xs text-red-500">Service name is required</p>
               )}
             </div>
 
@@ -239,7 +229,7 @@ const AddService = () => {
             </div>
 
             {/* Service Type */}
-            <div className="grid gap-2">
+            <div className="grid gap-2 ">
               <Label>Service Type</Label>
               <Select
                 value={watch("type")}
@@ -262,20 +252,7 @@ const AddService = () => {
               <Label>Featured Service</Label>
               <Switch
                 checked={isFeatured}
-                onCheckedChange={(checked) =>
-                  setValue("isFeatured", checked)
-                }
-              />
-            </div>
-
-            {/* Active */}
-            <div className="flex items-center justify-between rounded-lg border p-3">
-              <Label>Active Status</Label>
-              <Switch
-                checked={isActive}
-                onCheckedChange={(checked) =>
-                  setValue("isActive", checked)
-                }
+                onCheckedChange={(checked) => setValue("isFeatured", checked)}
               />
             </div>
           </div>
@@ -286,10 +263,7 @@ const AddService = () => {
                 Cancel
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
               Save Service
             </Button>
           </DialogFooter>
