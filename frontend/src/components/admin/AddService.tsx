@@ -29,12 +29,6 @@ import { Switch } from "@/components/ui/switch";
 import { suggestedPlatforms } from "@/constants/service";
 import { TServiceFormData } from "@/types/service";
 
-/* ---------------- Types ---------------- */
-
-
-
-
-
 /* ---------------- Component ---------------- */
 
 const AddService = () => {

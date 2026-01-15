@@ -27,13 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { suggestedPlatforms } from "@/constants/service";
-import { TServiceFormData, TUpdateService, UpdateServiceProps } from "@/types/service";
-
-/* ---------------- Types ---------------- */
-
-
-
-
+import { TServiceFormData, UpdateServiceProps } from "@/types/service";
 
 
 

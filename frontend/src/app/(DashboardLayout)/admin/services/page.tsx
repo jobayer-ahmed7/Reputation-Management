@@ -11,48 +11,11 @@ import {
 } from "@/components/ui/table";
 import AddService from "@/components/admin/AddService";
 import UpdateService from "@/components/admin/UpdateService";
+import { mockServices } from "@/constants/service";
 
-type TService = {
-  _id?: string;
-  platform: string;
-  name: string;
-  count: string;
-  price: number;
-  deliveryTimeRange: string;
-  type: "Standard" | "Monthly";
-  isFeatured: boolean;
-};
 
-// Temporary mock data – replace with real data from API later
-const mockServices: TService[] = [
-  {
-    platform: "Google",
-    name: "Google 5 Star Reviews",
-    count: "5",
-    price: 49,
-    deliveryTimeRange: "3-5 days",
-    type: "Standard",
-    isFeatured: true,
-  },
-  {
-    platform: "Facebook",
-    name: "Facebook Page Likes",
-    count: "100",
-    price: 29,
-    deliveryTimeRange: "1-3 days",
-    type: "Standard",
-    isFeatured: false,
-  },
-  {
-    platform: "Instagram",
-    name: "Instagram Followers",
-    count: "500",
-    price: 79,
-    deliveryTimeRange: "5-7 days",
-    type: "Monthly",
-    isFeatured: false,
-  },
-];
+
+
 
 const AdminServices = () => {
   return (

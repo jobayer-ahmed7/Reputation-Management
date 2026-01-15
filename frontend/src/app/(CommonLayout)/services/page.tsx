@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
-  AccordionItem,
+  AccordionItem, 
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
