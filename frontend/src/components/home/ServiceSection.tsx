@@ -1,10 +1,5 @@
-"use client";
-
 import { mockServices } from "@/constants/service";
-import Link from "next/link";
 import ServiceCard from "../shared/ServiceCard";
-
-
 
 const ServiceSection = () => {
   const services = mockServices.filter((service) => service.isFeatured);
@@ -30,10 +25,8 @@ const ServiceSection = () => {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, index) => (
-        
-              <ServiceCard service={service} />
-          
+          {services.map((service) => (
+            <ServiceCard key={service._id} service={service} />
           ))}
         </div>
       </div>

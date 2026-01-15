@@ -102,14 +102,14 @@ export const mockServices: TService[] = [
   {
     platform: "IMDB",
     name: "IMDB Pro Reviews",
-    count: "100",
+    count: "100 - 200",
     price: 149,
     deliveryTimeRange: "5-8 days",
     type: "Monthly",
     isFeatured: true,
   },
   {
-    platform: "Zillow",
+    platform: "Zillow", 
     name: "Zillow Reviews",
     count: "10",
     price: 69,
