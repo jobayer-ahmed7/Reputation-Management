@@ -1,168 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { X } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
-  AccordionItem, 
+  AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-
-type OrderFormValues = {
-  packageId: string;
-  quantity: number;
-  note: string;
-};
+import ServiceCard from "@/components/shared/ServiceCard";
+import { mockServices } from "@/constants/service";
 
 const ServicePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
+  const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
+  const services = mockServices;
 
-  const form = useForm<OrderFormValues>({
-    defaultValues: {
-      packageId: "",
-      quantity: 1,
-      note: "",
-    },
-  });
-
-  const watchPackageId = form.watch("packageId");
-  const watchQuantity = form.watch("quantity") || 1;
-
-  const services = [
-    {
-      id: 1,
-      platform: "Google",
-      packages: [
-        {
-          id: "google-1",
-          description: "5 Google Reviews - Basic Package",
-          price: 49,
-        },
-        {
-          id: "google-2",
-          description: "10 Google Reviews - Standard Package",
-          price: 89,
-        },
-        {
-          id: "google-3",
-          description: "25 Google Reviews - Premium Package",
-          price: 199,
-        },
-      ],
-    },
-    {
-      id: 2,
-      platform: "Facebook",
-      packages: [
-        {
-          id: "facebook-1",
-          description: "50 Facebook Likes - Starter Package",
-          price: 29,
-        },
-        {
-          id: "facebook-2",
-          description: "100 Facebook Likes - Growth Package",
-          price: 49,
-        },
-        {
-          id: "facebook-3",
-          description: "500 Facebook Likes - Pro Package",
-          price: 199,
-        },
-      ],
-    },
-    {
-      id: 3,
-      platform: "Instagram",
-      packages: [
-        {
-          id: "instagram-1",
-          description: "100 Instagram Followers - Basic Package",
-          price: 39,
-        },
-        {
-          id: "instagram-2",
-          description: "500 Instagram Followers - Standard Package",
-          price: 149,
-        },
-        {
-          id: "instagram-3",
-          description: "1000 Instagram Followers - Premium Package",
-          price: 279,
-        },
-      ],
-    },
-  ];
-
-  const selectedServicePackages = selectedPlatform?.packages || [];
-  const selectedPkg = selectedServicePackages.find(
-    (pkg: any) => pkg.id === watchPackageId
+  // Get unique platforms from services
+  const uniquePlatforms = Array.from(
+    new Set(services.map((service) => service.platform))
   );
-  const unitPrice = selectedPkg?.price || 0;
-  const totalPrice = unitPrice * watchQuantity;
 
-  const handlePlatformClick = (service: any) => {
-    setSelectedPlatform(service);
-    form.reset({
-      packageId: "",
-      quantity: 1,
-      note: "",
-    });
+
+  const handlePlatformClick = (platform: string) => {
+    setSelectedPlatform(platform);
   };
 
-  const onSubmit = (values: OrderFormValues) => {
-    if (!selectedPlatform) return;
-
-    const service = services.find(
-      (s) => s.platform === selectedPlatform.platform
-    );
-    const pkg = service?.packages.find((p) => p.id === values.packageId);
-
-    console.log("Order submitted:", {
-      platform: selectedPlatform.platform,
-      packageId: values.packageId,
-      quantity: values.quantity,
-      pricePerUnit: pkg?.price ?? 0,
-      totalPrice,
-      note: values.note,
-    });
-
-    alert(
-      `Order placed for ${
-        selectedPlatform.platform
-      }!\nTotal: $${totalPrice.toFixed(2)}`
-    );
-  };
-
-  const closeForm = () => {
-    setSelectedPlatform(null);
-    form.reset({
-      packageId: "",
-      quantity: 1,
-      note: "",
-    });
-  };
+  const filteredServices =
+    selectedPlatform === "all"
+      ? services
+      : services.filter((service) => service.platform === selectedPlatform);
 
   return (
     <main className="bg-linear-to-b from-white via-slate-50 to-slate-100 min-h-screen">
@@ -188,7 +53,7 @@ const ServicePage = () => {
       </section>
 
       {/* Platform Section */}
-      <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100 pb-20">
+      <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100 pb-10 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center mb-8">
             <p className="inline-flex items-center rounded-full  border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
@@ -197,14 +62,49 @@ const ServicePage = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6 sm:gap-6">
-            {services.map((service) => {
-              const isActive = selectedPlatform?.platform === service.platform;
+            {/* All platforms filter */}
+            <button
+              key="all"
+              onClick={() => handlePlatformClick("all")}
+              className={`group cursor-pointer relative flex h-full flex-col justify-between rounded-2xl border bg-white/90 p-4 text-left text-sm backdrop-blur-sm transition-all duration-200
+            ${
+              selectedPlatform === "all"
+                ? "border-pblue shadow-[0_16px_40px_rgba(37,99,235,0.25)] -translate-y-1"
+                : "border-slate-200 hover:-translate-y-1 hover:border-pblue/50 hover:shadow-md"
+            }`}
+            >
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">
+                  All platforms
+                </h3>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  {services.length} services
+                </p>
+              </div>
+
+              <span className="mt-3 inline-flex items-center justify-between rounded-full bg-slate-50 px-3 py-1 text-[10px] font-medium text-slate-500">
+                Choose
+                <span className="ml-1 text-pblue transition-transform group-hover:translate-x-0.5">
+                  &gt;
+                </span>
+              </span>
+
+              {selectedPlatform === "all" && (
+                <span className="absolute right-3 top-3 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-emerald-100" />
+              )}
+            </button>
+
+            {uniquePlatforms.map((platform) => {
+              const isActive = selectedPlatform === platform;
+              const platformServiceCount = services.filter(
+                (service) => service.platform === platform
+              ).length;
 
               return (
                 <button
-                  key={service.id}
-                  onClick={() => handlePlatformClick(service)}
-                  className={`group relative flex h-full flex-col justify-between rounded-2xl border bg-white/90 p-4 text-left text-sm backdrop-blur-sm transition-all duration-200
+                  key={platform}
+                  onClick={() => handlePlatformClick(platform)}
+                  className={`group cursor-pointer relative flex h-full flex-col justify-between rounded-2xl border bg-white/90 p-4 text-left text-sm backdrop-blur-sm transition-all duration-200
             ${
               isActive
                 ? "border-pblue shadow-[0_16px_40px_rgba(37,99,235,0.25)] -translate-y-1"
@@ -213,10 +113,10 @@ const ServicePage = () => {
                 >
                   <div>
                     <h3 className="text-base font-semibold text-slate-900">
-                      {service.platform}
+                      {platform}
                     </h3>
                     <p className="mt-1 text-[11px] text-slate-500">
-                      {service.packages.length} packages
+                      {platformServiceCount} services
                     </p>
                   </div>
 
@@ -237,179 +137,37 @@ const ServicePage = () => {
         </div>
       </section>
 
-      {/* Service Choosing & Order Form */}
-      {selectedPlatform && (
-
-
-      <section className="py-16 lg:py-20 bg-linear-to-b from-white via-blue-50/30 to-white">
+      {/* Services List */}
+      <section className="p-20 bg-linear-to-b from-slate-50 via-white to-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         
-            <>
-              <div className="mb-8 text-center">
-                <p className="inline-flex items-center rounded-full border border-pblue/10 bg-pblue/5 px-3 py-1 text-xs font-semibold tracking-widest text-pblue uppercase">
-                  Choose package & order
-                </p>
-              </div>
-              <div className="relative mx-auto max-w-2xl rounded-2xl border border-slate-100 bg-white/95 p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm">
-                {/* Close */}
-                <button
-                  onClick={closeForm}
-                  className="absolute top-4 right-4 rounded-md p-2 transition hover:bg-slate-100"
-                >
-                  <X className="h-5 w-5 text-slate-500" />
-                </button>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
+              {selectedPlatform === "all"
+                ? "All services"
+                : `${selectedPlatform} services`}
+            </h2>
+            <p className="text-xs text-slate-500">
+              Showing {filteredServices.length} service
+              {filteredServices.length === 1 ? "" : "s"}
+            </p>
+          </div>
 
-                {/* Header */}
-                <div className="mb-8">
-                  <h3 className="text-2xl font-semibold text-slate-900">
-                    {selectedPlatform.platform} Service
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Choose a package and quantity to continue.
-                  </p>
-                </div>
-
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6"
-                  >
-                    <div className="grid gap-6 md:grid-cols-2">
-                      {/* Package */}
-                      <div className="md:col-span-2 space-y-3">
-                        <FormField
-                          control={form.control}
-                          name="packageId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-sm font-medium">
-                                Package
-                              </FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                value={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select a package" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {selectedPlatform.packages.map((pkg: any) => (
-                                    <SelectItem key={pkg.id} value={pkg.id}>
-                                      {pkg.description} c ${pkg.price}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {selectedPkg && (
-                          <div className="rounded-xl bg-slate-50 p-3">
-                            <p className="text-[11px] font-semibold text-slate-600">
-                              Package details
-                            </p>
-                            <p className="mt-1 text-[12px] text-slate-600">
-                              {selectedPkg.description}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Unit Price */}
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">
-                          Unit Price
-                        </FormLabel>
-                        <Input
-                          readOnly
-                          value={unitPrice ? `$${unitPrice.toFixed(2)}` : "$0"}
-                          className="bg-slate-50"
-                        />
-                      </FormItem>
-
-                      {/* Quantity */}
-                      <FormField
-                        control={form.control}
-                        name="quantity"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">
-                              Quantity
-                            </FormLabel>
-                            <Input
-                              type="number"
-                              min={1}
-                              {...field}
-                              value={field.value ?? 1}
-                              onChange={(e) =>
-                                field.onChange(
-                                  Math.max(1, Number(e.target.value))
-                                )
-                              }
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      {/* Note */}
-                      <FormField
-                        control={form.control}
-                        name="note"
-                        render={({ field }) => (
-                          <FormItem className="md:col-span-2">
-                            <FormLabel className="text-sm font-medium">
-                              Order Note (Optional)
-                            </FormLabel>
-                            <Textarea
-                              {...field}
-                              value={field.value ?? ""}
-                              onChange={(e) => field.onChange(e.target.value)}
-                              placeholder="Type your message here." 
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Total */}
-                      <div className="md:col-span-2 border-t pt-6">
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium">
-                            Total
-                          </FormLabel>
-                          <Input
-                            readOnly
-                            value={
-                              totalPrice ? `$${totalPrice.toFixed(2)}` : "$0"
-                            }
-                            className="bg-slate-50 text-lg font-semibold text-pblue"
-                          />
-                        </FormItem>
-                      </div>
-                    </div>
-
-                    {/* CTA */}
-                    <Button
-                      type="submit"
-                      disabled={!selectedPkg}
-                      className="w-full h-12 text-base font-semibold bg-linear-to-r from-pblue to-bluegray hover:brightness-110 hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Continue to Payment
-                    </Button>
-                  </form>
-                </Form>
-              </div>
-            </>
-       
+          {filteredServices.length === 0 ? (
+            <p className="text-sm text-slate-500 text-center py-10">
+              No services found for this platform.
+            </p>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredServices.map((service) => (
+                <ServiceCard
+                  key={`${service.platform}-${service.name}-${service.count}`}
+                  service={service}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
-      )}
-
-
 
       {/* How It Works Section */}
       <section className="py-16 lg:py-24 bg-linear-to-b from-slate-50 to-white">
@@ -427,13 +185,13 @@ const ServicePage = () => {
                 title: "Choose Service",
                 description:
                   "Select the social media service and package that fits your needs",
-                },
-                {
-                  step: "2",
-                  title: "Provide Details",
-                  description:
-                    "Enter your profile information and service requirements",
-                },
+              },
+              {
+                step: "2",
+                title: "Provide Details",
+                description:
+                  "Enter your profile information and service requirements",
+              },
               {
                 step: "3",
                 title: "Make Payment",
