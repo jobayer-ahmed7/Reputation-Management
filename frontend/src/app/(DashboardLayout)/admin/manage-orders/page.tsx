@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -44,7 +45,7 @@ export type TOrder = {
   customer: string;
   service: string;
   platform: string;
-  amount: number;
+  price: number;
   count: number;
   status: OrderStatus;
   createdAt: string;
@@ -56,7 +57,7 @@ const initialOrders: TOrder[] = [
     customer: "John Doe",
     service: "Google Review Boost",
     platform: "Google",
-    amount: 149,
+    price: 149,
     count: 25,
     status: "pending",
     createdAt: "2026-01-04",
@@ -66,7 +67,7 @@ const initialOrders: TOrder[] = [
     customer: "Sarah Miller",
     service: "Facebook Page Likes",
     platform: "Facebook",
-    amount: 89,
+    price: 89,
     count: 100,
     status: "processing",
     createdAt: "2026-01-03",
@@ -76,7 +77,7 @@ const initialOrders: TOrder[] = [
     customer: "David Wilson",
     service: "Instagram Followers Starter",
     platform: "Instagram",
-    amount: 129,
+    price: 129,
     count: 500,
     status: "completed",
     createdAt: "2025-12-28",
@@ -86,7 +87,7 @@ const initialOrders: TOrder[] = [
     customer: "Emily Clark",
     service: "Google Premium Reviews",
     platform: "Google",
-    amount: 199,
+    price: 199,
     count: 30,
     status: "cancelled",
     createdAt: "2025-12-20",
@@ -130,24 +131,38 @@ const formatStatus = (status: OrderStatus) => {
   }
 };
 
-
 const ManageOrder = () => {
   const [orders, setOrders] = useState<TOrder[]>(initialOrders);
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
   const [nextStatus, setNextStatus] = useState<OrderStatus | "">("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const activeOrder =
     activeOrderId !== null
       ? orders.find((order) => order._id === activeOrderId) ?? null
       : null;
 
+  const filteredOrders = orders.filter((order) => {
+    const term = searchQuery.trim().toLowerCase();
+    if (!term) return true;
+
+    return (
+      order._id.toLowerCase().includes(term) ||
+      order.customer.toLowerCase().includes(term) ||
+      order.service.toLowerCase().includes(term) ||
+      order.platform.toLowerCase().includes(term) ||
+      order.status.toLowerCase().includes(term)
+    );
+  });
+
   const handleConfirmStatusChange = () => {
-    if (!activeOrder || !nextStatus || nextStatus === activeOrder.status) return;
+    if (!activeOrder || !nextStatus || nextStatus === activeOrder.status)
+      return;
 
     setOrders((prev) =>
       prev.map((order) =>
-        order._id === activeOrder._id ? { ...order, status: nextStatus } : order,
-      ),
+        order._id === activeOrder._id ? { ...order, status: nextStatus } : order
+      )
     );
   };
 
@@ -173,24 +188,47 @@ const ManageOrder = () => {
             <CardDescription>
               Use the action on each row to change the order status.
             </CardDescription>
+            <div className="mt-4">
+              <Input
+                placeholder="Search by order ID, customer, service, platform, or status..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="max-w-sm"
+              />
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
-            {orders.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-slate-500">No orders available.</p>
+            {filteredOrders.length === 0 ? (
+              <p className="px-4 py-6 text-sm text-slate-500">
+                No orders available.
+              </p>
             ) : (
               <Table>
                 <TableHeader className="bg-slate-50">
                   <TableRow>
-                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">Order</TableHead>
-                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">Customer</TableHead>
-                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">Service</TableHead>
-                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">Status</TableHead>
-                    <TableHead className="px-4 py-3 text-right text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">Actions</TableHead>
+                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Order
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Customer
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Service Name
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Price
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Status
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orders.map((order) => {
+                  {filteredOrders.map((order) => {
                     const statusMeta = formatStatus(order.status);
 
                     return (
@@ -213,6 +251,9 @@ const ManageOrder = () => {
                         </TableCell>
                         <TableCell className="px-4 py-3 align-top text-xs text-slate-600">
                           {order.service}
+                        </TableCell>
+                        <TableCell className="px-4 py-3 align-top text-xs text-slate-600">
+                          ${order.price}
                         </TableCell>
                         <TableCell className="px-4 py-3 align-top">
                           <span
@@ -239,7 +280,9 @@ const ManageOrder = () => {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Update order status</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                  Update order status
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
                                   {activeOrder
                                     ? `Change the status for ${activeOrder._id} (${activeOrder.customer}).`

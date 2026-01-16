@@ -1,6 +1,5 @@
 import Hero from "@/components/home/Hero";
 import ServiceSection from "@/components/home/ServiceSection";
-import Testimonial from "@/components/home/Testimonial";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 const HomePage = () => {
@@ -9,7 +8,6 @@ const HomePage = () => {
       <Hero />
       <ServiceSection />
       <WhyChooseUs/>
-      <Testimonial />
     </div>
   );
 };
