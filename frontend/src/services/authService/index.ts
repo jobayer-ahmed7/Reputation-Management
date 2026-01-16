@@ -50,7 +50,7 @@ export const loginUser = async (userData: FieldValues) => {
       (await cookies()).set("userData", JSON.stringify(result?.data));
     }
 
-    return result;
+    return result; 
   } catch (error: any) {
     return Error(error);
   }

@@ -14,7 +14,7 @@ export interface IUser {
   password: string;
   needsPasswordChange: boolean;
   passwordChangedAt?: Date;
-  role: "admin" | "customer";
+  role: "admin" | "customer"; 
   status: "active" | "inactive";
   image?: string;
 }
