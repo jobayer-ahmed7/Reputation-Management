@@ -1,43 +1,43 @@
-import bcrypt from 'bcrypt';
-import httpStatus from 'http-status';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import config from '../../config';
-import AppError from '../../errors/AppErrors';
-import { TUser } from '../user/user.interface';
-import { User } from '../user/user.model';
-import { ILoginUser } from './auth.interface';
-import { createToken } from './auth.utils';
+import bcrypt from "bcrypt";
+import httpStatus from "http-status";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import config from "../../config";
+import AppError from "../../errors/AppErrors";
+import { TUser } from "../user/user.interface";
+import { User } from "../user/user.model";
+import { ILoginUser } from "./auth.interface";
+import { createToken } from "./auth.utils";
 
-// register a user 
+// register a user
 const register = async (payload: TUser) => {
   const result = await User.create(payload);
   return result;
-}; 
+};
 
 // login a user
-const login = async (payload: ILoginUser) => {  
+const login = async (payload: ILoginUser) => {
   const user = await User.findOne({
     email: payload.email,
-  }).select('+password');
+  }).select("+password");
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   const userStatus = user?.status;
-  if (userStatus === 'inactive') {
-    throw new Error('User is inactive');
+  if (userStatus === "inactive") {
+    throw new Error("User is inactive");
   }
 
   const userPassword = user?.password;
   const isPasswordMatch = await bcrypt.compare(payload?.password, userPassword);
 
   if (!isPasswordMatch) {
-    throw new Error('Password does not match');
+    throw new Error("Password does not match");
   }
 
   if (!config.jwt_access_secret) {
-    throw new Error('JWT secret is not defined');
+    throw new Error("JWT secret is not defined");
   }
 
   const token = await createToken(
@@ -67,7 +67,7 @@ const login = async (payload: ILoginUser) => {
 // refresh token
 const refreshToken = async (refreshToken: string) => {
   if (!config.jwt_access_secret) {
-    throw new Error('Unauthorized user');
+    throw new Error("Unauthorized user");
   }
 
   const decode = jwt.verify(refreshToken, config.jwt_access_secret) as {
@@ -78,11 +78,11 @@ const refreshToken = async (refreshToken: string) => {
   const user = await User.findOne({ email: decode.email });
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
-  if (user?.status === 'inactive') {
-    throw new Error('User is inactive');
+  if (user?.status === "inactive") {
+    throw new Error("User is inactive");
   }
 
   const token = createToken(
@@ -106,16 +106,16 @@ const changePassword = async (
   payload: { oldPassword: string; newPassword: string },
 ) => {
   const user = await User.findOne({ email: userData.email }).select(
-    '+password',
+    "+password",
   );
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found!");
   }
 
   const userStatus = user?.status;
 
-  if (userStatus === 'inactive') {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
+  if (userStatus === "inactive") {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
   }
 
   const isOldPasswordCorrect = await bcrypt.compare(
@@ -123,7 +123,7 @@ const changePassword = async (
     user.password,
   );
   if (!isOldPasswordCorrect) {
-    throw new AppError(httpStatus.FORBIDDEN, 'The old password is incorrect');
+    throw new AppError(httpStatus.FORBIDDEN, "The old password is incorrect");
   }
 
   const newHashedPassword = await bcrypt.hash(
@@ -146,7 +146,7 @@ const changePassword = async (
     role: user?.role,
   };
   //return null;
-  const token = jwt.sign(jwtPayload, 'secret', { expiresIn: '1d' });
+  const token = jwt.sign(jwtPayload, "secret", { expiresIn: "1d" });
 
   return { token, user };
 };
@@ -157,4 +157,3 @@ export const authService = {
   refreshToken,
   changePassword,
 };
- 

@@ -1,7 +1,7 @@
-import httpStatus from 'http-status';
-import { sendResponse } from '../../utils/sendResponse';
-import catchAsync from '../../utils/catchAsync';
-import { UserServices } from './user.service';
+import httpStatus from "http-status";
+import { sendResponse } from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
+import { UserServices } from "./user.service";
 
 const createAdmin = catchAsync(async (req, res) => {
   const payload = req.body;
@@ -10,19 +10,19 @@ const createAdmin = catchAsync(async (req, res) => {
   sendResponse.sendCreateDataResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin is created successfully',
+    message: "Admin is created successfully",
     data: result,
   });
 });
 
 const createUser = catchAsync(async (req, res) => {
-  const payload = req.body; 
+  const payload = req.body;
   const result = await UserServices.createUser(payload);
 
   sendResponse.sendCreateDataResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User is created successfully',
+    message: "User is created successfully",
     data: result,
   });
 });
@@ -33,7 +33,7 @@ const getAllUser = catchAsync(async (req, res) => {
   sendResponse.sendDataResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Users getting successfully',
+    message: "Users getting successfully",
     data: result,
   });
 });
@@ -47,7 +47,7 @@ const getSingleUser = catchAsync(async (req, res) => {
   sendResponse.sendDataResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User getting successfully',
+    message: "User getting successfully",
     data: result,
   });
 });
@@ -60,7 +60,7 @@ const updateUser = catchAsync(async (req, res) => {
   sendResponse.sendDataResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User updated successfully',
+    message: "User updated successfully",
     data: result,
   });
 });
@@ -72,7 +72,7 @@ const deleteUser = catchAsync(async (req, res) => {
   sendResponse.sendUpdateResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'user deleted successfully',
+    message: "user deleted successfully",
     data: {},
   });
 });

@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import HttpStatus from 'http-status';
-import config from '../../config';
-import catchAsync from '../../utils/catchAsync';
-import { sendResponse } from '../../utils/sendResponse';
-import { authService } from './auth.service';
+import { Request, Response } from "express";
+import HttpStatus from "http-status";
+import config from "../../config";
+import catchAsync from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import { authService } from "./auth.service";
 
 declare global {
   namespace Express {
@@ -19,27 +19,27 @@ const register = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse.sendDataResponse(res, {
     success: true,
-    message: 'User registered successfully',
+    message: "User registered successfully",
     statusCode: HttpStatus.CREATED,
     data: result,
-  }); 
+  });
 });
 
-// login a user 
+// login a user
 const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.login(req.body);
 
   const { refreshToken, token } = result;
 
-  res.cookie('refreshToken', refreshToken, {
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: config.NODE_ENV === 'production',
-    sameSite: 'none',
+    secure: config.NODE_ENV === "production",
+    sameSite: "none",
   });
 
   sendResponse.sendDataResponse(res, {
     success: true,
-    message: 'User login successful',
+    message: "User login successful",
     statusCode: HttpStatus.CREATED,
     token: result.token! || token!,
     refreshToken: result.refreshToken! || refreshToken!,
@@ -55,7 +55,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse.sendDataResponse(res, {
     success: true,
-    message: 'Token refreshed successfully',
+    message: "Token refreshed successfully",
     statusCode: HttpStatus.OK,
     token: result.token,
     data: result.user,
@@ -73,7 +73,7 @@ const changePassword = catchAsync(async (req, res) => {
   sendResponse.sendUpdateResponse(res, {
     statusCode: HttpStatus.OK,
     success: true,
-    message: 'Password is updated succesfully!',
+    message: "Password is updated succesfully!",
     data: result,
   });
 });
@@ -82,5 +82,5 @@ export const authController = {
   register,
   login,
   refreshToken,
-  changePassword, 
+  changePassword,
 };

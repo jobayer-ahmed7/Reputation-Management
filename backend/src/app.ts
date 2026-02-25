@@ -6,22 +6,12 @@ import router from "./app/routes";
 const app: Application = express();
 
 // Middleware setup
-// Capture raw request body for Stripe webhooks signature verification.
-app.use(
-  express.json({
-    verify: (req: any, _res, buf) => {
-      if (req.originalUrl?.startsWith("/api/orders/webhook")) {
-        req.rawBody = buf;
-      }
-    },
-  })
-);
-app.use(express.urlencoded({ extended: true }));
+
 app.use(
   cors({
     origin: "https://reputation-management-frontend.vercel.app",
     credentials: true,
-  })
+  }),
 );
 
 // API routes
@@ -45,7 +35,3 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 export default app;
-
-
-
-

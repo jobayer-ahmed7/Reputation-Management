@@ -11,14 +11,14 @@ router.post(
   "/create-order",
   auth(USER_ROLE.admin, USER_ROLE.customer),
   validateRequest(OrderValidation.orderValidationSchema),
-  OrderControllers.createOrder
+  OrderControllers.createOrder,
 );
 
 router.get("/", OrderControllers.getAllOrder);
 router.patch(
   "/:id",
   validateRequest(OrderValidation.updateOrderValidationSchema),
-  OrderControllers.updateSingleOrder
+  OrderControllers.updateSingleOrder,
 );
 router.delete("/:id", OrderControllers.deleteSingleOrder);
 
@@ -30,4 +30,3 @@ router.get("/success/:transactionId", OrderControllers.successOrder);
 router.get("/fail/:transactionId", OrderControllers.failOrder);
 
 export const OrderRoutes = router;
- 

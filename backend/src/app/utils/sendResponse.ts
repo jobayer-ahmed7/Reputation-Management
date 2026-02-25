@@ -9,7 +9,7 @@ type TResponse<T> = {
   refreshToken?: string;
   data: T | T[] | null;
 };
- 
+
 const sendDataResponse = <T>(res: Response, data: TResponse<T>) => {
   res.status(data?.statusCode).json({
     success: data.success,
@@ -27,7 +27,7 @@ const sendCreateDataResponse = <T>(res: Response, data: TResponse<T>) => {
     statusCode: data.statusCode,
     token: data.token,
     refreshToken: data.refreshToken,
-    data: data.data, 
+    data: data.data,
   });
 };
 const sendUpdateResponse = <T>(res: Response, data: TResponse<T>) => {

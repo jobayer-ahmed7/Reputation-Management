@@ -31,7 +31,7 @@ const Footer = () => {
   return (
     <footer className="bg-linear-to-b from-[#2c3e50] to-[#1a252f] text-white">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Company Info Section */}
           <div className="space-y-6">
@@ -115,51 +115,18 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+     
       </div>
+         <div className=" flex justify-center pb-3">
 
-      {/* Payment Methods Bar */}
-      <div className="bg-black/30 border-t border-gray-700">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-gray-300 text-sm">
-              © {currentYear} Reputation Manage, All Rights Reserved.
-            </div>
-
-             <Link className="text-xs" target="_blank" href="https://jobayerahmed.vercel.app">Developed by Jobayer Ahmed</Link>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="privacy-policy"
-                className="text-gray-300 hover:text-pblue text-sm transition-colors"
-              >
-                Privacy Policy
-              </Link>
-
-              
-
-              {/* Payment Icons */}
-              <div className="flex items-center gap-2 ml-4">
-                <div className="bg-white rounded px-3 py-1.5 text-xs font-semibold text-pblue">
-                  💳
-                </div>
-                <div className="bg-white rounded px-3 py-1.5 text-xs font-semibold">
-                  <span className="text-pblue">G</span> Pay
-                </div>
-                <div className="bg-white rounded px-3 py-1.5 text-xs font-semibold text-gray-800">
-                  Pay
-                </div>
-                <div className="bg-white rounded px-3 py-1.5 text-xs font-semibold text-[#1A1F71]">
-                  VISA
-                </div>
-                <div className="bg-white rounded px-3 py-1.5 text-xs font-semibold">
-                  <span className="text-red-600">●</span>
-                  <span className="text-orange-500">●</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <Link
+          className="text-xs text-blue-400"
+          target="_blank"
+          href="https://jobayerahmed.vercel.app"
+        >
+          Developed by Jobayer Ahmed
+        </Link>
         </div>
-      </div>
     </footer>
   );
 };

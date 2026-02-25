@@ -1,22 +1,22 @@
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppErrors';
-import { TUser } from './user.interface';
-import { User } from './user.model';
+import httpStatus from "http-status";
+import AppError from "../../errors/AppErrors";
+import { TUser } from "./user.interface";
+import { User } from "./user.model";
 
 const checkIfUserExists = async (email: string) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      'User with this email already exists',
+      "User with this email already exists",
     );
   }
 };
 
 const createAdmin = async (payload: TUser): Promise<TUser> => {
   await checkIfUserExists(payload.email);
-  // console.log('payload', payload); 
-  payload.role = 'admin';
+  // console.log('payload', payload);
+  payload.role = "admin";
   const result = await User.create(payload);
 
   return result;

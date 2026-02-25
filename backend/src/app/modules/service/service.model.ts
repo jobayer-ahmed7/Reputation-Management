@@ -39,7 +39,7 @@ const ServiceSchema = new Schema<IService>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Create and export the Service model

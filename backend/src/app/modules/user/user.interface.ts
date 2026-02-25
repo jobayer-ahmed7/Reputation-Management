@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { USER_ROLE } from './user.constant';
-import { Model } from 'mongoose';
-
+import { USER_ROLE } from "./user.constant";
+import { Model } from "mongoose";
 
 export interface TUser {
   name: string;
@@ -9,14 +8,14 @@ export interface TUser {
   password: string;
   needsPasswordChange: boolean;
   passwordChangedAt?: Date;
-  role:  'admin' | 'customer' ;
-  status: 'active' | 'inactive';
+  role: "admin" | "customer";
+  status: "active" | "inactive";
   image?: string;
 }
 
 export interface UserModel extends Model<TUser> {
   isUserExistsByCustomId(id: string): Promise<TUser>;
-  isPasswordMatched( 
+  isPasswordMatched(
     plainTextPassword: string,
     hashedPassword: string,
   ): Promise<boolean>;

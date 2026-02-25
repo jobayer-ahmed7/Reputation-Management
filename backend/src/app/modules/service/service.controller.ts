@@ -7,7 +7,7 @@ import statusCode from "http-status";
 // Get all services
 export const getAllServices = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const services = await ServiceServices.getAllServicesFromDB();
   sendResponse.sendDataResponse<IService>(res, {
@@ -21,7 +21,7 @@ export const getAllServices = async (
 // Get service by ID
 export const getServiceById = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -56,7 +56,7 @@ export const getServiceById = async (
 // Create a new service
 export const createService = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const serviceData = req.body;
@@ -82,13 +82,16 @@ export const createService = async (
 // Update a service
 export const updateService = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
     const serviceData = req.body;
 
-    const updatedService = await ServiceServices.updateServiceIntoDB(id as string, serviceData);
+    const updatedService = await ServiceServices.updateServiceIntoDB(
+      id as string,
+      serviceData,
+    );
 
     if (!updatedService) {
       sendResponse.sendDataResponse<null>(res, {
@@ -119,12 +122,14 @@ export const updateService = async (
 // Delete a service
 export const deleteService = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { id } = req.params;
 
-    const deletedService = await ServiceServices.deleteServiceFromDB(id as string);
+    const deletedService = await ServiceServices.deleteServiceFromDB(
+      id as string,
+    );
 
     if (!deletedService) {
       sendResponse.sendDataResponse<null>(res, {
@@ -155,7 +160,7 @@ export const deleteService = async (
 export const ServiceController = {
   getAllServices,
   getServiceById,
-  createService, 
+  createService,
   updateService,
   deleteService,
 };

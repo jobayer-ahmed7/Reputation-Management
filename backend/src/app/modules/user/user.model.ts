@@ -52,7 +52,7 @@ export const userSchema = new Schema<TUser, UserModel>(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 userSchema.pre("save", async function () {
   const user = this;
@@ -60,7 +60,7 @@ userSchema.pre("save", async function () {
   // hashing password and save into DB
   user.password = await bcrypt.hash(
     user.password,
-    Number(config.bcrypt_salt_rounds)
+    Number(config.bcrypt_salt_rounds),
   );
 });
 
@@ -76,14 +76,14 @@ userSchema.statics.isUserExistsByCustomId = async function (id: string) {
 
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
-  hashedPassword
+  hashedPassword,
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimestamp: Date,
-  jwtIssuedTimestamp: number
+  jwtIssuedTimestamp: number,
 ) {
   const passwordChangedTime =
     new Date(passwordChangedTimestamp).getTime() / 1000;

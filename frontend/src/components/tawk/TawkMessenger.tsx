@@ -6,8 +6,8 @@ const TawkMessenger = () => {
   return (
 
         <TawkMessengerReact 
-        propertyId='699c98599293fb1c3a270588'
-        widgetId='1ji5r67jp'
+        propertyId='699e93a6afac601c36b7e4bf'
+        widgetId='1ji9n1gp6'
         key='f0dbc9f40a0a90af26a4b99d26d69009698f6f4c'
         onStatusChange={() => {}}
         onLoad={() => {}}
@@ -29,6 +29,7 @@ const TawkMessenger = () => {
         onFileUpload={() => {}}
         onTagsUpdated={() => {}}
         onUnreadCountChanged={() => {}}
+        
     />
 
   )

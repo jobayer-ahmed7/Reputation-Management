@@ -12,7 +12,7 @@ const getStripeClient = () => {
   if (!config.stripe_secret_key) {
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
-      "STRIPE_SECRET_KEY is not configured"
+      "STRIPE_SECRET_KEY is not configured",
     );
   }
 
@@ -31,12 +31,20 @@ type TCreateOrderPayload = Pick<TOrder, "products" | "user"> & {
   totalPrice?: number;
 };
 
-const calculateTotalPrice = (payload: Pick<TCreateOrderPayload, "products" | "totalPrice">) => {
-  if (typeof payload.totalPrice === "number" && Number.isFinite(payload.totalPrice)) {
+const calculateTotalPrice = (
+  payload: Pick<TCreateOrderPayload, "products" | "totalPrice">,
+) => {
+  if (
+    typeof payload.totalPrice === "number" &&
+    Number.isFinite(payload.totalPrice)
+  ) {
     return payload.totalPrice;
   }
 
-  return payload.products.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  return payload.products.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
 };
 
 const createOrderIntoDB = async (payload: TCreateOrderPayload) => {
@@ -67,7 +75,10 @@ const createOrderIntoDB = async (payload: TCreateOrderPayload) => {
     const order = createdOrder[0];
 
     if (!order) {
-      throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Order was not created");
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Order was not created",
+      );
     }
 
     const successUrl = `${getBackendBaseUrl()}/api/orders/success/${transactionId}?session_id={CHECKOUT_SESSION_ID}`;
@@ -105,12 +116,12 @@ const createOrderIntoDB = async (payload: TCreateOrderPayload) => {
             ? checkoutSession.payment_intent
             : undefined,
       },
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
     session.endSession();
- 
+
     return {
       GatewayPageURL: checkoutSession.url,
       order,
@@ -129,7 +140,7 @@ const markOrderPaidByTransactionId = async (transactionId: string) => {
   if (!order) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      "No order found with this transaction ID"
+      "No order found with this transaction ID",
     );
   }
 
@@ -138,7 +149,7 @@ const markOrderPaidByTransactionId = async (transactionId: string) => {
     {
       workingStatus: "WORKING ON",
       paymentStatus: "PAID",
-    }
+    },
   );
 
   if (updatedResult.modifiedCount === 0) {
@@ -149,17 +160,24 @@ const markOrderPaidByTransactionId = async (transactionId: string) => {
 };
 
 // Success order (Stripe Checkout return URL)
-const successOrderIntoDB = async (transactionId: string, stripeSessionId?: string) => {
+const successOrderIntoDB = async (
+  transactionId: string,
+  stripeSessionId?: string,
+) => {
   if (!stripeSessionId) {
     // Fallback (if you're not using Stripe return URLs with session_id)
     return markOrderPaidByTransactionId(transactionId);
   }
 
   const stripe = getStripeClient();
-  const checkoutSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
+  const checkoutSession =
+    await stripe.checkout.sessions.retrieve(stripeSessionId);
 
   if (checkoutSession.metadata?.transactionId !== transactionId) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Invalid Stripe session for this order");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Invalid Stripe session for this order",
+    );
   }
 
   if (checkoutSession.payment_status !== "paid") {
@@ -219,7 +237,7 @@ const updateOrderIntoDB = async (id: string, payload: Partial<TOrder>) => {
   const result = await Order.findByIdAndUpdate(
     id,
     { workingStatus },
-    { new: true }
+    { new: true },
   );
   return result;
 };
@@ -229,7 +247,7 @@ const deleteOrderFromDB = async (id: string) => {
   const result = await Order.findByIdAndUpdate(
     id,
     { isDeleted: true },
-    { new: true }
+    { new: true },
   );
   return result;
 };
