@@ -1,37 +1,22 @@
-import express, { Application, Request, Response } from "express";
-import cors from "cors";
-import router from "./app/routes";
+import cors from 'cors';
+import express, {
+  type Application,
+  type Request,
+  type Response,
+} from 'express';
 
-// Initialize Express application
 const app: Application = express();
 
-// Middleware setup
+// parser
 
-app.use(
-  cors({
-    origin: "https://reputation-management-frontend.vercel.app",
-    credentials: true,
-  }),
-);
+app.use(express.json());
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
 
-// API routes
-app.use("/api", router);
-
-// Health check endpoint
-app.get("/", (req: Request, res: Response) => {
-  try {
-    res.status(200).send({
-      success: true,
-      message: "Server is running! ⚡",
-    });
-  } catch (err: any) {
-    res.status(500).send({
-      message: err.message || "Something went wrong!",
-      success: false,
-      error: err.errors,
-      stack: err.stack,
-    });
-  }
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello World!');
 });
 
 export default app;
