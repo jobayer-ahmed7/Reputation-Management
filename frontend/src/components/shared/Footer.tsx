@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
 
   const aboutLinks = [
     { name: "Jobs", href: "#" },
@@ -20,13 +19,6 @@ const Footer = () => {
     { name: "Working Policy", href: "#" },
   ];
 
-  const paymentMethods = [
-    { name: "Credit Card", icon: "💳" },
-    { name: "Google Pay", icon: "G" },
-    { name: "Apple Pay", icon: "" },
-    { name: "Visa", icon: "VISA" },
-    { name: "Mastercard", icon: "MC" },
-  ];
 
   return (
     <footer className="bg-linear-to-b from-[#2c3e50] to-[#1a252f] text-white">

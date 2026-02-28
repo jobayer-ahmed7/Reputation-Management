@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { loginSchema } from "./loginValidation";
 import { useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 import { loginUser } from "@/services/AuthService";
 import {
@@ -17,9 +17,10 @@ import {
 import { Eye, EyeClosed, Lock, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FieldSeparator } from "@/components/ui/field";
 
 const LoginForm = () => {
+
+  const router = useRouter();
   // react hook form
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -28,7 +29,6 @@ const LoginForm = () => {
   // toggle password
   const [showPassword, setShowPassword] = useState(false);
 
-  const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
@@ -51,7 +51,7 @@ const LoginForm = () => {
           localStorage.setItem("authToken", res?.token);
         }
         console.log(res?.token);
-        window.location.href = redirect || "/";
+        router.push(redirect || "/");
 
         // router.push(redirect || "/");
       } else {
@@ -148,18 +148,6 @@ const LoginForm = () => {
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
-{/* 
-        <FieldSeparator className="mb-4">Or continue with</FieldSeparator>
-
-        <div className="grid grid-cols-1 gap-3">
-          <button
-            type="button"
-            className="flex items-center justify-center w-full cursor-pointer gap-1 rounded-lg border border-slate-200 bg-white py-2.5 hover:bg-slate-50 transition-colors"
-          >
-            <span className="text-2xl">G</span>
-            <span className="font-medium text-slate-700">Google</span>
-          </button>
-        </div> */}
       </form>
     </Form>
   );

@@ -80,7 +80,7 @@ const LoginPage = () => {
                       {/* Don't have an account section */}
         <div className="text-center pt-4">
           <p className="text-sm text-slate-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="font-medium text-pblue hover:text-bluegray transition-colors"
