@@ -1,13 +1,13 @@
-import { Router } from "express";
-import authRouter from "../modules/auth/auth.route.js";
+import { Router } from 'express';
+import authRouter from '../modules/auth/auth.route';
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/auth", 
+    path: '/auth',
     route: authRouter,
-  }
+  },
 ];
 
 moduleRoutes.forEach((route) => {
@@ -15,4 +15,3 @@ moduleRoutes.forEach((route) => {
 });
 
 export default router;
- 

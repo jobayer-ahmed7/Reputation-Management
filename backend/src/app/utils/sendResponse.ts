@@ -1,5 +1,4 @@
-import type { Response } from "express";
-
+import type { Response } from 'express';
 
 type TResponse<T> = {
   status?: boolean;
@@ -41,7 +40,7 @@ const sendUpdateResponse = <T>(res: Response, data: TResponse<T>) => {
 };
 
 export const sendResponse = {
-  sendDataResponse,
+  sendDataResponse, 
   sendUpdateResponse,
   sendCreateDataResponse,
 };

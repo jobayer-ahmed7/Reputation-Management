@@ -1,7 +1,7 @@
-import type { Server } from 'http';
-import app from './app.js';
-import config from './app/config/index.js';
-import mongoose from 'mongoose';
+import { Server } from "http";
+import mongoose from "mongoose";
+import config from "./app/config";
+import app from "./app";
 
 let server: Server;
 
@@ -10,14 +10,14 @@ async function main() {
     await mongoose.connect(config.databaseUrl as string);
     console.log('Connected to the database');
 
-    server = app.listen(config.port, () => {
+    server = app.listen(config.port, () => { 
       console.log(`Example app listening on port ${config.port}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
   }
 }
- 
+
 main();
 
 // Handle unhandled promise rejections

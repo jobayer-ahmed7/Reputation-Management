@@ -83,7 +83,7 @@ const UpdateService = ({ service }: UpdateServiceProps) => {
       price: Number(data.price),
     };
 
-    console.log("Update Service Data:", finalData);
+    // console.log("Update Service Data:", finalData);
 
     setOpen(false);
   };

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-import bcrypt from "bcrypt";
-import { Schema, model } from "mongoose";
-import config from "../../config/index.js";
-import { UserStatus } from "./user.constant.js";
-import type { TUser, UserModel } from "./user.interface.js";
+import bcrypt from 'bcrypt';
+import { Schema, model } from 'mongoose';
+import { TUser, UserModel } from './user.interface';
+import { UserStatus } from './user.constant';
+import config from '../../config';
 
 export const userSchema = new Schema<TUser, UserModel>(
   {
     name: {
       type: String,
       trim: true,
-      required: [true, "Please provide your name"],
+      required: [true, 'Please provide your name'],
       unique: true,
       minlength: 3,
       maxlength: 50,
@@ -36,14 +36,14 @@ export const userSchema = new Schema<TUser, UserModel>(
     },
     role: {
       type: String,
-      enum: ["customer", "admin"],
-      default: "customer",
+      enum: ['customer', 'admin'],
+      default: 'customer',
       required: true,
     },
     status: {
       type: String,
       enum: UserStatus,
-      default: "active",
+      default: 'active',
     },
     image: {
       type: String,
@@ -54,7 +54,7 @@ export const userSchema = new Schema<TUser, UserModel>(
     versionKey: false,
   },
 );
-userSchema.pre("save", async function () {
+userSchema.pre('save', async function () {
   const user = this;
 
   // hashing password and save into DB
@@ -65,13 +65,13 @@ userSchema.pre("save", async function () {
 });
 
 // set '' after saving password
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
   next();
 });
 
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await User.findOne({ id }).select("+password");
+  return await User.findOne({ id }).select('+password');
 };
 
 userSchema.statics.isPasswordMatched = async function (
@@ -92,9 +92,8 @@ userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
 
 userSchema.methods.comparePassword = async function (enteredPassword: string) {
   if (!this.password) {
-    throw new Error("Password is not set for this user.");
+    throw new Error('Password is not set for this user.');
   }
   return await bcrypt.compare(enteredPassword, this.password);
 };
-export const User = model<TUser, UserModel>("User", userSchema);
- 
+export const User = model<TUser, UserModel>('User', userSchema);

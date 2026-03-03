@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { Model } from "mongoose";
-import type { USER_ROLE } from "./user.constant.js";
+import { Model } from 'mongoose';
+import { USER_ROLE } from './user.constant';
 
 export interface TUser {
   name: string;
   email: string;
   password: string;
-  needsPasswordChange: boolean; 
+  needsPasswordChange: boolean;
   passwordChangedAt?: Date;
-  role: "admin" | "customer";
-  status: "active" | "inactive";
+  role: 'admin' | 'customer';
+  status: 'active' | 'inactive';
   image?: string;
 }
 

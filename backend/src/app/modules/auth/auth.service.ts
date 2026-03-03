@@ -1,8 +1,9 @@
-import config from "../../config/index.js";
-import { User } from "../user/user.model.js";
-import type { ILoginUser } from "./auth.interface.js";
-import bcrypt from "bcrypt";
-import { createToken } from "./auth.utils.js";
+
+import bcrypt from 'bcrypt';
+import { ILoginUser } from './auth.interface';
+import { User } from '../user/user.model';
+import config from '../../config';
+import { createToken } from './auth.utils';
 
 // login a user
 const login = async (payload: ILoginUser) => {
@@ -26,24 +27,22 @@ const login = async (payload: ILoginUser) => {
     throw new Error('Invalid credentials');
   }
   if (!config.jwt_access_secret) {
-    throw new Error('JWT secret is not defined');xu
+    throw new Error('JWT secret is not defined');
   }
 
-  const token =  createToken(
+  const token = createToken(
     { email: user.email, role: user?.role },
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   );
 
-  const refreshToken =  createToken(
+  const refreshToken = createToken(
     { email: user.email, role: user?.role },
     config.jwt_refresh_secret as string,
     config.jwt_refresh_expires_in as string,
   );
 
-  // exclude the password field from the response
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  const { password, ...verifiedUser } = user.toObject();
+  const { password: _, ...verifiedUser } = user.toObject();
 
   const result = {
     token,
@@ -51,8 +50,10 @@ const login = async (payload: ILoginUser) => {
     user: verifiedUser,
   };
 
+
+
   return result;
-};
+}; 
 
 export const authService = {
   login,

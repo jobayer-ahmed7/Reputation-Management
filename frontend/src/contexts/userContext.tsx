@@ -35,17 +35,17 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [decodedUser, setDecodedUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleUser = async () => {
-    const res = await getCurrentUser();
-
-    if (res) {
-      setUser(res?.userData);
-      setDecodedUser(res?.decodedData);
-    }
-    setIsLoading(false);
-  };
-
   useEffect(() => {
+    const handleUser = async () => {
+      const res = await getCurrentUser();
+
+      if (res) { 
+        setUser(res?.userData);
+        setDecodedUser(res?.decodedData as IUser | null);
+      }
+      setIsLoading(false);
+    };
+
     handleUser();
   }, []);
 

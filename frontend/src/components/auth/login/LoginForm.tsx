@@ -5,7 +5,6 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { loginSchema } from "./loginValidation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { loginUser } from "@/services/AuthService";
 import {
   Form,
   FormControl,
@@ -17,6 +16,7 @@ import {
 import { Eye, EyeClosed, Lock, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { loginUser } from "@/services/AuthService";
 
 const LoginForm = () => {
 
@@ -45,15 +45,15 @@ const LoginForm = () => {
       const res = await loginUser(data);
 
       console.log(res)
+
       if (res?.success) {
         toast.success(res?.message);
         if (typeof window !== "undefined") {
           localStorage.setItem("authToken", res?.token);
         }
-        console.log(res?.token);
+        // console.log(res?.token);
         router.push(redirect || "/");
 
-        // router.push(redirect || "/");
       } else {
         toast.error(res?.message);
       }

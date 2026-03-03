@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:prod": "node ./dist/server.js",
-    "start:dev": "tsx watch src/server.ts",
+    "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
@@ -15,7 +15,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",

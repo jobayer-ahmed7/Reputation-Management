@@ -65,7 +65,7 @@ const AddService = () => {
       price: Number(data.price),
     };
 
-    console.log("Service Data:", finalData);
+    // console.log("Service Data:", finalData);
 
     reset();
     setOpen(false);

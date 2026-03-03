@@ -14,11 +14,12 @@ export default defineConfig([
   {
     ignores: ['node_modules', 'dist'],
     rules: {
-      'no-unused-vars': 'error',
+      'no-unused-vars': ['error', { 'varsIgnorePattern': '^_' }],
       'no-unused-expressions': 'error',
       'prefer-const': 'error',
       'no-console': 'warn',
       'no-undefined': 'error',
+      "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^_" }],
     },
   },
 ]);

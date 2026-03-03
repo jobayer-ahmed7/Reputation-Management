@@ -1,5 +1,5 @@
-import { getCurrentUser } from "@/services/AuthService";
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "./services/AuthService";
 
 type TRole = keyof typeof roleBasedPrivateRoutes;
 
@@ -10,7 +10,7 @@ const roleBasedPrivateRoutes = {
   admin: [/^\/admin/],
 };
 
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   const res = await getCurrentUser();

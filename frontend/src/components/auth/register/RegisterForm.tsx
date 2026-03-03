@@ -43,10 +43,10 @@ const RegisterForm = () => {
 
   // handle submit
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data)
+    // console.log(data)
     try {
       const res = await registerUser(data);
-      console.log(res)
+      // console.log(res)
       if (res?.success) {
         toast.success(res?.message);
         form.reset(); // reset form
@@ -54,6 +54,7 @@ const RegisterForm = () => {
       } else {
         toast.error(res?.message);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     }
