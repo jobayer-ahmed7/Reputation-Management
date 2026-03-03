@@ -1,9 +1,23 @@
-import { mockServices } from "@/constants/service";
+"use client";
+
 import ServiceCard from "../shared/ServiceCard";
+import { getAllServices } from "@/services/service";
+import { TService } from "@/types/service";
+import { useEffect, useState } from "react";
 
-const ServiceSection = () => {
-  const services = mockServices.filter((service) => service.isFeatured);
+const ServiceSection =  () => {
 
+const [services, setServices] = useState<TService[]>([]);
+
+useEffect(() => {
+  const fetchServices = async () => {
+    const allServices = await getAllServices();
+    setServices(allServices.data.filter((service: TService) => service.isFeatured));
+  };
+  fetchServices();
+}, []);
+
+// console.log(services)
   return (
     <section className="py-16 lg:py-24 bg-linear-to-b from-white via-blue-50 to-slate-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +30,7 @@ const ServiceSection = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
             Protect and grow your online reputation
           </h2>
-
+ 
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
             From review management to crisis response, we combine strategy and
             execution to keep your brand trusted across every platform.
@@ -25,8 +39,8 @@ const ServiceSection = () => {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map(( service, i) => (
-            <ServiceCard key={i} service={service} />
+          {services.map(( service) => (
+            <ServiceCard key={service._id} service={service} />
           ))}
         </div>
       </div>

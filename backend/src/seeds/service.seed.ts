@@ -1,23 +1,8 @@
-import { TService } from "@/types/service";
+import mongoose from "mongoose";
+import config from "../app/config";
+import { Service } from "../app/modules/service/service.model";
 
-export const suggestedPlatforms = [
-  { value: "Google", label: "Google" },
-  { value: "Facebook", label: "Facebook" },
-  { value: "Trustpilot", label: "Trustpilot" },
-  { value: "Yelp", label: "Yelp" },
-  { value: "IMDB", label: "IMDB" },
-  { value: "Zillow", label: "Zillow" },
-  { value: "Tripadvisor", label: "Tripadvisor" },
-  { value: "Apps-Android", label: "Apps-Android" }, 
-  { value: "Apps-iPhone", label: "Apps-iPhone" },
-  { value: "Glassdoor", label: "Glassdoor" },
-  { value: "Indeed", label: "Indeed" },
-  { value: "BusinessYab", label: "BusinessYab" },
-];
-
-// Temporary mock data – replace with real data from API later
-
-export const mockServices: TService[] = [
+const services = [
   {
     platform: "Google",
     name: "Google 5 Star Reviews",
@@ -25,7 +10,7 @@ export const mockServices: TService[] = [
     price: 49,
     deliveryTimeRange: "3-5 days",
     type: "Standard",
-    isFeatured: true, 
+    isFeatured: true,
   },
   {
     platform: "Google",
@@ -109,7 +94,7 @@ export const mockServices: TService[] = [
     isFeatured: true,
   },
   {
-    platform: "Zillow", 
+    platform: "Zillow",
     name: "Zillow Reviews",
     count: "10",
     price: 69,
@@ -235,3 +220,20 @@ export const mockServices: TService[] = [
     isFeatured: false,
   },
 ];
+
+const seed = async () => {
+  try {
+    await mongoose.connect(config.databaseUrl as string);
+
+    await Service.deleteMany({});
+    await Service.insertMany(services);
+
+    console.log("Services seeded successfully");
+    process.exit();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+seed();

@@ -8,17 +8,9 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { TService } from "@/types/service";
 
-export type TService = {
-  _id?: string;
-  platform: string;
-  name: string;
-  count: string;
-  price: number;
-  deliveryTimeRange: string;
-  type: "Standard" | "Monthly";
-  isFeatured: boolean;
-};
+
 
 interface ServiceCardProps {
   service: TService;
