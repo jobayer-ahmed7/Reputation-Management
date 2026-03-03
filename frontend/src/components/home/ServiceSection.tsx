@@ -11,7 +11,7 @@ const [services, setServices] = useState<TService[]>([]);
 
 useEffect(() => {
   const fetchServices = async () => {
-    const allServices = await getAllServices();
+    const allServices = await getAllServices(); 
     setServices(allServices.data.filter((service: TService) => service.isFeatured));
   };
   fetchServices();

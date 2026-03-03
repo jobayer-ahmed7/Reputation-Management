@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -8,17 +8,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import ServiceCard from "@/components/shared/ServiceCard";
-import { mockServices } from "@/constants/service";
+import { getAllServices } from "@/services/service";
+import { TService } from "@/types/service";
 
 const ServicePage = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
-  const services = mockServices;
+  const [services, setServices] = useState<TService[]>([]);
 
   // Get unique platforms from services
   const uniquePlatforms = Array.from(
-    new Set(services.map((service) => service.platform))
+    new Set(services.map((service) => service.platform)),
   );
-
 
   const handlePlatformClick = (platform: string) => {
     setSelectedPlatform(platform);
@@ -29,11 +29,21 @@ const ServicePage = () => {
       ? services
       : services.filter((service) => service.platform === selectedPlatform);
 
+  useEffect(() => {
+    const fetchServices = async () => {
+      const allServices = await getAllServices();
+      setServices(
+        allServices.data.filter((service: TService) => service.isFeatured),
+      );
+    };
+    fetchServices();
+  }, []);
+
   return (
     <main className="bg-linear-to-b from-white via-slate-50 to-slate-100 min-h-screen">
       {/* Header Section */}
       <section className="py-12 lg:py-16 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8">
           <div className="text-center space-y-4">
             <p className="inline-flex items-center text-xs font-semibold tracking-widest text-pblue uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
               All Services
@@ -97,7 +107,7 @@ const ServicePage = () => {
             {uniquePlatforms.map((platform) => {
               const isActive = selectedPlatform === platform;
               const platformServiceCount = services.filter(
-                (service) => service.platform === platform
+                (service) => service.platform === platform,
               ).length;
 
               return (
@@ -138,9 +148,9 @@ const ServicePage = () => {
       </section>
 
       {/* Services List */}
-      <section className="p-20 bg-linear-to-b from-slate-50 via-white to-slate-100">
+      <section className="p-6 bg-linear-to-b from-slate-50 via-white to-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-10 flex items-center justify-between">
             <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
               {selectedPlatform === "all"
                 ? "All services"
