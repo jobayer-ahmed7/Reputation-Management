@@ -10,10 +10,12 @@ import {
 import ServiceCard from "@/components/shared/ServiceCard";
 import { getAllServices } from "@/services/service";
 import { TService } from "@/types/service";
+import Loading from "@/components/shared/Loading";
 
 const ServicePage = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
   const [services, setServices] = useState<TService[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Get unique platforms from services
   const uniquePlatforms = Array.from(
@@ -31,10 +33,12 @@ const ServicePage = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
+      setLoading(true);
       const allServices = await getAllServices();
       setServices(
-        allServices.data.filter((service: TService) => service.isFeatured),
+        allServices.data,
       );
+      setLoading(false);
     };
     fetchServices();
   }, []);
@@ -61,8 +65,9 @@ const ServicePage = () => {
           </div>
         </div>
       </section>
-
-      {/* Platform Section */}
+{
+        loading? <Loading/> :       <div>
+            {/* Platform Section */}
       <section className="py-10 bg-linear-to-b from-slate-50 via-white to-slate-100 pb-10 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center mb-8">
@@ -178,6 +183,13 @@ const ServicePage = () => {
           )}
         </div>
       </section>
+      </div>
+}
+
+
+
+
+
 
       {/* How It Works Section */}
       <section className="py-16 lg:py-24 bg-linear-to-b from-slate-50 to-white">

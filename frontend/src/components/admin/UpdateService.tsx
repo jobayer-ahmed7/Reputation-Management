@@ -31,7 +31,7 @@ import { TServiceFormData, UpdateServiceProps } from "@/types/service";
 
 
 
-/* ---------------- Component ---------------- */
+
 
 
 
@@ -42,7 +42,7 @@ const UpdateService = ({ service }: UpdateServiceProps) => {
   const [platformOptions, setPlatformOptions] = useState(suggestedPlatforms);
 
   const {
-    register,
+    register, 
     handleSubmit,
     setValue,
     watch,
@@ -94,14 +94,14 @@ const UpdateService = ({ service }: UpdateServiceProps) => {
         <Button
           variant="outline"
           size="sm"
-          className="h-8 px-3 text-xs"
+          className="h-8 px-3 text-xs cursor-pointer"
         >
           <Pencil className="mr-1 h-3 w-3" />
-          Edit service
+          Edit
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-130 max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Edit Service</DialogTitle>

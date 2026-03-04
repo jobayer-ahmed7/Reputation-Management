@@ -29,7 +29,6 @@ import { Switch } from "@/components/ui/switch";
 import { suggestedPlatforms } from "@/constants/service";
 import { TServiceFormData } from "@/types/service";
 
-/* ---------------- Component ---------------- */
 
 const AddService = () => {
   const [open, setOpen] = useState(false);
@@ -74,13 +73,13 @@ const AddService = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+        <Button className="gap-2 bg-blue-600 hover:bg-blue-700 cursor-pointer">
           <PlusCircle className="h-4 w-4" />
           Add New Service
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-130 max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add New Service</DialogTitle>

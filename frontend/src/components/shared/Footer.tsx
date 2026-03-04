@@ -6,7 +6,7 @@ import Link from "next/link";
 const Footer = () => {
 
   const aboutLinks = [
-    { name: "Jobs", href: "#" },
+    { name: "About Us", href: "about-us" },
     { name: "FAQs", href: "#" },
     { name: "Blogs", href: "#" },
     { name: "Contact Us", href: "#" },
@@ -14,7 +14,7 @@ const Footer = () => {
 
   const policyLinks = [
     { name: "Privacy Policy", href: "privacy-policy" },
-    { name: "Terms of Service", href: "#" },
+    { name: "Terms and Conditions", href: "terms-condition" },
     { name: "Refund Policy", href: "#" },
     { name: "Working Policy", href: "#" },
   ];
@@ -109,10 +109,14 @@ const Footer = () => {
         </div>
      
       </div>
-         <div className=" flex justify-center pb-3">
+         <div className=" flex-col justify-center pb-3">
+                  {/* Footer note */}
+        <p className="text-center text-xs text-gray-400 pb-2">
+          © 2026 Reputation Manage. All rights reserved.
+        </p>
 
         <Link
-          className="text-xs text-blue-400"
+          className="text-xs text-center  block text-blue-300"
           target="_blank"
           href="https://jobayerahmed.vercel.app"
         >

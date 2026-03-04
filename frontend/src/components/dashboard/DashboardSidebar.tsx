@@ -19,17 +19,13 @@ import { useUser } from "@/contexts/userContext";
 const dashboardRoute = {
   adminRoute: [
     {
-      title: "Dashboard",
-      url: "/admin",
+      title: "Orders",
+      url: "/admin/manage-orders",
     },
     {
       title: "Services",
       url: "/admin/services",
-    },
-    {
-      title: "Orders",
-      url: "/admin/manage-orders",
-    },
+    }
   ],
 
   userRoute: [

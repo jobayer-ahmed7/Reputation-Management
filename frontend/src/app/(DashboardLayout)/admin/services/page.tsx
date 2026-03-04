@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,13 +10,22 @@ import {
 } from "@/components/ui/table";
 import AddService from "@/components/admin/AddService";
 import UpdateService from "@/components/admin/UpdateService";
-import { mockServices } from "@/constants/service";
-
-
-
-
+import { TService } from "@/types/service";
+import { getAllServices } from "@/services/service";
+import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 const AdminServices = () => {
+  const [services, setServices] = useState<TService[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const allServices = await getAllServices();
+      setServices(allServices.data);
+    };
+    fetchServices();
+  }, []);
+
   return (
     <div className="p-4 space-y-6">
       {/* Header */}
@@ -47,11 +55,12 @@ const AdminServices = () => {
                 <TableHead className="px-4 py-3">Delivery</TableHead>
                 <TableHead className="px-4 py-3">Type</TableHead>
                 <TableHead className="px-4 py-3">Featured</TableHead>
-                <TableHead className="px-4 py-3 text-right">Actions</TableHead>
+                <TableHead className="px-4 py-3 ">Update</TableHead>
+                <TableHead className="px-4 py-3 ">Delete</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockServices.map((service) => (
+              {services?.map((service) => (
                 <TableRow key={service._id} className="hover:bg-slate-50/80">
                   <TableCell className="px-4 py-3 align-top">
                     {service.name}
@@ -82,8 +91,11 @@ const AdminServices = () => {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 align-top text-right">
+                  <TableCell className="px-4 py-3 align-top ">
                     <UpdateService service={service} />
+                  </TableCell>
+                  <TableCell className="px-4 py-3 align-top text-right">
+                    <Trash2 className="text-red-300 cursor-pointer"/>
                   </TableCell>
                 </TableRow>
               ))}

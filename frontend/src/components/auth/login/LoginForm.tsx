@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import {  useSearchParams } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { loginSchema } from "./loginValidation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Form,
@@ -20,7 +20,6 @@ import { loginUser } from "@/services/AuthService";
 
 const LoginForm = () => {
 
-  const router = useRouter();
   // react hook form
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -28,15 +27,21 @@ const LoginForm = () => {
 
   // toggle password
   const [showPassword, setShowPassword] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
-  // const router = useRouter();
 
   const {
     formState: { isSubmitting, errors },
   } = form;
+
+  useEffect(() => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  }, [redirectUrl]);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data);
@@ -52,7 +57,7 @@ const LoginForm = () => {
           localStorage.setItem("authToken", res?.token);
         }
         // console.log(res?.token);
-        router.push(redirect || "/");
+        setRedirectUrl(redirect || "/");
 
       } else {
         toast.error(res?.message);
@@ -144,7 +149,7 @@ const LoginForm = () => {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
+          className="w-full cursor-pointer h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>

@@ -20,7 +20,7 @@ import { logout } from "@/services/AuthService";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { user, isLoading, setIsLoading, setUser } = useUser();
+  const { user, setIsLoading, setUser } = useUser();
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Services", href: "services" },
@@ -109,7 +109,7 @@ const Navbar = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
                       <Link
-                        href={user?.role === "admin" ? `/admin` : `/customer`}
+                        href={user?.role === "admin" ? `/admin/manage-orders` : `/customer`}
                       >
                         Dashboard
                       </Link>
