@@ -15,7 +15,23 @@ const loginValidationSchema = z.object({
   }), 
 });
 
+
+const verifyOtpValidationSchema = z.object({
+  body: z.object({
+    email: z
+      .string()
+      .min(1, { message: 'Please provide an email address' })
+      .email({ message: 'Invalid email address' }),
+
+    otp: z
+      .string()
+      .min(1, { message: 'Please provide the OTP sent to your email' })
+      .length(6, { message: 'OTP must be exactly 6 characters' }),
+  }), 
+});
+
 export const authValidation = {
   loginValidationSchema,
+  verifyOtpValidationSchema,
 };
  

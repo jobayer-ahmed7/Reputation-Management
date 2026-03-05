@@ -9,8 +9,8 @@ export const userSchema = new Schema<TUser, UserModel>(
     name: {
       type: String,
       trim: true,
+      unique: false,
       required: [true, 'Please provide your name'],
-      unique: true,
       minlength: 3,
       maxlength: 50,
     },

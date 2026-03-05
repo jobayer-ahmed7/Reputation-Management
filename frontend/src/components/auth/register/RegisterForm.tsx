@@ -42,16 +42,17 @@ const RegisterForm = () => {
 
   // handle submit
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data)
+    // console.log(data)
     try {
       const res = await registerUser(data);
       // console.log(res)
       if (res?.success) {
         toast.success(res?.message);
         form.reset(); // reset form
-        router.push("/login"); // redirect to login
-      } else {
-        toast.error(res?.message);
+        router.push(`/register/verify-otp?email=${data.email}`); // redirect to otp verification page
+      }else{
+                toast.error(res?.message);
+
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -224,22 +225,10 @@ const RegisterForm = () => {
               isSubmitting ||
               Boolean(confirmPassword && password !== confirmPassword)
             }
-            className="w-full h-11 bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
+            className="w-full h-11 bg-linear-to-r cursor-pointer from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all mt-2"
           >
-            {isSubmitting ? "Creating account..." : "Create account"}
+            {isSubmitting ? "Sending OTP..." : "Send OTP"}
           </Button>
-
-          <FieldSeparator className="mb-4">Or continue with</FieldSeparator>
-
-          <div className="grid grid-cols-1 gap-3">
-            <button
-              type="button"
-              className="flex items-center justify-center w-full cursor-pointer gap-1 rounded-lg border border-slate-200 bg-white py-2.5 hover:bg-slate-50 transition-colors"
-            >
-              <span className="text-2xl">G</span>
-              <span className="font-medium text-slate-700">Google</span>
-            </button>
-          </div>
         </form>
       </Form>
     </div>

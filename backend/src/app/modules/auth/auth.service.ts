@@ -12,20 +12,23 @@ const generateOtp = (): string => {
 
 const sendOtpEmail = async (email: string, otp: string): Promise<void> => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // ← no need for host/port, nodemailer knows Gmail
+    service: 'gmail', 
     auth: {
-      user: config.gmail_user as string, // your Gmail address
-      pass: config.gmail_app_password as string, // App Password (NOT your Gmail password)
+      user: config.gmail_user as string, 
+      pass: config.gmail_app_password as string, 
     },
   });
 
+  await transporter.verify();
+  // console.log("SMTP connection verified ✅");
+
   await transporter.sendMail({
-    from: `"Your App" <${config.gmail_user}>`,
+    from: `"Reputation Manage" <${config.gmail_user}>`,
     to: email,
-    subject: 'Your OTP Code',
+    subject: 'Your OTP Code for Email Verification',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 400px; margin: auto;">
-        <h2>Email Verification</h2>
+        <h2>Email Verification for Reputation Manage</h2>
         <p>Use the OTP below to verify your account. It expires in <strong>10 minutes</strong>.</p>
         <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #4F46E5; padding: 16px 0;">
           ${otp}
@@ -39,6 +42,8 @@ const sendOtpEmail = async (email: string, otp: string): Promise<void> => {
 // register a user
 const register = async (payload: TUser) => {
   const existingUser = await User.findOne({ email: payload.email });
+
+  // console.log("dfdf")
 
   // If a verified user already exists, block registration
   if (existingUser && existingUser.isVerified) {
@@ -59,6 +64,7 @@ const register = async (payload: TUser) => {
     otpExpiry,
     isVerified: false,
   });
+  // console.log(payload);
 
   // Try sending OTP — if it fails, delete the user and throw
   try {
@@ -94,7 +100,7 @@ const verifyOtp = async (email: string, otp: string) => {
     throw new Error('Invalid OTP. Please register again.');
   }
 
-  // ✅ OTP is correct → mark user as verified and clear OTP fields
+  // OTP is correct → mark user as verified and clear OTP fields
   await User.findByIdAndUpdate(user._id, {
     isVerified: true,
     otp: null,
@@ -154,5 +160,6 @@ const login = async (payload: ILoginUser) => {
 
 export const authService = {
   register,
+  verifyOtp,
   login,
 };

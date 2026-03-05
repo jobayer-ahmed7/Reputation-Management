@@ -12,8 +12,20 @@ const register = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse.sendDataResponse(res, {
     success: true,
-    message: "User registered successfully",
+    message: result.message,
     statusCode: HttpStatus.CREATED,
+    data: result,
+  });
+});
+
+// verify otp
+const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const result = await authService.verifyOtp(req.body.email, req.body.otp);
+
+  sendResponse.sendDataResponse(res, {
+    success: true,
+    message: result.message,
+    statusCode: HttpStatus.OK,
     data: result,
   });
 });
@@ -42,5 +54,6 @@ const login = catchAsync(async (req: Request, res: Response) => {
 
 export const authController = {
   register,
+  verifyOtp,
   login,
 };

@@ -5,19 +5,17 @@ import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 
+const BASE_API = process.env.NEXT_PUBLIC_BASE_API;
 
 export const registerUser = async (userData: FieldValues) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/register`,
-      { 
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      }
-    );
+    const res = await fetch(`${BASE_API}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
     const result = await res.json();
 
     if (result?.success) {
@@ -30,15 +28,31 @@ export const registerUser = async (userData: FieldValues) => {
     return Error(error);
   }
 };
- 
 
+export const verifyOtp = async (otpData: FieldValues) => {
+  try {
+    const res = await fetch(`${BASE_API}/auth/verify-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(otpData),
+    });
+    const result = await res.json();
+
+    return result;
+
+  } catch (error: any) {
+    return Error(error);
+  }
+};
 
 export const loginUser = async (userData: FieldValues) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
+    const res = await fetch(`${BASE_API}/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
     });
@@ -51,16 +65,15 @@ export const loginUser = async (userData: FieldValues) => {
       (await cookies()).set("userData", JSON.stringify(result?.data));
     }
 
-    return result; 
+    return result;
   } catch (error: any) {
     return Error(error);
   }
 };
- 
 
 export const getCurrentUser = async () => {
   try {
-    const accessToken = (await cookies()).get("accessToken")?.value; 
+    const accessToken = (await cookies()).get("accessToken")?.value;
     const userData: any = (await cookies()).get("userData")?.value;
     let decodedData = null;
 
@@ -74,7 +87,6 @@ export const getCurrentUser = async () => {
     return null;
   }
 };
-
 
 export const logout = async () => {
   (await cookies()).delete("accessToken");
