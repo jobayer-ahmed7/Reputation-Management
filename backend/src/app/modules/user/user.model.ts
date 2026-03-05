@@ -2,7 +2,6 @@
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import { TUser, UserModel } from './user.interface';
-import { UserStatus } from './user.constant';
 import config from '../../config';
 
 export const userSchema = new Schema<TUser, UserModel>(
@@ -40,11 +39,9 @@ export const userSchema = new Schema<TUser, UserModel>(
       default: 'customer',
       required: true,
     },
-    status: {
-      type: String,
-      enum: UserStatus,
-      default: 'active',
-    },
+    otp: { type: String, select: false },
+    otpExpiry: { type: Date, select: false },
+    isVerified: { type: Boolean, default: false },
     image: {
       type: String,
     },

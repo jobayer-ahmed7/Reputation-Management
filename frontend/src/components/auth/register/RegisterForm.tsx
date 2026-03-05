@@ -40,10 +40,9 @@ const RegisterForm = () => {
   const password = form.watch("password");
   const confirmPassword = form.watch("confirmPassword");
 
-
   // handle submit
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    // console.log(data)
+    console.log(data)
     try {
       const res = await registerUser(data);
       // console.log(res)

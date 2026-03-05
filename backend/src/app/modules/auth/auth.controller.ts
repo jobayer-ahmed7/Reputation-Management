@@ -5,6 +5,19 @@ import { authService } from './auth.service';
 import config from '../../config';
 import { sendResponse } from '../../utils/sendResponse';
 
+
+// register a user
+const register = catchAsync(async (req: Request, res: Response) => {
+  const result = await authService.register(req.body);
+
+  sendResponse.sendDataResponse(res, {
+    success: true,
+    message: "User registered successfully",
+    statusCode: HttpStatus.CREATED,
+    data: result,
+  });
+});
+
 // login a user
 const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.login(req.body);
@@ -16,7 +29,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
     secure: config.nodeEnv === 'production',
     sameSite: 'none',
   });
-
+ 
   sendResponse.sendDataResponse(res, {
     success: true,
     message: 'User login successful',
@@ -28,5 +41,6 @@ const login = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const authController = {
+  register,
   login,
 };

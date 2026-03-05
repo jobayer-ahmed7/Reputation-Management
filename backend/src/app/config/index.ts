@@ -15,4 +15,8 @@ export default {
   jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,
   jwt_access_expires_in: process.env.JWT_ACCESS_EXPIRES_IN,
   jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
+
+  // for otp
+  gmail_user: process.env.GMAIL_USER,
+  gmail_app_password: process.env.GMAIL_APP_PASSWORD,
 };
