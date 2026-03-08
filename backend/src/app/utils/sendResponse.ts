@@ -40,7 +40,7 @@ const sendUpdateResponse = <T>(res: Response, data: TResponse<T>) => {
 };
 
 export const sendResponse = {
-  sendDataResponse, 
+  sendDataResponse,
   sendUpdateResponse,
   sendCreateDataResponse,
 };

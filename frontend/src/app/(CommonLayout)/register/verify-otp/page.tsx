@@ -45,7 +45,7 @@ const VerifyOtp = () => {
       console.log(res);
       if (res?.success) {
         toast.success(res?.message);
-        setRedirectUrl(redirect || "/");
+        setRedirectUrl(redirect || "/login");
       } else {
         toast.error(res?.message);
       }

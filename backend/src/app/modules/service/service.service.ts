@@ -1,5 +1,5 @@
-import { Service } from "./service.model";
-import { IService } from "./service.interface";
+import { Service } from './service.model';
+import { IService } from './service.interface';
 
 // Get all services
 export const getAllServicesFromDB = async (): Promise<IService[]> => {
@@ -15,7 +15,7 @@ export const getServiceByIdFromDB = async (
   return service;
 };
 
-// Create a new service 
+// Create a new service
 export const createServiceFromDB = async (
   serviceData: IService,
 ): Promise<IService> => {

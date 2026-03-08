@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-import { IService, serviceTypes } from "./service.interface";
+import { model, Schema } from 'mongoose';
+import { IService, serviceTypes } from './service.interface';
 
 // Define the service schema
 const ServiceSchema = new Schema<IService>(
@@ -12,9 +12,9 @@ const ServiceSchema = new Schema<IService>(
       type: String,
       required: true,
     },
-    count:{
-      type:String,
-      required:true,
+    count: {
+      type: String,
+      required: true,
     },
     price: {
       type: Number,
@@ -40,4 +40,4 @@ const ServiceSchema = new Schema<IService>(
 );
 
 // Create and export the Service model
-export const Service = model<IService>("Service", ServiceSchema);
+export const Service = model<IService>('Service', ServiceSchema);

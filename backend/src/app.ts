@@ -8,7 +8,7 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: ['http://localhost:3000','https://reputationmanage.vercel.app' ],
+    origin: ['http://localhost:3000', 'https://reputationmanage.vercel.app'],
     credentials: true,
   }),
 );
@@ -25,4 +25,3 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 export default app;
- 

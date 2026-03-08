@@ -30,12 +30,8 @@ const dashboardRoute = {
 
   userRoute: [
     {
-      title: "Dashboard",
+      title: "Profile",
       url: "/customer",
-    },
-    {
-      title: "Orders",
-      url: "/customer/orders",
     },
   ],
 };

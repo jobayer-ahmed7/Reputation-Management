@@ -7,7 +7,7 @@ import { userValidations } from '../user/user.validation';
 const authRouter = Router();
 
 authRouter.post(
-  "/register",
+  '/register',
   validateRequest(userValidations.userValidationSchema),
   authController.register,
 );
@@ -24,5 +24,4 @@ authRouter.post(
   authController.login,
 );
 
-export default authRouter; 
- 
+export default authRouter;

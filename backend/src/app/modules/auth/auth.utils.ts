@@ -8,4 +8,3 @@ export const createToken = (
   const options: SignOptions = { expiresIn } as SignOptions;
   return jwt.sign(jwtPayload, secret, options);
 };
- 

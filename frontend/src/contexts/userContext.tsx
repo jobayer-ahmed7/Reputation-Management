@@ -12,11 +12,8 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  needsPasswordChange: boolean;
-  passwordChangedAt?: Date;
-  role: "admin" | "customer"; 
-  status: "active" | "inactive";
-  image?: string;
+  role: 'admin' | 'customer';
+  isVerified: boolean;
 }
 
 interface IUserProviderValues {
@@ -46,7 +43,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     };
 
-    handleUser();
+    handleUser(); 
   }, []);
 
   return (

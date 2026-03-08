@@ -109,9 +109,10 @@ const Navbar = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
                       <Link
+                      className="cursor-pointer"
                         href={user?.role === "admin" ? `/admin/manage-orders` : `/customer`}
                       >
-                        Dashboard
+                       {user?.role === "admin" ? `Dashboard` : `Profile`}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />

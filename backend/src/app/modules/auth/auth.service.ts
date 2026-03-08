@@ -12,10 +12,10 @@ const generateOtp = (): string => {
 
 const sendOtpEmail = async (email: string, otp: string): Promise<void> => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    service: 'gmail',
     auth: {
-      user: config.gmail_user as string, 
-      pass: config.gmail_app_password as string, 
+      user: config.gmail_user as string,
+      pass: config.gmail_app_password as string,
     },
   });
 
@@ -120,9 +120,8 @@ const login = async (payload: ILoginUser) => {
     throw new Error('Invalid credentials');
   }
 
-  const userStatus = user.status;
-  if (userStatus === 'inactive') {
-    throw new Error('Invalid credentials');
+  if (!user.isVerified) {
+    throw new Error('Please verify your email before logging in.');
   }
 
   const userPassword = user.password;

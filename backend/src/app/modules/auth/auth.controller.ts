@@ -5,7 +5,6 @@ import { authService } from './auth.service';
 import config from '../../config';
 import { sendResponse } from '../../utils/sendResponse';
 
-
 // register a user
 const register = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.register(req.body);
@@ -36,12 +35,12 @@ const login = catchAsync(async (req: Request, res: Response) => {
 
   const { refreshToken, token } = result;
 
-  res.cookie('refreshToken', refreshToken, { 
+  res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: config.nodeEnv === 'production',
     sameSite: 'none',
   });
- 
+
   sendResponse.sendDataResponse(res, {
     success: true,
     message: 'User login successful',

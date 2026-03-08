@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from "express";
-import { sendResponse } from "../../utils/sendResponse";
-import { ServiceServices } from "./service.service";
-import { IService } from "./service.interface";
-import statusCode from "http-status";
+import { Request, Response } from 'express';
+import { sendResponse } from '../../utils/sendResponse';
+import { ServiceServices } from './service.service';
+import { IService } from './service.interface';
+import statusCode from 'http-status';
 
 // Get all services
 export const getAllServices = async (
-  req: Request, 
+  req: Request,
   res: Response,
 ): Promise<void> => {
   const services = await ServiceServices.getAllServicesFromDB();
   sendResponse.sendDataResponse<IService>(res, {
     statusCode: statusCode.OK,
     success: true,
-    message: "Services retrieved successfully",
+    message: 'Services retrieved successfully',
     data: services,
   });
 };
@@ -32,7 +32,7 @@ export const getServiceById = async (
       sendResponse.sendDataResponse<null>(res, {
         statusCode: statusCode.NOT_FOUND,
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
         data: null,
       });
       return;
@@ -41,14 +41,14 @@ export const getServiceById = async (
     sendResponse.sendDataResponse<IService>(res, {
       statusCode: statusCode.OK,
       success: true,
-      message: "Service retrieved successfully",
+      message: 'Service retrieved successfully',
       data: service,
     });
   } catch (error: any) {
     sendResponse.sendDataResponse<null>(res, {
       statusCode: statusCode.INTERNAL_SERVER_ERROR,
       success: false,
-      message: error.message || "Failed to retrieve service",
+      message: error.message || 'Failed to retrieve service',
       data: null,
     });
   }
@@ -67,14 +67,14 @@ export const createService = async (
     sendResponse.sendCreateDataResponse<IService>(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "Service created successfully",
+      message: 'Service created successfully',
       data: newService,
     });
   } catch (error: any) {
     sendResponse.sendDataResponse<null>(res, {
       statusCode: statusCode.INTERNAL_SERVER_ERROR,
       success: false,
-      message: error.message || "Failed to create service",
+      message: error.message || 'Failed to create service',
       data: null,
     });
   }
@@ -98,7 +98,7 @@ export const updateService = async (
       sendResponse.sendDataResponse<null>(res, {
         statusCode: statusCode.NOT_FOUND,
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
         data: null,
       });
       return;
@@ -107,14 +107,14 @@ export const updateService = async (
     sendResponse.sendUpdateResponse<IService>(res, {
       statusCode: statusCode.OK,
       success: true,
-      message: "Service updated successfully",
+      message: 'Service updated successfully',
       data: updatedService,
     });
   } catch (error: any) {
     sendResponse.sendDataResponse<null>(res, {
       statusCode: statusCode.INTERNAL_SERVER_ERROR,
       success: false,
-      message: error.message || "Failed to update service",
+      message: error.message || 'Failed to update service',
       data: null,
     });
   }
@@ -136,7 +136,7 @@ export const deleteService = async (
       sendResponse.sendDataResponse<null>(res, {
         statusCode: statusCode.NOT_FOUND,
         success: false,
-        message: "Service not found",
+        message: 'Service not found',
         data: null,
       });
       return;
@@ -145,14 +145,14 @@ export const deleteService = async (
     sendResponse.sendDataResponse<null>(res, {
       statusCode: statusCode.OK,
       success: true,
-      message: "Service deleted successfully",
+      message: 'Service deleted successfully',
       data: null,
     });
   } catch (error: any) {
     sendResponse.sendDataResponse<null>(res, {
       statusCode: statusCode.INTERNAL_SERVER_ERROR,
       success: false,
-      message: error.message || "Failed to delete service",
+      message: error.message || 'Failed to delete service',
       data: null,
     });
   }
