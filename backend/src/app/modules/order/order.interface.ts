@@ -6,7 +6,7 @@ export type TPaymentStatus = (typeof paymentStatus)[number];
 
 
 
-export type TOrder = {
+export type TOrder = { 
   orderedService: Types.ObjectId;
   user: Types.ObjectId;
   totalPrice: number;

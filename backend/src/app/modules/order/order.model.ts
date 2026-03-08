@@ -12,7 +12,7 @@ const orderSchema = new Schema<TOrder>(
       type: String,
       enum: workingStatus,
       default: "PENDING",
-    },
+    }, 
     paymentStatus: {
       type: String,
       enum: paymentStatus,

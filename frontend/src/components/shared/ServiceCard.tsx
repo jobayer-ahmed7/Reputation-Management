@@ -2,22 +2,21 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { TService } from "@/types/service";
-
-
 
 interface ServiceCardProps {
   service: TService;
   onBuyNow?: (service: TService) => void;
+  buyNowDisabled?: boolean;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBuyNow }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({
+  service,
+  onBuyNow,
+  buyNowDisabled,
+}) => {
   const { platform, name, count, price, deliveryTimeRange, type, isFeatured } =
     service;
 
@@ -79,12 +78,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBuyNow }) => {
         </ul>
 
         {/* Buy Now Button */}
-        <Button
-          onClick={onBuyNow ? () => onBuyNow(service) : undefined}
-          className="w-full h-10 cursor-pointer bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
-        >
-          Buy Now
-        </Button>
+        {buyNowDisabled ? (
+          <></>
+        ) : (
+          <Button
+            onClick={onBuyNow ? () => onBuyNow(service) : undefined}
+            className="w-full h-10 cursor-pointer bg-linear-to-r from-pblue to-bluegray text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
+          >
+            Buy Now
+          </Button>
+        )}
 
         {/* Additional Info */}
         <p className="text-xs text-slate-500 text-center">

@@ -1,4 +1,4 @@
-
+import { Types } from 'mongoose';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
 
@@ -22,18 +22,14 @@ import { Order } from './order.model';
 //   return createdOrder;
 // };
 
-
 // get order by user id
 
 const getOrderByUserIdFromDB = async (userId: string) => {
-  const result = await Order.find({ user: userId, isDeleted: { $ne: true } })
-    .populate('products.product');
-    console.log({result})
+  const result = await Order.find({ user: new Types.ObjectId(userId) }).populate('orderedService');
   return result;
-}
+};
 
 // Get all orders with pagination and filtering
-
 
 const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
   const page = Number(query.page) || 1; // Default to page 1 if not provided
