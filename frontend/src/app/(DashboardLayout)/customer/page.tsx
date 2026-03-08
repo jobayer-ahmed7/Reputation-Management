@@ -1,10 +1,11 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useUser } from "@/contexts/userContext";
+import { getOrdersByUserId } from "@/services/order";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const customer = {
   name: "Mariana Costa",
@@ -90,6 +91,23 @@ const statusConfig: Record<string, { label: string; pill: string }> = {
 
 const CustomerPage = () => {
   const user = useUser();
+  
+  const [orders1, setOrders] = useState([]);
+  
+
+  useEffect(()=> {
+    const fetchOrders = async () => {
+      if (user.user?.email) {
+        const res = await getOrdersByUserId(user.user.email);
+        // setOrders(data.orders || []); // Assuming the API returns { orders: [...] }
+        console.log(res)
+      }
+    };
+
+    fetchOrders();
+  },[user.user?.email])
+
+
 
   return (
     <div className="min-h-screen bg-white text-slate-800 px-6 py-10 font-mono">

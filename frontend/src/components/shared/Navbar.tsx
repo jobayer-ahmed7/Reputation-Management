@@ -107,9 +107,9 @@ const Navbar = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer p-0">
                       <Link
-                      className="cursor-pointer"
+                      className="cursor-pointer p-1 block w-full"
                         href={user?.role === "admin" ? `/admin/manage-orders` : `/customer`}
                       >
                        {user?.role === "admin" ? `Dashboard` : `Profile`}
