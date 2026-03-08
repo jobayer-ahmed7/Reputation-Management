@@ -18,10 +18,7 @@ export const registerUser = async (userData: FieldValues) => {
     });
     const result = await res.json();
 
-    if (result?.success) {
-      (await cookies()).set("accessToken", result?.token);
-      (await cookies()).set("refreshToken", result?.refreshToken);
-    }
+
 
     return result;
   } catch (error: any) {
@@ -39,6 +36,11 @@ export const verifyOtp = async (otpData: FieldValues) => {
       body: JSON.stringify(otpData),
     });
     const result = await res.json();
+
+        if (result?.success) {
+      (await cookies()).set("accessToken", result?.token);
+      (await cookies()).set("refreshToken", result?.refreshToken);
+    }
 
     return result;
 

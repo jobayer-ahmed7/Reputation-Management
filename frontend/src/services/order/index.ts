@@ -3,14 +3,14 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_BASE_API;
 
-export const getOrdersByUserId = async (userEmail: string) => {
+export const getOrdersByUserId = async (userID: string) => {
   try {
     // Get token from cookies (recommended for server actions)
     const { cookies } = await import("next/headers");
     const cookieStore = cookies();
     const token = (await cookieStore).get("accessToken")?.value; 
 
-    const res = await fetch(`${API_BASE}/orders/my-orders/${userEmail}`, {
+    const res = await fetch(`${API_BASE}/orders/my-orders/${userID}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

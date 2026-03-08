@@ -1,6 +1,9 @@
-import express from "express";
-import { USER_ROLE } from "../user/user.constant";
-import auth from "../../middlewares/auth";
+import express from 'express';
+import { USER_ROLE } from '../user/user.constant';
+import auth from '../../middlewares/auth';
+import { OrderControllers } from './order.controller';
+import validateRequest from '../../middlewares/validateRequest';
+import { OrderValidation } from './order.validation';
 
 const router = express.Router();
 
@@ -13,24 +16,24 @@ const router = express.Router();
 // );
 
 // get order by user id
+
 router.get(
-  "/my-orders/:userId",
-  auth(USER_ROLE.admin, USER_ROLE.customer)
+  '/my-orders/:userId',
+  auth(USER_ROLE.customer),
+  OrderControllers.getOrderByUserId,
 );
 
 // get all orders
-// router.get("/", OrderControllers.getAllOrder);
+router.get('/', OrderControllers.getAllOrder);
 
 // update order by id
-// router.patch(
-//   "/:id",
-//   validateRequest(OrderValidation.updateOrderValidationSchema),
-//   OrderControllers.updateSingleOrder,
-// ); 
+router.patch(
+  '/:id',
+  validateRequest(OrderValidation.updateOrderValidationSchema),
+  OrderControllers.updateSingleOrder,
+);
 
 // // delete order by id
-// router.delete("/:id", OrderControllers.deleteSingleOrder);
- 
-
+router.delete('/:id', OrderControllers.deleteSingleOrder);
 
 export const OrderRoutes = router;

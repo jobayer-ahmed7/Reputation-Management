@@ -91,21 +91,23 @@ const statusConfig: Record<string, { label: string; pill: string }> = {
 
 const CustomerPage = () => {
   const user = useUser();
+
+  // console.log(user)
   
   const [orders1, setOrders] = useState([]);
   
 
   useEffect(()=> {
     const fetchOrders = async () => {
-      if (user.user?.email) {
-        const res = await getOrdersByUserId(user.user.email);
-        // setOrders(data.orders || []); // Assuming the API returns { orders: [...] }
+      if (user.user?._id) {
+        const res = await getOrdersByUserId(user.user?._id);
+        setOrders(res.orders || []); // Assuming the API returns { orders: [...] }
         console.log(res)
       }
     };
 
     fetchOrders();
-  },[user.user?.email])
+  },[user.user?._id])
 
 
 
