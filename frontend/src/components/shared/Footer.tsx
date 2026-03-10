@@ -1,11 +1,9 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
   const aboutLinks = [
     { name: "About Us", href: "about-us" },
-    { name: "FAQs", href: "#" },
     { name: "Blogs", href: "#" },
     { name: "Contact Us", href: "#" },
   ];
@@ -13,8 +11,7 @@ const Footer = () => {
   const policyLinks = [
     { name: "Privacy Policy", href: "privacy-policy" },
     { name: "Terms and Conditions", href: "terms-condition" },
-    { name: "Refund Policy", href: "#" },
-    { name: "Working Policy", href: "#" },
+    { name: "Return and Refund Policy", href: "return-and-refund" },
   ];
 
   const socialLinks = [
@@ -116,7 +113,7 @@ const Footer = () => {
       </div>
 
       {/* Footer Bottom */}
-      <div className="border-t border-gray-800 py-6 text-center">
+      <div className="border-t-4 border-gray-800 py-6 text-center">
         <p className="text-xs text-gray-500 mb-2">
           © 2026 Reputation Manage. All rights reserved.
         </p>

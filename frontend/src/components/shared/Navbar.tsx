@@ -22,7 +22,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Services", href: "services" },
-    { name: "About", href: "about-us" },
+    // { name: "About", href: "about-us" },
   ];
 
   const allNavLinks = [
@@ -44,14 +44,14 @@ const Navbar = () => {
   return (
     <>
       {/* Promo Banner */}
-      <div className="bg-linear-to-r from-pblue to-bluegray text-white py-2 px-4 text-center text-sm md:text-base font-medium">
+      {/* <div className="bg-linear-to-r from-pblue to-bluegray text-white py-2 px-4 text-center text-sm md:text-base font-medium">
         <span>
           10% Off! Use Code: <span className="font-bold">REVIEZ10</span>
         </span>
         <button className="ml-4 cursor-pointer bg-white text-pblue px-4 py-1 rounded-md font-semibold hover:bg-gray-100 transition-colors">
           Buy Now
         </button>
-      </div>
+      </div> */}
 
       {/* Main Navbar */}
       <nav className="bg-white shadow-md sticky top-0 z-50">
