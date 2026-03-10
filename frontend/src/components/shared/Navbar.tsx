@@ -10,8 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -25,6 +23,16 @@ const Navbar = () => {
     { name: "Home", href: "/" },
     { name: "Services", href: "services" },
     { name: "About", href: "about-us" },
+  ];
+
+  const allNavLinks = [
+    ...navLinks,
+    ...(user && user.role === "customer"
+      ? [{ name: "My Orders", href: "customer" }]
+      : []),
+    ...(user && user.role === "admin"
+      ? [{ name: "Dashboard", href: "admin/manage-orders" }]
+      : []),
   ];
 
   const handleLogOut = async () => {
@@ -61,7 +69,7 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => {
+              {allNavLinks.map((link) => {
                 const isActive =
                   pathname === link.href ||
                   (link.href === "/" && pathname === "/") ||
@@ -87,11 +95,7 @@ const Navbar = () => {
 
             {/* Contact & Auth */}
             <div className="hidden md:flex items-center space-x-4">
-   
-
               {/* Login/Signup and logout Button */}
-
-              {/* kab jab */}
 
               {user ? (
                 <DropdownMenu>
@@ -105,17 +109,21 @@ const Navbar = () => {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer p-0">
+                    {/* <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator /> */}
+                    {/* <DropdownMenuItem className="cursor-pointer p-0">
                       <Link
-                      className="cursor-pointer p-1 block w-full"
-                        href={user?.role === "admin" ? `/admin/manage-orders` : `/customer`}
+                        className="cursor-pointer p-1 block w-full"
+                        href={
+                          user?.role === "admin"
+                            ? `/admin/manage-orders`
+                            : `/customer`
+                        }
                       >
-                       {user?.role === "admin" ? `Dashboard` : `Profile`}
+                        {user?.role === "admin" ? `Dashboard` : `Profile`}
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator /> */}
                     <DropdownMenuItem
                       className="cursor-pointer"
                       onClick={() => {
@@ -157,7 +165,7 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-4 py-4 space-y-3">
-              {navLinks.map((link) => {
+              {allNavLinks.map((link) => {
                 const isActive =
                   pathname === link.href ||
                   (link.href === "/" && pathname === "/") ||
@@ -192,11 +200,26 @@ const Navbar = () => {
               </a>
 
               {/* Mobile Login Button */}
-              <Link onClick={()=> setIsMobileMenuOpen(false)} href="/login">
-                <button className="w-full bg-linear-to-r from-pblue to-bluegray text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
-                  Login
-                </button>
-              </Link>
+              <div>
+                {user ? (
+           
+                    <button       onClick={() => {
+                        handleLogOut();
+                      }} className="w-full cursor-pointer bg-linear-to-r from-pblue to-bluegray text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                      Log Out
+                    </button>
+           
+                ) : (
+                  <Link
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    href="/login"
+                  >
+                    <button className="w-full bg-linear-to-r from-pblue to-bluegray text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                      Login
+                    </button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
