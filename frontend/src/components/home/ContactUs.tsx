@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, MessageSquare, Phone, User, Send } from "lucide-react";
+import { sendContactMessage } from "@/services/contactForm";
+import { toast } from "sonner";
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -32,9 +35,20 @@ const ContactUs = () => {
     },
   });
 
-  const onSubmit = (data: ContactFormValues) => {
+  const onSubmit = async (data: ContactFormValues) => {
+
+    try {
+        const res = await sendContactMessage(data);
+        if(res?.success){
+            toast.success(res?.message || "Message sent successfully!");
+        }else{
+            toast.error("Failed to send message. Please try again later.");
+        }
+    } catch (error: any) {
+        toast.error("An error occurred while sending the message. Please try again later.");
+    }
+
     console.log("Contact Form Data:", data);
-    alert("Check console for form data!");
     reset();
   };
 

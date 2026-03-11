@@ -29,7 +29,7 @@ router.post(
     const mailOptions = {
 
       from: `"Reputation Manage Contact" <${config.gmail_user}>`,
-      to: "jobayerahmed.dev@gmail.com",
+      to: "seofeedbackbd@gmail.com",
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px;">

@@ -5,7 +5,7 @@ import { ContactFormValues } from "@/components/home/ContactUs";
 
 
 
-export const getOrdersByUserId = async (formData:ContactFormValues) => {
+export const sendContactMessage = async (formData:ContactFormValues) => {
   try {
 
 
