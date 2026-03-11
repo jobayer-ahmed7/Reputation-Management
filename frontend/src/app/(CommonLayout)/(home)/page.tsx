@@ -1,3 +1,4 @@
+import ContactUs from "@/components/home/ContactUs";
 import FAQ from "@/components/home/FAQ";
 import Hero from "@/components/home/Hero";
 import ServiceSection from "@/components/home/ServiceSection";
@@ -10,6 +11,7 @@ const HomePage = () => {
       <ServiceSection />
       <WhyChooseUs/>
       <FAQ/>
+      <ContactUs/>
     </div>
   );
 };
