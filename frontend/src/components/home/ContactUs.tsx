@@ -7,14 +7,14 @@ import { Mail, MessageSquare, Phone, User, Send } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
- email: z.string().check(z.email({ message: "Please enter a valid email address." })),
+  email: z.string().check(z.email({ message: "Please enter a valid email address." })),
   whatsapp: z.string().optional(),
   message: z
     .string()
     .min(10, { message: "Message must be at least 10 characters." }),
 });
 
-type ContactFormValues = z.infer<typeof contactSchema>;
+export type ContactFormValues = z.infer<typeof contactSchema>;
 
 const ContactUs = () => {
   const {
@@ -72,6 +72,15 @@ const ContactUs = () => {
                   </div>
                 </div>
                 
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0 text-green-500">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">Phone Call Support</p>
+                    <p className="text-slate-600">+88 01821138649</p>
+                  </div>
+                </div>
               </div>
             </div>
 
