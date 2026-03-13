@@ -13,7 +13,7 @@ import UpdateService from "@/components/admin/UpdateService";
 import { TService } from "@/types/service";
 import { getAllServices } from "@/services/service";
 import { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react";
+import DeleteService from "@/components/admin/DeleteService";
 
 const AdminServices = () => {
   const [services, setServices] = useState<TService[]>([]);
@@ -25,6 +25,24 @@ const AdminServices = () => {
     };
     fetchServices();
   }, []);
+
+  const handleDeleteSuccess = (id: string) => {
+    setServices((prevServices) =>
+      prevServices.filter((service) => service._id !== id)
+    );
+  };
+
+  const handleAddSuccess = (newService: TService) => {
+    setServices((prevServices) => [newService, ...prevServices]);
+  };
+
+  const handleUpdateSuccess = (updatedService: TService) => {
+    setServices((prevServices) =>
+      prevServices.map((service) =>
+        service._id === updatedService._id ? updatedService : service
+      )
+    );
+  };
 
   return (
     <div className="p-4 space-y-6">
@@ -39,7 +57,7 @@ const AdminServices = () => {
           </p>
         </div>
 
-        <AddService />
+        <AddService onAddSuccess={handleAddSuccess} />
       </section>
 
       {/* Simple services table */}
@@ -92,10 +110,17 @@ const AdminServices = () => {
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3 align-top ">
-                    <UpdateService service={service} />
+                    <UpdateService
+                      service={service}
+                      onUpdateSuccess={handleUpdateSuccess}
+                    />
                   </TableCell>
                   <TableCell className="px-4 py-3 align-top text-right">
-                    <Trash2 className="text-red-300 cursor-pointer"/>
+                    <DeleteService
+                      _id={service._id}
+                      title={service.name}
+                      onDeleteSuccess={handleDeleteSuccess}
+                    />{" "}
                   </TableCell>
                 </TableRow>
               ))}

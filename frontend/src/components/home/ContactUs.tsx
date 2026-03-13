@@ -82,7 +82,7 @@ const ContactUs = () => {
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">Email Us</p>
-                    <p className="text-slate-600">support@reputationmanage.com</p>
+                    <p className="text-slate-600">contact.reputationmanage@gmail.com</p>
                   </div>
                 </div>
                 

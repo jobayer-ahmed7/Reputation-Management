@@ -27,10 +27,15 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { suggestedPlatforms } from "@/constants/service";
-import { TServiceFormData } from "@/types/service";
+import { TService, TServiceFormData } from "@/types/service";
+import { createService } from "@/services/service";
+import { toast } from "sonner";
 
+type AddServiceProps = {
+  onAddSuccess: (newService: TService) => void;
+};
 
-const AddService = () => {
+const AddService = ({ onAddSuccess }: AddServiceProps) => {
   const [open, setOpen] = useState(false);
 
   // Creatable select options for platforms
@@ -58,16 +63,26 @@ const AddService = () => {
 
   const isFeatured = watch("isFeatured");
 
-  const onSubmit = (data: TServiceFormData) => {
+  const onSubmit = async (data: TServiceFormData) => {
     const finalData = {
       ...data,
       price: Number(data.price),
     };
 
-    // console.log("Service Data:", finalData);
-
-    reset();
-    setOpen(false);
+    try {
+      const res = await createService(finalData);
+      if (res.success) {
+        toast.success("Service added successfully");
+        onAddSuccess(res.data);
+        reset();
+        setOpen(false);
+      } else {
+        toast.error("Failed to add service");
+      }
+    } catch (error) {
+      toast.error("An error occurred while adding the service");
+      console.error("Failed to add service:", error);
+    }
   };
 
   return (

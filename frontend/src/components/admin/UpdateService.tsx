@@ -27,15 +27,16 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { suggestedPlatforms } from "@/constants/service";
-import { TServiceFormData, UpdateServiceProps } from "@/types/service";
+import { TService, TServiceFormData } from "@/types/service";
+import { updateService } from "@/services/service";
+import { toast } from "sonner";
 
+type UpdateServiceComponentProps = {
+  service: TService;
+  onUpdateSuccess: (updatedService: TService) => void;
+};
 
-
-
-
-
-
-const UpdateService = ({ service }: UpdateServiceProps) => {
+const UpdateService = ({ service, onUpdateSuccess }: UpdateServiceComponentProps) => {
   const [open, setOpen] = useState(false);
 
   // Creatable select options for platforms
@@ -76,16 +77,25 @@ const UpdateService = ({ service }: UpdateServiceProps) => {
     });
   }, [service, reset]);
 
-  const onSubmit = (data: TServiceFormData) => {
+  const onSubmit = async (data: TServiceFormData) => {
     const finalData = {
-      _id: service._id,
       ...data,
       price: Number(data.price),
     };
 
-    // console.log("Update Service Data:", finalData);
-
-    setOpen(false);
+    try {
+      const res = await updateService(service._id, finalData);
+      if (res.success) {
+        toast.success("Service updated successfully");
+        onUpdateSuccess(res.data);
+        setOpen(false);
+      } else {
+        toast.error("Failed to update service");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating the service");
+      console.error("Failed to update service:", error);
+    }
   };
 
   return (

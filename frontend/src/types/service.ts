@@ -9,7 +9,7 @@ export type TServiceFormData = {
 };
 
 export type TService = {
-  _id?: string;
+  _id: string;
   platform: string;
   name: string;
   count: string;

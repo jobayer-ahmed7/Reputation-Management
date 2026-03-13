@@ -35,3 +35,33 @@ export const deleteService = async (id: string) => {
   }
 };
 
+export const createService = async (data: any) => {
+  try {
+    const res = await fetch(`${API_BASE}/services`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return await res.json();
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+export const updateService = async (id: string, data: any) => {
+  try {
+    const res = await fetch(`${API_BASE}/services/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return await res.json();
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
