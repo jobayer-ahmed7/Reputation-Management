@@ -7,6 +7,7 @@ export type TPaymentStatus = (typeof paymentStatus)[number];
 
 
 export type TOrder = { 
+  orderId: string;
   orderedService: Types.ObjectId;
   user: Types.ObjectId;
   totalPrice: number;
@@ -14,6 +15,6 @@ export type TOrder = {
   paymentStatus: TPaymentStatus;
   transactionId?: string;
   isDeleted?: boolean;
-  createdAt?: Date;
+  createdAt?: Date; 
   updatedAt?: Date;
 };

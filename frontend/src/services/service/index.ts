@@ -22,7 +22,7 @@ export const getAllServices = async () => {
     return Error(error.message);
   }
 };
-
+ 
 
 export const deleteService = async (id: string) => {
   try {

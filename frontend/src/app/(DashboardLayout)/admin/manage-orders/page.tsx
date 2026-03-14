@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,17 +17,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
   Table,
   TableBody,
   TableCell,
@@ -45,123 +32,81 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { getAllOrders, updateOrderStatus } from "@/services/order";
+import { TOrder, TWorkingStatus, workingStatus } from "@/types/order";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import ServiceCard from "@/components/shared/ServiceCard";
 
-type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
-
-export type TOrder = {
-  _id: string;
-  customer: string;
-  service: string;
-  platform: string;
-  price: number;
-  count: number;
-  status: OrderStatus;
-  createdAt: string;
-};
-
-const initialOrders: TOrder[] = [
-  {
-    _id: "ORD-2026-001",
-    customer: "John Doe",
-    service: "Google Review Boost",
-    platform: "Google",
-    price: 149,
-    count: 25,
-    status: "pending",
-    createdAt: "2026-01-04",
+const statusConfig: Record<string, { label: string; className: string }> = {
+  PENDING: {
+    label: "Pending",
+    className: "border-amber-100 bg-amber-50 text-amber-700",
   },
-  {
-    _id: "ORD-2026-002",
-    customer: "Sarah Miller",
-    service: "Facebook Page Likes",
-    platform: "Facebook",
-    price: 89,
-    count: 100,
-    status: "processing",
-    createdAt: "2026-01-03",
+  PROCESSING: {
+    label: "Processing",
+    className: "border-sky-100 bg-sky-50 text-sky-700",
   },
-  {
-    _id: "ORD-2026-003",
-    customer: "David Wilson",
-    service: "Instagram Followers Starter",
-    platform: "Instagram",
-    price: 129,
-    count: 500,
-    status: "completed",
-    createdAt: "2025-12-28",
+  COMPLETED: {
+    label: "Completed",
+    className: "border-emerald-100 bg-emerald-50 text-emerald-700",
   },
-  {
-    _id: "ORD-2026-004",
-    customer: "Emily Clark",
-    service: "Google Premium Reviews",
-    platform: "Google",
-    price: 199,
-    count: 30,
-    status: "cancelled",
-    createdAt: "2025-12-20",
+  CANCELED: {
+    label: "Canceled",
+    className: "border-rose-100 bg-rose-50 text-rose-700",
   },
-];
-
-const statusOptions: { value: OrderStatus; label: string }[] = [
-  { value: "pending", label: "Pending" },
-  { value: "processing", label: "Processing" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
-];
-
-const formatStatus = (status: OrderStatus) => {
-  switch (status) {
-    case "pending":
-      return {
-        label: "Pending",
-        className: "border-amber-100 bg-amber-50 text-amber-700",
-      };
-    case "processing":
-      return {
-        label: "Processing",
-        className: "border-sky-100 bg-sky-50 text-sky-700",
-      };
-    case "completed":
-      return {
-        label: "Completed",
-        className: "border-emerald-100 bg-emerald-50 text-emerald-700",
-      };
-    case "cancelled":
-      return {
-        label: "Cancelled",
-        className: "border-rose-100 bg-rose-50 text-rose-700",
-      };
-    default:
-      return {
-        label: status,
-        className: "border-slate-200 bg-slate-50 text-slate-700",
-      };
-  }
 };
 
 const ManageOrder = () => {
-  const [orders, setOrders] = useState<TOrder[]>(initialOrders);
-  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
-  const [nextStatus, setNextStatus] = useState<OrderStatus | "">("");
+  const [orders, setOrders] = useState<TOrder[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const pageSize = 5;
-  const activeOrder =
-    activeOrderId !== null
-      ? orders.find((order) => order._id === activeOrderId) ?? null
-      : null;
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await getAllOrders();
+        console.log(res)
+        if (res?.success) {
+          setOrders(res.data.data); // Updated to handle new structure
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const handleStatusChange = async (orderId: string, newStatus: TWorkingStatus) => {
+    try {
+      const res = await updateOrderStatus(orderId, newStatus);
+      if (res?.success) {
+        toast.success("Order status updated successfully");
+        setOrders((prev) =>
+          prev.map((order) =>
+            order._id === orderId ? { ...order, workingStatus: newStatus } : order
+          )
+        );
+      } else {
+        toast.error(res?.message || "Failed to update status");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating status");
+      console.error("Status update error:", error);
+    }
+  };
 
   const filteredOrders = orders.filter((order) => {
     const term = searchQuery.trim().toLowerCase();
     if (!term) return true;
-
-    return (
-      order._id.toLowerCase().includes(term) ||
-      order.customer.toLowerCase().includes(term) ||
-      order.service.toLowerCase().includes(term) ||
-      order.platform.toLowerCase().includes(term) ||
-      order.status.toLowerCase().includes(term)
-    );
+    return order._id.toLowerCase().includes(term);
   });
 
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
@@ -174,16 +119,6 @@ const ManageOrder = () => {
   const startIndex =
     filteredOrders.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endIndex = Math.min(startIndex + pageSize - 1, filteredOrders.length);
-  const handleConfirmStatusChange = () => {
-    if (!activeOrder || !nextStatus || nextStatus === activeOrder.status)
-      return;
-
-    setOrders((prev) =>
-      prev.map((order) =>
-        order._id === activeOrder._id ? { ...order, status: nextStatus } : order
-      )
-    );
-  };
 
   return (
     <main className="py-8 space-y-6">
@@ -199,17 +134,17 @@ const ManageOrder = () => {
       </section>
 
       <section>
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-slate-900">
               Orders
             </CardTitle>
             <CardDescription>
-              Use the action on each row to change the order status.
+              Monitor and manage customer orders across all services.
             </CardDescription>
             <div className="mt-4">
               <Input
-                placeholder="Search by order ID, customer, service, platform, or status..."
+                placeholder="Search by Order ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="max-w-sm"
@@ -219,138 +154,111 @@ const ManageOrder = () => {
 
           <CardContent className="p-0">
             {filteredOrders.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-slate-500">
-                No orders available.
+              <p className="px-4 py-12 text-center text-sm text-slate-500">
+                No orders found.
               </p>
             ) : (
               <>
                 <Table>
                   <TableHeader className="bg-slate-50">
                     <TableRow>
-                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
-                        Order
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
+                        Order ID
                       </TableHead>
-                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
                         Customer
                       </TableHead>
-                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
-                        Service Name
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
+                        Service
                       </TableHead>
-                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
                         Price
                       </TableHead>
-                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
                         Status
                       </TableHead>
-                      <TableHead className="px-4 py-3 text-right text-[11px] uppercase tracking-wide text-slate-500 md:text-xs">
-                        Actions
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold text-right">
+                        Update Status
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {paginatedOrders.map((order) => {
-                      const statusMeta = formatStatus(order.status);
+                      const statusMeta =
+                        statusConfig[order.workingStatus] || statusConfig.PENDING;
 
                       return (
                         <TableRow
                           key={order._id}
-                          className="border-t border-slate-100 bg-white/80 hover:bg-slate-50/80"
+                          className="border-t border-slate-100 bg-white hover:bg-slate-50/50"
                         >
-                          <TableCell className="max-w-xs px-4 py-3 align-top">
-                            <div className="space-y-0.5">
-                              <p className="truncate text-sm font-medium text-slate-900">
-                                {order._id}
-                              </p>
-                              <p className="text-[11px] text-slate-500">
-                                Created at {order.createdAt}
-                              </p>
+                          <TableCell className="px-4 py-4 align-middle">
+                            <span className="text-[11px] font-mono text-slate-500 uppercase">
+                              #{order._id.slice(-8)}
+                            </span>
+                          </TableCell>
+                          <TableCell className="px-4 py-4 align-middle">
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-slate-900">
+                                {order.user?.name || "Unknown"}
+                              </span>
+                              <span className="text-[11px] text-slate-400">
+                                {order.user?.email}
+                              </span>
                             </div>
                           </TableCell>
-                          <TableCell className="px-4 py-3 align-top text-xs text-slate-700">
-                            {order.customer}
+                          <TableCell className="px-4 py-4 align-middle">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <button className="text-sm text-blue-600 hover:underline cursor-pointer text-left font-medium">
+                                  {order.orderedService?.name}
+                                </button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle>Service Details</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex justify-center py-4">
+                                  <ServiceCard
+                                    service={order.orderedService}
+                                    buyNowDisabled={true}
+                                  />
+                                </div>
+                              </DialogContent>
+                            </Dialog>
                           </TableCell>
-                          <TableCell className="px-4 py-3 align-top text-xs text-slate-600">
-                            {order.service}
+                          <TableCell className="px-4 py-4 align-middle text-sm font-semibold text-slate-900">
+                            ${order.totalPrice.toFixed(2)}
                           </TableCell>
-                          <TableCell className="px-4 py-3 align-top text-xs text-slate-600">
-                            ${order.price}
-                          </TableCell>
-                          <TableCell className="px-4 py-3 align-top">
+                          <TableCell className="px-4 py-4 align-middle">
                             <span
-                              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${statusMeta.className}`}
+                              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-tighter ${statusMeta.className}`}
                             >
-                              <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-current" />
                               {statusMeta.label}
                             </span>
                           </TableCell>
-                          <TableCell className="px-4 py-3 align-top text-right">
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-3 text-xs"
-                                  onClick={() => {
-                                    setActiveOrderId(order._id);
-                                    setNextStatus(order.status);
-                                  }}
-                                >
-                                  Update status
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Update order status
-                                  </AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    {activeOrder
-                                      ? `Change the status for ${activeOrder._id} (${activeOrder.customer}).`
-                                      : "Select a new status and confirm the change."}
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-
-                                <div className="space-y-2 py-2">
-                                  <p className="text-xs font-medium text-slate-700">
-                                    New status
-                                  </p>
-                                  <Select
-                                    value={nextStatus || ""}
-                                    onValueChange={(value: OrderStatus) =>
-                                      setNextStatus(value)
-                                    }
+                          <TableCell className="px-4 py-4 align-middle text-right">
+                            <Select
+                              value={order.workingStatus}
+                              onValueChange={(value: TWorkingStatus) =>
+                                handleStatusChange(order._id, value)
+                              }
+                            >
+                              <SelectTrigger className="w-35 ml-auto h-8 text-[11px] font-medium border-slate-200">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {workingStatus.map((status) => (
+                                  <SelectItem
+                                    key={status}
+                                    value={status}
+                                    className="text-[11px] font-medium"
                                   >
-                                    <SelectTrigger className="w-full">
-                                      <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {statusOptions.map((option) => (
-                                        <SelectItem
-                                          key={option.value}
-                                          value={option.value}
-                                        >
-                                          {option.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    disabled={
-                                      !activeOrder ||
-                                      !nextStatus ||
-                                      nextStatus === activeOrder.status
-                                    }
-                                    onClick={handleConfirmStatusChange}
-                                  >
-                                    Confirm
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                                    {status}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </TableCell>
                         </TableRow>
                       );
@@ -358,8 +266,8 @@ const ManageOrder = () => {
                   </TableBody>
                 </Table>
 
-                <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-xs text-slate-500 md:text-sm">
-                  <p>
+                <div className="flex items-center justify-between border-t border-slate-100 px-4 py-4">
+                  <p className="text-[11px] text-slate-500 font-medium">
                     Showing {startIndex}-{endIndex} of {filteredOrders.length}{" "}
                     orders
                   </p>
@@ -375,8 +283,8 @@ const ManageOrder = () => {
                           aria-disabled={currentPage === 1}
                           className={
                             currentPage === 1
-                              ? "pointer-events-none opacity-50"
-                              : ""
+                              ? "pointer-events-none opacity-50 h-8 text-[11px]"
+                              : "h-8 text-[11px] cursor-pointer"
                           }
                         />
                       </PaginationItem>
@@ -392,6 +300,7 @@ const ManageOrder = () => {
                                 event.preventDefault();
                                 setPage(pageNumber);
                               }}
+                              className="h-8 w-8 text-[11px] cursor-pointer"
                             >
                               {pageNumber}
                             </PaginationLink>
@@ -409,8 +318,8 @@ const ManageOrder = () => {
                           aria-disabled={currentPage === totalPages}
                           className={
                             currentPage === totalPages
-                              ? "pointer-events-none opacity-50"
-                              : ""
+                              ? "pointer-events-none opacity-50 h-8 text-[11px]"
+                              : "h-8 text-[11px] cursor-pointer"
                           }
                         />
                       </PaginationItem>
@@ -427,7 +336,3 @@ const ManageOrder = () => {
 };
 
 export default ManageOrder;
-
-
-
-

@@ -248,12 +248,12 @@ const AddService = ({ onAddSuccess }: AddServiceProps) => {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" type="button">
+              <Button variant="outline" type="button" className="cursor-pointer">
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Save Service
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 cursor-pointer">
+              Add Service
             </Button>
           </DialogFooter>
         </form>

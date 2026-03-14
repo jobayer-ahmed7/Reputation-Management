@@ -35,23 +35,22 @@ const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
   const page = Number(query.page) || 1; // Default to page 1 if not provided
   const limit = Number(query.limit) || 10; // Default to 10 items per page if not provided
   const skip = (page - 1) * limit;
-  const userId = query.id as string;
+  const userId = query.user as string;
 
-  // filter object
+  // filter object 
   const filter: Record<string, unknown> = {
     isDeleted: { $ne: true },
   };
   if (userId) {
     filter.user = userId;
   }
-  // console.log(filter);
-  // exclude the deleted orders
 
-  const result = await Order.find(filter)
+  const result = await Order.find()
     .populate('user')
-    .populate('products.product')
+    .populate('orderedService')
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .sort({ createdAt: -1 }); // Sort by newest first
 
   const totalOrders = await Order.countDocuments(filter);
   return {

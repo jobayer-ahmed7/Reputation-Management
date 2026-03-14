@@ -15,6 +15,10 @@ const router = express.Router();
 //   OrderControllers.createOrder,
 // );
 
+// get all orders
+router.get('/', OrderControllers.getAllOrder);
+
+
 // get order by user id
 
 router.get(
@@ -22,9 +26,6 @@ router.get(
   auth(USER_ROLE.customer),
   OrderControllers.getOrderByUserId,
 );
-
-// get all orders
-router.get('/', OrderControllers.getAllOrder);
 
 // update order by id
 router.patch(

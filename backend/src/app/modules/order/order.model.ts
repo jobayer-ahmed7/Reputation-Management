@@ -5,6 +5,7 @@ import { TOrder } from "./order.interface";
 
 const orderSchema = new Schema<TOrder>(
   {
+    orderId: { type: String, required: [true, "Order ID is required"] },
     orderedService:{ type: Schema.Types.ObjectId, ref: "Service",  required: [true, "Product is required"] },
     user: { type: Schema.Types.ObjectId, ref: "User", required: [true, "User is required"] },
     totalPrice: { type: Number, required: [true, "Total price is required"] },
