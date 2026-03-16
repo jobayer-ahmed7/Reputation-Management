@@ -63,11 +63,13 @@ const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
 
 // Update order
 const updateOrderIntoDB = async (id: string, payload: Partial<TOrder>) => {
-  const workingStatus = payload.workingStatus;
+
+  console.log({id, payload})
+
   const result = await Order.findByIdAndUpdate(
     id,
-    { workingStatus },
-    { new: true },
+    payload,
+    { returnDocument: 'after' },
   );
   return result;
 };
@@ -77,7 +79,7 @@ const deleteOrderFromDB = async (id: string) => {
   const result = await Order.findByIdAndUpdate(
     id,
     { isDeleted: true },
-    { new: true },
+    { returnDocument: 'after' },
   );
   return result;
 };

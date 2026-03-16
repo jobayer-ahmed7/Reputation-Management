@@ -3,13 +3,14 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useUser } from "@/contexts/userContext";
-import { getOrdersByUserId } from "@/services/order";
+import { getOrdersByUserId, requestCancelOrder } from "@/services/order";
 import { TOrder, workingStatus } from "@/types/order";
-import { Check } from "lucide-react";
+import { Check, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ServiceCard from "@/components/shared/ServiceCard";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -57,6 +58,26 @@ const CustomerPage = () => {
     fetchOrders();
   }, [user?._id]);
 
+  const handleCancelRequest = async (orderId: string) => {
+    try {
+      const res = await requestCancelOrder(orderId);
+      // console.log(res);
+      if (res.success) {
+        toast.success("Cancellation request sent successfully");
+        // Update local state to reflect the change immediately
+        setOrders((prev) =>
+          prev.map((order) =>
+            order._id === orderId ? { ...order, cancelRequested: true } : order,
+          ),
+        );
+      } else {
+        toast.error(res.message || "Failed to send cancellation request");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-800 px-6 py-10 font-mono">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -102,12 +123,17 @@ const CustomerPage = () => {
         ) : (
           <div className="space-y-8">
             {orders.map((order) => {
+              const displayStatuses = workingStatus.slice(0, 3);
               const currentStep = getStatusIndex(order.workingStatus);
               const { label, pill } =
                 statusConfig[order.workingStatus] || statusConfig.PENDING;
 
-              // Progress percentage logic
-              const fillPct = (currentStep / (workingStatus.length - 1)) * 100;
+              // Progress percentage logic (constrained to 3 steps)
+              const fillPct =
+                order.workingStatus === "CANCELED"
+                  ? 0
+                  : (Math.min(currentStep, 2) / (displayStatuses.length - 1)) *
+                    100;
 
               return (
                 <div
@@ -118,7 +144,7 @@ const CustomerPage = () => {
                   <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
                     <div className="space-y-1">
                       <p className="text-slate-400 text-[10px] uppercase tracking-widest">
-                        ID: {order._id.slice(-8)}
+                        ID: {order.orderId}
                       </p>
                       <h2 className="text-xl font-bold text-slate-800">
                         {order.orderedService?.name}
@@ -154,12 +180,17 @@ const CustomerPage = () => {
                     />
 
                     <div className="relative flex justify-between items-center">
-                      {workingStatus.map((step, index) => {
+                      {displayStatuses.map((step, index) => {
                         const isCompleted =
-                          index < currentStep ||
-                          order.workingStatus === "COMPLETED";
-                        const isCurrent = index === currentStep;
-                        const isFuture = index > currentStep;
+                          order.workingStatus === "COMPLETED" ||
+                          (order.workingStatus !== "CANCELED" &&
+                            index < currentStep);
+                        const isCurrent =
+                          order.workingStatus !== "CANCELED" &&
+                          index === currentStep;
+                        const isFuture =
+                          order.workingStatus === "CANCELED" ||
+                          index > currentStep;
 
                         return (
                           <div
@@ -192,18 +223,74 @@ const CustomerPage = () => {
 
                   {/* Footer */}
                   <div className="mt-12 pt-6 border-t border-slate-100 flex justify-between items-center">
-                    <span className="text-[10px] text-slate-400 font-bold">
-                      PAYMENT:{" "}
-                      <span
-                        className={
-                          order.paymentStatus === "PAID"
-                            ? "text-emerald-500"
-                            : "text-amber-500"
-                        }
-                      >
-                        {order.paymentStatus}
+                    <div className="flex items-center gap-4">
+                      <span className="text-[10px] text-slate-400 font-bold">
+                        PAYMENT:{" "}
+                        <span
+                          className={
+                            order.paymentStatus === "PAID"
+                              ? "text-emerald-500"
+                              : "text-amber-500"
+                          }
+                        >
+                          {order.paymentStatus}
+                        </span>
                       </span>
-                    </span>
+
+                      {/* Cancel Request Logic */}
+                      {!order.cancelRequested &&
+                        order.workingStatus === "PENDING" && (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 cursor-pointer px-2 text-red-500 text-[10px] font-bold hover:bg-red-50 hover:text-red-600 transition-colors"
+                              >
+                                REQUEST CANCEL
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Request Cancellation</DialogTitle>
+                              </DialogHeader>
+                              <p className="text-sm text-slate-500">
+                                Are you sure you want to request cancellation
+                                for this order?
+                              </p>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="cursor-pointer"
+                                  >
+                                    No, Keep it
+                                  </Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="destructive"
+                                    onClick={() =>
+                                      handleCancelRequest(order._id)
+                                    }
+                                    className="cursor-pointer"
+                                  >
+                                    Yes, Request Cancel
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        )}
+
+                      {order.cancelRequested &&
+                        order.workingStatus !== "CANCELED" && (
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500 uppercase">
+                            <XCircle className="w-3 h-3" />
+                            Cancellation Requested
+                          </div>
+                        )}
+                    </div>
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button
@@ -218,7 +305,10 @@ const CustomerPage = () => {
                           <DialogTitle>Service Details</DialogTitle>
                         </DialogHeader>
                         <div className="flex items-center gap-2 justify-center">
-                         <ServiceCard service={order.orderedService} buyNowDisabled={true} />
+                          <ServiceCard
+                            service={order.orderedService}
+                            buyNowDisabled={true}
+                          />
                         </div>
                         <DialogFooter className="sm:justify-start">
                           <DialogClose asChild>
