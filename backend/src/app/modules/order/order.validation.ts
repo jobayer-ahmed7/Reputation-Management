@@ -5,6 +5,7 @@ import { paymentStatus, workingStatus } from "./order.constant";
 
 const orderValidationSchema = z.object({
   body: z.object({
+    orderId: z.string().optional(),
     orderedService: z.string(),
     user: z.string(),
     totalPrice: z.number().min(0, "Total price cannot be negative").optional(),

@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Check, Info } from "lucide-react";
+import { Check, Info, ExternalLink } from "lucide-react";
 import { useUser } from "@/contexts/userContext";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -26,17 +26,17 @@ const paymentOptions = [
   {
     id: "binance",
     name: "Binance",
-    details: "Binance Pay ID: 123456789\nEmail: binance@example.com",
+    details: "Pay ID: 496031124\nEmail: majharul393@gmail.com",
   },
   {
     id: "payoneer",
     name: "Payoneer",
-    details: "Payoneer Email: payoneer@example.com",
+    details: "Bank name: First Century Bank\nBank address: 1731 N Elm St Commerce, GA 30529 USA\nRouting (ABA): 061120084\nAccount number: 4019652588313\nAccount type: CHECKING\nBeneficiary name: majharul islam\nMinimum Payment amount: $10",
   },
   {
     id: "wise",
     name: "Wise",
-    details: "Wise Email: wise@example.com\nAccount Name: Example Corp",
+    details: "https://wise.com/pay/me/majharuli22",
   },
 ];
 
@@ -47,6 +47,7 @@ const CheckoutContent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [transactionId, setTransactionId] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
   const router = useRouter();
 
@@ -105,8 +106,8 @@ const CheckoutContent = () => {
       return;
     }
 
+    setIsSubmitting(true);
     try {
-      // Logic to create order
       const orderData = {
         orderedService: serviceId,
         user: user._id,
@@ -123,6 +124,8 @@ const CheckoutContent = () => {
       }
     } catch (error) {
       toast.error("An error occurred while placing the order");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -220,9 +223,36 @@ const CheckoutContent = () => {
                       <p className="text-sm font-bold text-slate-800">Payment Details for {selectedPaymentDetail.name}</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
-                      <p className="text-sm text-slate-600 whitespace-pre-wrap font-mono leading-relaxed">
-                        {selectedPaymentDetail.details}
-                      </p>
+                      {selectedPayment === 'wise' ? (
+                        <div className="flex flex-col gap-2">
+                          <p className="text-xs text-slate-500 mb-1">Click the link below to pay via Wise:</p>
+                          <a 
+                            href={selectedPaymentDetail.details} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-pblue hover:underline font-bold text-sm flex items-center gap-2 break-all group"
+                          >
+                            <Check className="w-4 h-4 text-emerald-500" />
+                            {selectedPaymentDetail.details}
+                            <ExternalLink className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {selectedPaymentDetail.details.split('\n').map((line, idx) => {
+                            if (line.includes(':')) {
+                              const [key, ...value] = line.split(':');
+                              return (
+                                <div key={idx} className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-1 border-b border-slate-50 last:border-0">
+                                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{key.trim()}</span>
+                                  <span className="text-sm font-mono font-bold text-slate-800">{value.join(':').trim()}</span>
+                                </div>
+                              );
+                            }
+                            return <p key={idx} className="text-sm font-bold text-slate-900">{line}</p>;
+                          })}
+                        </div>
+                      )}
                     </div>
                     <p className="mt-3 text-[11px] text-slate-500 leading-tight">
                       * Please make sure to send the exact amount to avoid delays in processing your order.

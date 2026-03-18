@@ -2,20 +2,27 @@ import { Types } from 'mongoose';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '../user/user.model';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const createOrderIntoDB = async (payload: TOrder) => {
   const user_id = payload.user.toString();
-  const transactionId = `${uuidv4()}-${Date.now()}`;
-  // const DBuser = await UserServices.getSingleUser(user_id);
+  
+  // Check if user exists
+  const DBuser = await User.findById(user_id);
+  if (!DBuser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
 
-  // if (!DBuser) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-  // }
+  // Generate unique Order ID
+  const orderId = `ORD-${uuidv4().slice(0, 8).toUpperCase()}-${Date.now()}`;
 
   const orderData = {
     ...payload,
+    orderId,
     paymentStatus: 'UNPAID' as const,
-    transactionId,
+    workingStatus: 'PENDING' as const,
   };
 
   const createdOrder = await Order.create(orderData);
