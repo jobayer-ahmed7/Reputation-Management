@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
@@ -7,16 +6,16 @@ import { OrderService } from './order.service';
 
 
 
-// const createOrder = catchAsync(async (req, res) => {
-//   const result = await OrderService.createOrderIntoDB(req.body);
+const createOrder = catchAsync(async (req, res) => {
+  const result = await OrderService.createOrderIntoDB(req.body);
 
-//   sendResponse.sendCreateDataResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Order is created succesfully',
-//     data: result,
-//   });
-// });
+  sendResponse.sendCreateDataResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order is created succesfully',
+    data: result,
+  });
+});
 
 // get order by user id
 const getOrderByUserId = catchAsync(async (req, res) => {
@@ -65,7 +64,7 @@ const deleteSingleOrder = catchAsync(async (req, res) => {
 });
 
 export const OrderControllers = {
-  // createOrder,
+  createOrder,
   getOrderByUserId,
   getAllOrder,
   updateSingleOrder,

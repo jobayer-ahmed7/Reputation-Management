@@ -11,11 +11,13 @@ import ServiceCard from "@/components/shared/ServiceCard";
 import { getAllServices } from "@/services/service";
 import { TService } from "@/types/service";
 import Loading from "@/components/shared/Loading";
+import { useRouter } from "next/navigation";
 
 const ServicePage = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("all");
   const [services, setServices] = useState<TService[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   // Get unique platforms from services
   const uniquePlatforms = Array.from(
@@ -24,6 +26,10 @@ const ServicePage = () => {
 
   const handlePlatformClick = (platform: string) => {
     setSelectedPlatform(platform);
+  };
+
+  const handleBuyNow = (service: TService) => {
+    router.push(`/checkout?serviceId=${service._id}`);
   };
 
   const filteredServices =
@@ -177,6 +183,7 @@ const ServicePage = () => {
                 <ServiceCard
                   key={`${service.platform}-${service.name}-${service.count}`}
                   service={service}
+                  onBuyNow={handleBuyNow}
                 />
               ))}
             </div>

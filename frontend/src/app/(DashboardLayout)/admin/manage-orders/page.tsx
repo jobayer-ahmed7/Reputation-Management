@@ -63,17 +63,41 @@ const statusConfig: Record<string, { label: string; className: string }> = {
   },
 };
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const ManageOrder = () => {
   const [orders, setOrders] = useState<TOrder[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const pageSize = 5;
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingUpdate, setPendingUpdate] = useState<{
+    orderId: string;
+    newStatus: TWorkingStatus;
+  } | null>(null);
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const res = await getAllOrders();
-        console.log(res)
+        console.log(res);
         if (res?.success) {
           setOrders(res.data.data); // Updated to handle new structure
         }
@@ -84,15 +108,20 @@ const ManageOrder = () => {
     fetchOrders();
   }, []);
 
-  const handleStatusChange = async (orderId: string, newStatus: TWorkingStatus) => {
+  const handleStatusChange = async (
+    orderId: string,
+    newStatus: TWorkingStatus,
+  ) => {
     try {
       const res = await updateOrderStatus(orderId, newStatus);
       if (res?.success) {
         toast.success("Order status updated successfully");
         setOrders((prev) =>
           prev.map((order) =>
-            order._id === orderId ? { ...order, workingStatus: newStatus } : order
-          )
+            order._id === orderId
+              ? { ...order, workingStatus: newStatus }
+              : order,
+          ),
         );
       } else {
         toast.error(res?.message || "Failed to update status");
@@ -103,17 +132,30 @@ const ManageOrder = () => {
     }
   };
 
+  const onStatusSelect = (orderId: string, newStatus: TWorkingStatus) => {
+    setPendingUpdate({ orderId, newStatus });
+    setConfirmOpen(true);
+  };
+
+  const confirmUpdate = () => {
+    if (pendingUpdate) {
+      handleStatusChange(pendingUpdate.orderId, pendingUpdate.newStatus);
+    }
+    setConfirmOpen(false);
+    setPendingUpdate(null);
+  };
+
   const filteredOrders = orders.filter((order) => {
     const term = searchQuery.trim().toLowerCase();
     if (!term) return true;
-    return order._id.toLowerCase().includes(term);
+    return order.orderId.toLowerCase().includes(term);
   });
 
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const paginatedOrders = filteredOrders.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   const startIndex =
@@ -122,6 +164,29 @@ const ManageOrder = () => {
 
   return (
     <main className="py-8 space-y-6">
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Update Order Status?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to change the status to{" "}
+              <span className="font-bold text-slate-900">
+                {pendingUpdate?.newStatus}
+              </span>
+              ? This action will be visible to the customer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingUpdate(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmUpdate}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <section>
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
@@ -185,7 +250,8 @@ const ManageOrder = () => {
                   <TableBody>
                     {paginatedOrders.map((order) => {
                       const statusMeta =
-                        statusConfig[order.workingStatus] || statusConfig.PENDING;
+                        statusConfig[order.workingStatus] ||
+                        statusConfig.PENDING;
 
                       return (
                         <TableRow
@@ -193,9 +259,27 @@ const ManageOrder = () => {
                           className="border-t border-slate-100 bg-white hover:bg-slate-50/50"
                         >
                           <TableCell className="px-4 py-4 align-middle">
-                            <span className="text-[11px] font-mono text-slate-500 uppercase">
-                              #{order._id.slice(-8)}
-                            </span>
+                            {order.cancelRequested ? (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-[11px] font-mono text-red-600 font-bold uppercase cursor-help">
+                                      #{order.orderId}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">
+                                      Customer has requested to cancel this
+                                      order.
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            ) : (
+                              <span className="text-[11px] font-mono text-slate-500 uppercase">
+                                #{order.orderId}
+                              </span>
+                            )}
                           </TableCell>
                           <TableCell className="px-4 py-4 align-middle">
                             <div className="flex flex-col">
@@ -241,7 +325,7 @@ const ManageOrder = () => {
                             <Select
                               value={order.workingStatus}
                               onValueChange={(value: TWorkingStatus) =>
-                                handleStatusChange(order._id, value)
+                                onStatusSelect(order._id, value)
                               }
                             >
                               <SelectTrigger className="w-35 ml-auto h-8 text-[11px] font-medium border-slate-200">

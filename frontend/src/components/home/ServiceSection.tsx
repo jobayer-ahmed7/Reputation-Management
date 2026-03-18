@@ -5,10 +5,12 @@ import { getAllServices } from "@/services/service";
 import { TService } from "@/types/service";
 import { useEffect, useState } from "react";
 import Loading from "../shared/Loading";
+import { useRouter } from "next/navigation";
 
 const ServiceSection = () => {
   const [services, setServices] = useState<TService[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -21,6 +23,10 @@ const ServiceSection = () => {
     };
     fetchServices();
   }, []);
+
+  const handleBuyNow = (service: TService) => {
+    router.push(`/checkout?serviceId=${service._id}`);
+  };
 
   // console.log(services)
   return (
@@ -48,7 +54,11 @@ const ServiceSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services?.map((service) => (
-              <ServiceCard key={service._id} service={service} />
+              <ServiceCard
+                key={service._id}
+                service={service}
+                onBuyNow={handleBuyNow}
+              />
             ))}
           </div>
         )}

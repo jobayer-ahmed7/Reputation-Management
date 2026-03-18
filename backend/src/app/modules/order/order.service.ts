@@ -1,26 +1,27 @@
 import { Types } from 'mongoose';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
+import { v4 as uuidv4 } from 'uuid';
 
-// const createOrderIntoDB = async (payload) => {
-//   const user_id = payload.user.toString();
-//   const transactionId = `${uuidv4()}-${Date.now()}`;
-//   const DBuser = await UserServices.getSingleUser(user_id);
+const createOrderIntoDB = async (payload: TOrder) => {
+  const user_id = payload.user.toString();
+  const transactionId = `${uuidv4()}-${Date.now()}`;
+  // const DBuser = await UserServices.getSingleUser(user_id);
 
-//   if (!DBuser) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-//   }
+  // if (!DBuser) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  // }
 
-//   const orderData = {
-//     ...payload,
-//     paymentStatus: 'UNPAID' as const,
-//     transactionId,
-//   };
+  const orderData = {
+    ...payload,
+    paymentStatus: 'UNPAID' as const,
+    transactionId,
+  };
 
-//   const createdOrder = await Order.create(orderData);
+  const createdOrder = await Order.create(orderData);
 
-//   return createdOrder;
-// };
+  return createdOrder;
+};
 
 // get order by user id
 
@@ -64,7 +65,7 @@ const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
 // Update order
 const updateOrderIntoDB = async (id: string, payload: Partial<TOrder>) => {
 
-  console.log({id, payload})
+  // console.log({id, payload})
 
   const result = await Order.findByIdAndUpdate(
     id,
@@ -87,7 +88,7 @@ const deleteOrderFromDB = async (id: string) => {
 export const OrderService = {
   getAllOrdersFromDB,
   getOrderByUserIdFromDB,
-  // createOrderIntoDB,
+  createOrderIntoDB,
   updateOrderIntoDB,
   deleteOrderFromDB,
 };

@@ -22,6 +22,20 @@ export const getAllServices = async () => {
     return Error(error.message);
   }
 };
+
+export const getServiceById = async (id: string) => {
+  try {
+    const res = await fetch(`${API_BASE}/services/${id}`, {
+      next: {
+        tags: ["SERVICE"],
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
+  }
+};
  
 
 export const deleteService = async (id: string) => {
