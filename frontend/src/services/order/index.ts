@@ -95,6 +95,29 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
   }
 };
 
+export const updateOrderPaymentStatus = async (orderId: string, status: string) => {
+  try {
+    // Get token from cookies (recommended for server actions)
+    const { cookies } = await import("next/headers");
+    const cookieStore = cookies();
+    const token = (await cookieStore).get("accessToken")?.value;
+
+    const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ paymentStatus: status }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
+  }
+};
+
 export const requestCancelOrder = async (orderId: string) => {
   try {
     // Get token from cookies (recommended for server actions)

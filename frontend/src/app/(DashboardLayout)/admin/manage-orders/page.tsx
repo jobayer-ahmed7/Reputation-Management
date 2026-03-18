@@ -32,8 +32,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { getAllOrders, updateOrderStatus } from "@/services/order";
-import { TOrder, TWorkingStatus, workingStatus } from "@/types/order";
+import { getAllOrders, updateOrderStatus, updateOrderPaymentStatus } from "@/services/order";
+import { TOrder, TWorkingStatus, workingStatus, paymentStatus, TPaymentStatus } from "@/types/order";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -60,6 +60,17 @@ const statusConfig: Record<string, { label: string; className: string }> = {
   CANCELED: {
     label: "Canceled",
     className: "border-rose-100 bg-rose-50 text-rose-700",
+  },
+};
+
+const paymentStatusConfig: Record<string, { label: string; className: string }> = {
+  UNPAID: {
+    label: "Unpaid",
+    className: "border-rose-100 bg-rose-50 text-rose-700",
+  },
+  PAID: {
+    label: "Paid",
+    className: "border-emerald-100 bg-emerald-50 text-emerald-700",
   },
 };
 
@@ -90,7 +101,8 @@ const ManageOrder = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingUpdate, setPendingUpdate] = useState<{
     orderId: string;
-    newStatus: TWorkingStatus;
+    newStatus: TWorkingStatus | TPaymentStatus;
+    type: "working" | "payment";
   } | null>(null);
 
   useEffect(() => {
@@ -132,14 +144,47 @@ const ManageOrder = () => {
     }
   };
 
+  const handlePaymentStatusChange = async (
+    orderId: string,
+    newStatus: TPaymentStatus,
+  ) => {
+    try {
+      const res = await updateOrderPaymentStatus(orderId, newStatus);
+      if (res?.success) {
+        toast.success("Payment status updated successfully");
+        setOrders((prev) =>
+          prev.map((order) =>
+            order._id === orderId
+              ? { ...order, paymentStatus: newStatus }
+              : order,
+          ),
+        );
+      } else {
+        toast.error(res?.message || "Failed to update payment status");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating payment status");
+      console.error("Payment status update error:", error);
+    }
+  };
+
   const onStatusSelect = (orderId: string, newStatus: TWorkingStatus) => {
-    setPendingUpdate({ orderId, newStatus });
+    setPendingUpdate({ orderId, newStatus, type: "working" });
+    setConfirmOpen(true);
+  };
+
+  const onPaymentStatusSelect = (orderId: string, newStatus: TPaymentStatus) => {
+    setPendingUpdate({ orderId, newStatus, type: "payment" });
     setConfirmOpen(true);
   };
 
   const confirmUpdate = () => {
     if (pendingUpdate) {
-      handleStatusChange(pendingUpdate.orderId, pendingUpdate.newStatus);
+      if (pendingUpdate.type === "working") {
+        handleStatusChange(pendingUpdate.orderId, pendingUpdate.newStatus as TWorkingStatus);
+      } else {
+        handlePaymentStatusChange(pendingUpdate.orderId, pendingUpdate.newStatus as TPaymentStatus);
+      }
     }
     setConfirmOpen(false);
     setPendingUpdate(null);
@@ -167,7 +212,7 @@ const ManageOrder = () => {
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Update Order Status?</AlertDialogTitle>
+            <AlertDialogTitle>Update {pendingUpdate?.type === 'working' ? 'Order' : 'Payment'} Status?</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to change the status to{" "}
               <span className="font-bold text-slate-900">
@@ -224,6 +269,7 @@ const ManageOrder = () => {
               </p>
             ) : (
               <>
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader className="bg-slate-50">
                     <TableRow>
@@ -240,10 +286,16 @@ const ManageOrder = () => {
                         Price
                       </TableHead>
                       <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
-                        Status
+                        TX ID
+                      </TableHead>
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
+                        Payment
+                      </TableHead>
+                      <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold">
+                        Working
                       </TableHead>
                       <TableHead className="px-4 py-3 text-[11px] uppercase tracking-wide text-slate-500 font-bold text-right">
-                        Update Status
+                        Action
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -252,6 +304,10 @@ const ManageOrder = () => {
                       const statusMeta =
                         statusConfig[order.workingStatus] ||
                         statusConfig.PENDING;
+                      
+                      const paymentMeta = 
+                        paymentStatusConfig[order.paymentStatus] ||
+                        paymentStatusConfig.UNPAID;
 
                       return (
                         <TableRow
@@ -315,40 +371,77 @@ const ManageOrder = () => {
                             ${order.totalPrice.toFixed(2)}
                           </TableCell>
                           <TableCell className="px-4 py-4 align-middle">
+                             <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded break-all max-w-[100px] inline-block">
+                                {order.transactionId || "N/A"}
+                             </span>
+                          </TableCell>
+                          <TableCell className="px-4 py-4 align-middle">
                             <span
-                              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-tighter ${statusMeta.className}`}
+                              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-tighter ${paymentMeta.className}`}
+                            >
+                              {paymentMeta.label}
+                            </span>
+                          </TableCell>
+                          <TableCell className="px-4 py-4 align-middle">
+                            <span
+                              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-tighter ${statusMeta.className}`}
                             >
                               {statusMeta.label}
                             </span>
                           </TableCell>
                           <TableCell className="px-4 py-4 align-middle text-right">
-                            <Select
-                              value={order.workingStatus}
-                              onValueChange={(value: TWorkingStatus) =>
-                                onStatusSelect(order._id, value)
-                              }
-                            >
-                              <SelectTrigger className="w-35 ml-auto h-8 text-[11px] font-medium border-slate-200">
-                                <SelectValue placeholder="Status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {workingStatus.map((status) => (
-                                  <SelectItem
-                                    key={status}
-                                    value={status}
-                                    className="text-[11px] font-medium"
-                                  >
-                                    {status}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                             <div className="flex flex-col gap-2 items-end">
+                                <Select
+                                  value={order.paymentStatus}
+                                  onValueChange={(value: TPaymentStatus) =>
+                                    onPaymentStatusSelect(order._id, value)
+                                  }
+                                >
+                                  <SelectTrigger className="w-28 h-7 text-[10px] font-medium border-slate-200">
+                                    <SelectValue placeholder="Payment" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {paymentStatus.map((status) => (
+                                      <SelectItem
+                                        key={status}
+                                        value={status}
+                                        className="text-[10px] font-medium"
+                                      >
+                                        {status}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  value={order.workingStatus}
+                                  onValueChange={(value: TWorkingStatus) =>
+                                    onStatusSelect(order._id, value)
+                                  }
+                                >
+                                  <SelectTrigger className="w-28 h-7 text-[10px] font-medium border-slate-200">
+                                    <SelectValue placeholder="Working" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {workingStatus.map((status) => (
+                                      <SelectItem
+                                        key={status}
+                                        value={status}
+                                        className="text-[10px] font-medium"
+                                      >
+                                        {status}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                             </div>
                           </TableCell>
                         </TableRow>
                       );
                     })}
                   </TableBody>
                 </Table>
+                </div>
 
                 <div className="flex items-center justify-between border-t border-slate-100 px-4 py-4">
                   <p className="text-[11px] text-slate-500 font-medium">
