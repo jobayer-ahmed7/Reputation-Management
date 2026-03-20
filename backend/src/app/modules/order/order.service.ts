@@ -8,7 +8,7 @@ import httpStatus from 'http-status';
 
 const createOrderIntoDB = async (payload: TOrder) => {
   const user_id = payload.user.toString();
-  
+
   // Check if user exists
   const DBuser = await User.findById(user_id);
   if (!DBuser) {
@@ -33,7 +33,9 @@ const createOrderIntoDB = async (payload: TOrder) => {
 // get order by user id
 
 const getOrderByUserIdFromDB = async (userId: string) => {
-  const result = await Order.find({ user: new Types.ObjectId(userId) }).populate('orderedService');
+  const result = await Order.find({ user: new Types.ObjectId(userId) })
+    .populate('orderedService')
+    .sort({ createdAt: -1 });
   return result;
 };
 
@@ -45,7 +47,7 @@ const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
   const skip = (page - 1) * limit;
   const userId = query.user as string;
 
-  // filter object 
+  // filter object
   const filter: Record<string, unknown> = {
     isDeleted: { $ne: true },
   };
@@ -71,14 +73,11 @@ const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
 
 // Update order
 const updateOrderIntoDB = async (id: string, payload: Partial<TOrder>) => {
-
   // console.log({id, payload})
 
-  const result = await Order.findByIdAndUpdate(
-    id,
-    payload,
-    { returnDocument: 'after' },
-  );
+  const result = await Order.findByIdAndUpdate(id, payload, {
+    returnDocument: 'after',
+  });
   return result;
 };
 

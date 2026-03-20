@@ -283,9 +283,10 @@ const CheckoutContent = () => {
                   </div>
                   <Button
                     onClick={handlePlaceOrder}
-                    className="w-full h-14 bg-linear-to-r from-pblue to-bluegray text-white text-lg font-black rounded-xl shadow-[0_10px_20px_-5px_rgba(1,122,255,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(1,122,255,0.4)] hover:-translate-y-0.5 transition-all duration-300 active:scale-95 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full h-14 bg-linear-to-r from-pblue to-bluegray text-white text-lg font-black rounded-xl shadow-[0_10px_20px_-5px_rgba(1,122,255,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(1,122,255,0.4)] hover:-translate-y-0.5 transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    COMPLETE ORDER
+                    {isSubmitting ? "PLACING ORDER..." : "COMPLETE ORDER"}
                   </Button>
                   <p className="mt-4 text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
                     SECURE PAYMENT VERIFICATION SYSTEM

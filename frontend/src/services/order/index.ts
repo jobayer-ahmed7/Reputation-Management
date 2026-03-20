@@ -137,6 +137,9 @@ export const requestCancelOrder = async (orderId: string) => {
     const data = await res.json();
     return data;
   } catch (error: any) {
-    return Error(error.message);
+    return {
+      success: false,
+      message: error.message || "Failed to request cancellation",
+    };
   }
 };
