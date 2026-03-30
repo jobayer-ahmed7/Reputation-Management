@@ -6,6 +6,9 @@ const router = Router();
 // Get all services
 router.get('/', ServiceController.getAllServices);
 
+// Get featured services
+router.get('/featured', ServiceController.getFeaturedServices);
+
 // Create a new service
 router.post('/', ServiceController.createService);
 

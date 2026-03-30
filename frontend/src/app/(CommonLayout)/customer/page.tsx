@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, } from "@/components/ui/card";
 import { useUser } from "@/contexts/userContext";
 import { getOrdersByUserId, requestCancelOrder } from "@/services/order";
 import { TOrder } from "@/types/order";

@@ -19,6 +19,20 @@ export const getAllServices = async (
   });
 };
 
+// Get featured services
+export const getFeaturedServices = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const services = await ServiceServices.getFeaturedServicesFromDB();
+  sendResponse.sendDataResponse<IService>(res, {
+    statusCode: statusCode.OK,
+    success: true,
+    message: 'Featured services retrieved successfully',
+    data: services,
+  });
+};
+
 // Get service by ID
 export const getServiceById = async (
   req: Request,
@@ -160,6 +174,7 @@ export const deleteService = async (
 
 export const ServiceController = {
   getAllServices,
+  getFeaturedServices,
   getServiceById,
   createService,
   updateService,

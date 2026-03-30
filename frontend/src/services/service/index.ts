@@ -23,6 +23,20 @@ export const getAllServices = async () => {
   }
 };
 
+export const getFeaturedServices = async () => {
+  try {
+    const res = await fetch(`${API_BASE}/services/featured`, {
+      next: {
+        tags: ["SERVICE"],
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
+  }
+};
+
 export const getServiceById = async (id: string) => {
   try {
     const res = await fetch(`${API_BASE}/services/${id}`, {

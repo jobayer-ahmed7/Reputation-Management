@@ -7,6 +7,14 @@ export const getAllServicesFromDB = async (): Promise<IService[]> => {
   return services;
 };
 
+// Get featured services
+export const getFeaturedServicesFromDB = async (): Promise<IService[]> => {
+  const services = await Service.find({ isFeatured: true }).sort({
+    updatedAt: -1,
+  });
+  return services;
+};
+
 // Get service by ID
 export const getServiceByIdFromDB = async (
   id: string,
@@ -29,7 +37,7 @@ export const updateServiceIntoDB = async (
   serviceData: Partial<IService>,
 ): Promise<IService | null> => {
   const updatedService = await Service.findByIdAndUpdate(id, serviceData, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
   return updatedService;
@@ -45,6 +53,7 @@ export const deleteServiceFromDB = async (
 
 export const ServiceServices = {
   getAllServicesFromDB,
+  getFeaturedServicesFromDB,
   getServiceByIdFromDB,
   createServiceFromDB,
   updateServiceIntoDB,

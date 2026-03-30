@@ -1,7 +1,7 @@
 "use client";
 
 import ServiceCard from "../shared/ServiceCard";
-import { getAllServices } from "@/services/service";
+import { getFeaturedServices } from "@/services/service";
 import { TService } from "@/types/service";
 import { useEffect, useState } from "react";
 import Loading from "../shared/Loading";
@@ -12,13 +12,13 @@ const ServiceSection = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchServices = async () => {
       setLoading(true);
-      const allServices = await getAllServices();
-      setServices(
-        allServices?.data?.filter((service: TService) => service.isFeatured),
-      );
+      const response = await getFeaturedServices();
+      if (response?.success) {
+        setServices(response.data);
+      }
       setLoading(false);
     };
     fetchServices();
