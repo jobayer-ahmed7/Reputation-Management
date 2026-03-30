@@ -120,7 +120,7 @@ const Footer = () => {
         <Link
           className="text-xs text-blue-400/70 hover:text-blue-400 transition-colors"
           target="_blank"
-          href="https://jobayerahmed.vercel.app"
+          href="https://jobayerahmed.com"
         >
           Developed by Jobayer Ahmed
         </Link>

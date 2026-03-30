@@ -86,15 +86,6 @@ const ContactUs = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0 text-green-500">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">Phone Call Support</p>
-                    <p className="text-slate-600">+88 01821138649</p>
-                  </div>
-                </div>
               </div>
             </div>
 

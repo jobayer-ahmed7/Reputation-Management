@@ -47,6 +47,7 @@ const CheckoutContent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [transactionId, setTransactionId] = useState<string>("");
+  const [links, setLinks] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
   const router = useRouter();
@@ -96,6 +97,11 @@ const CheckoutContent = () => {
       return;
     }
 
+    if (!links.trim()) {
+      toast.error("Please provide at least one link");
+      return;
+    }
+
     if (!selectedPayment) {
       toast.error("Please select a payment method");
       return;
@@ -108,11 +114,17 @@ const CheckoutContent = () => {
 
     setIsSubmitting(true);
     try {
+      const linksArray = links
+        .split(",")
+        .map((link) => link.trim())
+        .filter((link) => link !== "");
+
       const orderData = {
         orderedService: serviceId,
         user: user._id,
         totalPrice: service?.price,
         transactionId: transactionId,
+        links: linksArray,
       };
 
       const response = await createOrder(orderData);
@@ -199,8 +211,24 @@ const CheckoutContent = () => {
               </CardHeader>
               <CardContent className="p-6 space-y-6">
                 <div className="space-y-3">
+                  <Label htmlFor="links" className="text-sm font-bold text-slate-700">
+                    1. Provide Links to Promote
+                  </Label>
+                  <Input
+                    id="links"
+                    placeholder="Enter links separated by commas (e.g. link1.com, link2.com)"
+                    className="h-12 border-slate-200 focus:ring-pblue"
+                    value={links}
+                    onChange={(e) => setLinks(e.target.value)}
+                  />
+                  <p className="text-[11px] text-slate-500 px-1">
+                    Please provide the URLs of the content you want to promote. Separate multiple links with commas.
+                  </p>
+                </div>
+
+                <div className="space-y-3 pt-2">
                   <Label htmlFor="payment-method" className="text-sm font-bold text-slate-700">
-                    1. Choose Payment Method
+                    2. Choose Payment Method
                   </Label>
                   <Select onValueChange={setSelectedPayment}>
                     <SelectTrigger id="payment-method" className="w-full h-12 border-slate-200 focus:ring-pblue">
@@ -262,7 +290,7 @@ const CheckoutContent = () => {
 
                 <div className="space-y-3 pt-2">
                   <Label htmlFor="transaction-id" className="text-sm font-bold text-slate-700">
-                    2. Verification
+                    3. Verification
                   </Label>
                   <Input
                     id="transaction-id"

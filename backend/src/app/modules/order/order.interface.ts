@@ -11,6 +11,7 @@ export type TOrder = {
   orderedService: Types.ObjectId;
   user: Types.ObjectId;
   totalPrice: number;
+  links: string[];
   cancelRequested: boolean;
   workingStatus: TWorkingStatus;
   paymentStatus: TPaymentStatus;

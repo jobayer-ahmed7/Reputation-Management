@@ -226,8 +226,31 @@ const CustomerPage = () => {
                                 <DialogHeader>
                                   <DialogTitle>Service Details</DialogTitle>
                                 </DialogHeader>
-                                <div className="flex justify-center py-4">
-                                  <ServiceCard service={order.orderedService} buyNowDisabled={true} />
+                                <div className="space-y-4 py-4">
+                                  <div className="flex justify-center">
+                                    <ServiceCard service={order.orderedService} buyNowDisabled={true} />
+                                  </div>
+                                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Promoted Links</h4>
+                                    <div className="space-y-2">
+                                      {order.links && order.links.length > 0 ? (
+                                        order.links.map((link, idx) => (
+                                          <a 
+                                            key={idx} 
+                                            href={link.startsWith('http') ? link : `https://${link}`} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-xs font-medium text-pblue hover:underline flex items-center gap-2 break-all"
+                                          >
+                                            <span className="w-1.5 h-1.5 rounded-full bg-pblue shrink-0" />
+                                            {link}
+                                          </a>
+                                        ))
+                                      ) : (
+                                        <p className="text-xs text-slate-500 italic">No links provided</p>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </DialogContent>
                             </Dialog>

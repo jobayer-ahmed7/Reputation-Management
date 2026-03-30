@@ -9,6 +9,7 @@ const orderSchema = new Schema<TOrder>(
     orderedService:{ type: Schema.Types.ObjectId, ref: "Service",  required: [true, "Product is required"] },
     user: { type: Schema.Types.ObjectId, ref: "User", required: [true, "User is required"] },
     totalPrice: { type: Number, required: [true, "Total price is required"] },
+    links: { type: [String], required: [true, "Links are required"] },
     cancelRequested: { type: Boolean, default: false },
     workingStatus: {
       type: String,

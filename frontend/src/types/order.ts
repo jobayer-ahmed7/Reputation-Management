@@ -18,6 +18,7 @@ export type TOrder = {
   orderedService: TService;
   user: IUser;
   totalPrice: number;
+  links: string[];
   cancelRequested: boolean;
   workingStatus: TWorkingStatus;
   paymentStatus: TPaymentStatus;
