@@ -21,6 +21,7 @@ const orderSchema = new Schema<TOrder>(
       enum: paymentStatus,
       default: "UNPAID",
     },
+    paymentMethod: { type: String, required: [true, "Payment method is required"] },
     transactionId: String,
 
 

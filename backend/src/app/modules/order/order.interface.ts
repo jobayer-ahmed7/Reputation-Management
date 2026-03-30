@@ -15,6 +15,7 @@ export type TOrder = {
   cancelRequested: boolean;
   workingStatus: TWorkingStatus;
   paymentStatus: TPaymentStatus;
+  paymentMethod: string;
   transactionId?: string;
   isDeleted?: boolean;
   createdAt?: Date; 

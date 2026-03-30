@@ -13,6 +13,7 @@ const orderValidationSchema = z.object({
     cancelRequested: z.boolean().optional(),
     workingStatus: z.enum([...workingStatus] as [string, ...string[]]).optional(),
     paymentStatus: z.enum([...paymentStatus] as [string, ...string[]]).optional(),
+    paymentMethod: z.string({ required_error: "Payment method is required" }),
     transactionId: z.string().optional(),
     isDeleted: z.boolean().optional(),
   })
@@ -27,6 +28,7 @@ const updateOrderValidationSchema = z.object({
     cancelRequested: z.boolean().optional(),
     workingStatus: z.enum([...workingStatus] as [string, ...string[]]).optional(),
     paymentStatus: z.enum([...paymentStatus] as [string, ...string[]]).optional(),
+    paymentMethod: z.string().optional(),
     transactionId: z.string().optional().optional(),
     isDeleted: z.boolean().optional().optional(),
   })

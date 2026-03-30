@@ -124,6 +124,7 @@ const CheckoutContent = () => {
         user: user._id,
         totalPrice: service?.price,
         transactionId: transactionId,
+        paymentMethod: selectedPayment,
         links: linksArray,
       };
 

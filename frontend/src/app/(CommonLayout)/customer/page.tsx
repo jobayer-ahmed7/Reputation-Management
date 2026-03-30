@@ -266,6 +266,10 @@ const CustomerPage = () => {
                                   <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Transaction ID</p>
                                   <p className="text-xs font-mono font-bold text-slate-700 break-all">{order.transactionId || "N/A"}</p>
                                 </div>
+                                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Payment Method</p>
+                                  <p className="text-xs font-bold text-slate-700 uppercase">{order.paymentMethod || "N/A"}</p>
+                                </div>
                               </div>
                             </div>
                           </DialogContent>
