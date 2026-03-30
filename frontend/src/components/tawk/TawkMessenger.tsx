@@ -1,37 +1,24 @@
 'use client'
 
-import TawkMessengerReact from '@tawk.to/tawk-messenger-react'
+import Script from 'next/script'
 
 const TawkMessenger = () => {
   return (
-
-        <TawkMessengerReact 
-        propertyId='699e93a6afac601c36b7e4bf'
-        widgetId='1ji9n1gp6'
-        key='f0dbc9f40a0a90af26a4b99d26d69009698f6f4c'
-        onStatusChange={() => {}}
-        onLoad={() => {}}
-        onBeforeLoad={() => {}}
-        onChatMaximized={() => {}}
-        onChatMinimized={() => {}}
-        onChatHidden={() => {}}
-        onChatStarted={() => {}}
-        onChatEnded={() => {}}
-        onPrechatSubmit={() => {}}
-        onOfflineSubmit={() => {}}
-        onChatMessageVisitor={() => {}}
-        onChatMessageAgent={() => {}}
-        onChatMessageSystem={() => {}}
-        onAgentJoinChat={() => {}}
-        onAgentLeaveChat={() => {}}
-        onChatSatisfaction={() => {}}
-        onVisitorNameChanged={() => {}}
-        onFileUpload={() => {}}
-        onTagsUpdated={() => {}}
-        onUnreadCountChanged={() => {}}
-        
-    />
-
+    <>
+      <Script id="tawk-script" strategy="afterInteractive">
+        {`
+          var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+          (function() {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/699e93a6afac601c36b7e4bf/1ji9n1gp6';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+          })();
+        `}
+      </Script>
+    </>
   )
 }
 
