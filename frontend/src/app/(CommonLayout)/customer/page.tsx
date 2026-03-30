@@ -4,21 +4,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUser } from "@/contexts/userContext";
 import { getOrdersByUserId, requestCancelOrder } from "@/services/order";
-import { TOrder, workingStatus } from "@/types/order";
+import { TOrder } from "@/types/order";
 import { Check, XCircle, Info } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ServiceCard from "@/components/shared/ServiceCard";
 import { toast } from "sonner";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 import {
   Dialog,
@@ -37,22 +29,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const statusConfig: Record<string, { label: string; className: string }> = {
+const statusConfig: Record<string, { label: string; className: string; glow: string }> = {
   PENDING: {
     label: "Pending",
     className: "border-amber-100 bg-amber-50 text-amber-700",
+    glow: "bg-amber-400",
   },
   PROCESSING: {
     label: "Processing",
     className: "border-sky-100 bg-sky-50 text-sky-700",
+    glow: "bg-sky-400",
   },
   COMPLETED: {
     label: "Completed",
     className: "border-emerald-100 bg-emerald-50 text-emerald-700",
+    glow: "bg-emerald-400",
   },
   CANCELED: {
     label: "Canceled",
     className: "border-rose-100 bg-rose-50 text-rose-700",
+    glow: "bg-rose-400",
   },
 };
 
@@ -162,197 +158,208 @@ const CustomerPage = () => {
           </Card>
         </div>
 
-        {/* Orders Table Section */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-6">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-bold text-slate-800 uppercase tracking-tight">Recent Orders</CardTitle>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                LIVE UPDATES
-              </div>
+        {/* Orders Section */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-tight">Recent Orders</h2>
+            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              LIVE UPDATES
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {loading ? (
-              <div className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">Loading orders...</div>
-            ) : orders.length === 0 ? (
-              <div className="py-20 text-center px-6">
-                <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-300">
-                  <Info className="w-8 h-8" />
-                </div>
-                <p className="text-slate-500 font-bold uppercase tracking-tight">No orders found yet.</p>
-                <Link href="/services" className="mt-4 inline-block text-pblue font-bold text-sm hover:underline">Start growing your reputation today →</Link>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader className="bg-slate-50/80">
-                    <TableRow className="hover:bg-transparent border-slate-100">
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Order ID</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Service</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Date</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Price</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Payment</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider">Status</TableHead>
-                      <TableHead className="px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-wider text-right">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {orders.map((order) => {
-                      const statusMeta = statusConfig[order.workingStatus] || statusConfig.PENDING;
-                      const paymentMeta = paymentStatusConfig[order.paymentStatus] || paymentStatusConfig.UNPAID;
+          </div>
 
-                      return (
-                        <TableRow key={order._id} className="hover:bg-slate-50/50 transition-colors border-slate-100">
-                          <TableCell className="px-6 py-5 align-middle">
-                            <div className="flex flex-col">
-                              <span className="text-[11px] font-mono font-bold text-slate-900 uppercase">#{order.orderId}</span>
-                              {order.cancelRequested && order.workingStatus !== 'CANCELED' && (
-                                <span className="text-[9px] font-bold text-rose-500 uppercase tracking-tighter flex items-center gap-1 mt-1">
-                                  <XCircle className="w-2.5 h-2.5" /> Cancellation Requested
-                                </span>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <button className="text-sm font-bold text-slate-800 hover:text-pblue transition-colors cursor-pointer text-left leading-tight decoration-pblue/30 decoration-2 underline-offset-4 hover:underline">
-                                  {order.orderedService?.name}
-                                </button>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-md">
-                                <DialogHeader>
-                                  <DialogTitle>Service Details</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 py-4">
-                                  <div className="flex justify-center">
-                                    <ServiceCard service={order.orderedService} buyNowDisabled={true} />
-                                  </div>
-                                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Promoted Links</h4>
-                                    <div className="space-y-2">
-                                      {order.links && order.links.length > 0 ? (
-                                        order.links.map((link, idx) => (
-                                          <a 
-                                            key={idx} 
-                                            href={link.startsWith('http') ? link : `https://${link}`} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="text-xs font-medium text-pblue hover:underline flex items-center gap-2 break-all"
-                                          >
-                                            <span className="w-1.5 h-1.5 rounded-full bg-pblue shrink-0" />
-                                            {link}
-                                          </a>
-                                        ))
-                                      ) : (
-                                        <p className="text-xs text-slate-500 italic">No links provided</p>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle text-[11px] font-bold text-slate-500">
-                            {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle text-sm font-black text-slate-900">
-                            ${order.totalPrice.toFixed(2)}
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle">
-                            <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-tighter ${paymentMeta.className}`}>
-                              {paymentMeta.label}
-                            </span>
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle">
-                            <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-tighter ${statusMeta.className}`}>
-                              {statusMeta.label}
-                            </span>
-                          </TableCell>
-                          <TableCell className="px-6 py-5 align-middle text-right">
-                            {!order.cancelRequested && (order.workingStatus === "PENDING" || order.workingStatus === "PROCESSING") ? (
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button variant="ghost" className="h-8 text-[10px] font-black text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-all cursor-pointer uppercase tracking-tight">
-                                    Cancel
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
-                                  <DialogHeader>
-                                    <DialogTitle className="text-xl font-black uppercase italic">Cancel your order?</DialogTitle>
-                                  </DialogHeader>
-                                  <div className="space-y-4 py-4">
-                                    <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                                      Are you sure you want to request cancellation for order <span className="font-mono font-bold text-slate-900">#{order.orderId}</span>? 
-                                      Our team will review your request and process it as soon as possible.
-                                    </p>
-                                    <div className="bg-amber-50 border border-amber-100 p-3 rounded-lg flex items-start gap-3">
-                                      <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                                      <p className="text-[11px] text-amber-700 font-medium leading-normal">
-                                        Note: If work has already begun, cancellation might be subject to our refund policy.
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <DialogFooter className="flex flex-col sm:flex-row gap-3">
-                                    <DialogClose asChild>
-                                      <Button variant="outline" className="w-full sm:w-auto cursor-pointer font-bold text-xs uppercase tracking-widest border-slate-200">
-                                        Keep Order
-                                      </Button>
-                                    </DialogClose>
-                                    <DialogClose asChild>
-                                      <Button 
-                                        variant="destructive" 
-                                        onClick={() => handleCancelRequest(order._id)} 
-                                        className="w-full sm:w-auto cursor-pointer font-bold text-xs uppercase tracking-widest bg-rose-600 hover:bg-rose-700"
-                                      >
-                                        Yes, Request Cancel
-                                      </Button>
-                                    </DialogClose>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-                            ) : order.cancelRequested && order.workingStatus !== "CANCELED" ? (
-                              <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-50 border border-rose-100 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                                <span className="text-[10px] font-black text-rose-600 uppercase tracking-tight">Cancel Pending</span>
-                              </div>
-                            ) : (
+          {loading ? (
+            <div className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs bg-white rounded-2xl border border-slate-200">
+              Loading orders...
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="py-20 text-center px-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-300">
+                <Info className="w-8 h-8" />
+              </div>
+              <p className="text-slate-500 font-bold uppercase tracking-tight">No orders found yet.</p>
+              <Link href="/services" className="mt-4 inline-block text-pblue font-bold text-sm hover:underline">Start growing your reputation today →</Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {orders.map((order) => {
+                const statusMeta = statusConfig[order.workingStatus] || statusConfig.PENDING;
+                const paymentMeta = paymentStatusConfig[order.paymentStatus] || paymentStatusConfig.UNPAID;
+
+                return (
+                  <Card key={order._id} className="group border-slate-200 hover:border-pblue/30 transition-all duration-300 hover:shadow-md overflow-hidden bg-white flex flex-col relative">
+                    <div className={`h-1 w-full ${statusMeta.glow}`} />
+                    <CardContent className="p-5 flex-1 flex flex-col">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-mono font-bold text-slate-900 uppercase tracking-tighter">#{order.orderId}</span>
+                            {order.cancelRequested && order.workingStatus !== 'CANCELED' && (
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400">
-                                      {order.workingStatus === "COMPLETED" ? (
-                                        <Check className="w-4 h-4" />
-                                      ) : order.workingStatus === "CANCELED" ? (
-                                        <XCircle className="w-4 h-4" />
-                                      ) : (
-                                        <Check className="w-4 h-4" />
-                                      )}
-                                    </div>
+                                    <XCircle className="w-3.5 h-3.5 text-rose-500 cursor-help" />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p className="text-[10px] font-bold uppercase">
-                                      {order.workingStatus === "COMPLETED" ? "Order Completed" : order.workingStatus === "CANCELED" ? "Order Canceled" : "Order is being processed"}
-                                    </p>
+                                    <p className="text-[10px] font-bold">Cancellation Requested</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
                             )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                          </div>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            {order.createdAt ? new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : "N/A"}
+                          </p>
+                        </div>
+                        <div className="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                          <p className="text-sm font-black text-slate-900">${order.totalPrice.toFixed(2)}</p>
+                        </div>
+                      </div>
+
+                      <div className="mb-6 flex-1">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button className="text-left group/btn cursor-pointer w-full focus:outline-none">
+                              <h3 className="text-sm font-bold text-slate-800 group-hover/btn:text-pblue transition-colors leading-tight mb-1 line-clamp-2">
+                                {order.orderedService?.name}
+                              </h3>
+                              <div className="flex items-center gap-1 text-[10px] text-pblue font-bold opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase tracking-widest">
+                                View Details <Info className="w-3 h-3" />
+                              </div>
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle className="uppercase italic font-black">Order Details</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                              <div className="flex justify-center">
+                                <ServiceCard service={order.orderedService} buyNowDisabled={true} />
+                              </div>
+                              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Promoted Links</h4>
+                                <div className="space-y-2">
+                                  {order.links && order.links.length > 0 ? (
+                                    order.links.map((link, idx) => (
+                                      <a 
+                                        key={idx} 
+                                        href={link.startsWith('http') ? link : `https://${link}`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-xs font-medium text-pblue hover:underline flex items-center gap-2 break-all"
+                                      >
+                                        <span className="w-1.5 h-1.5 rounded-full bg-pblue shrink-0" />
+                                        {link}
+                                      </a>
+                                    ))
+                                  ) : (
+                                    <p className="text-xs text-slate-500 italic">No links provided</p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Order Date</p>
+                                  <p className="text-xs font-bold text-slate-700">{order.createdAt ? new Date(order.createdAt).toLocaleString() : "N/A"}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Transaction ID</p>
+                                  <p className="text-xs font-mono font-bold text-slate-700 break-all">{order.transactionId || "N/A"}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-auto">
+                        <div className="flex gap-2">
+                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-tighter ${paymentMeta.className}`}>
+                            {paymentMeta.label}
+                          </span>
+                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-tighter ${statusMeta.className}`}>
+                            {statusMeta.label}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          {!order.cancelRequested && (order.workingStatus === "PENDING" || order.workingStatus === "PROCESSING") ? (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="ghost" className="h-7 px-2 text-[9px] font-black text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-all cursor-pointer uppercase tracking-tight">
+                                  Cancel
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle className="text-xl font-black uppercase italic text-rose-600">Cancel Request</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                                    Are you sure you want to request cancellation for order <span className="font-mono font-bold text-slate-900">#{order.orderId}</span>? 
+                                    Our team will review your request shortly.
+                                  </p>
+                                  <div className="bg-amber-50 border border-amber-100 p-3 rounded-xl flex items-start gap-3">
+                                    <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                                    <p className="text-[11px] text-amber-700 font-medium leading-normal">
+                                      Note: Cancellation is subject to review if the service fulfillment has already reached advanced stages.
+                                    </p>
+                                  </div>
+                                </div>
+                                <DialogFooter className="flex flex-col sm:flex-row gap-3">
+                                  <DialogClose asChild>
+                                    <Button variant="outline" className="w-full sm:w-auto cursor-pointer font-bold text-xs uppercase tracking-widest border-slate-200">
+                                      Keep Order
+                                    </Button>
+                                  </DialogClose>
+                                  <DialogClose asChild>
+                                    <Button 
+                                      variant="destructive" 
+                                      onClick={() => handleCancelRequest(order._id)} 
+                                      className="w-full sm:w-auto cursor-pointer font-bold text-xs uppercase tracking-widest bg-rose-600 hover:bg-rose-700"
+                                    >
+                                      Yes, Request Cancel
+                                    </Button>
+                                  </DialogClose>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          ) : order.cancelRequested && order.workingStatus !== "CANCELED" ? (
+                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-rose-50 border border-rose-100 rounded-full">
+                              <span className="w-1 h-1 rounded-full bg-rose-500 animate-pulse" />
+                              <span className="text-[9px] font-black text-rose-600 uppercase tracking-tight">Pending Cancel</span>
+                            </div>
+                          ) : (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className={`p-1 rounded-full ${order.workingStatus === 'COMPLETED' ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-50 text-slate-400'}`}>
+                                    {order.workingStatus === "COMPLETED" ? (
+                                      <Check className="w-3.5 h-3.5" />
+                                    ) : (
+                                      <XCircle className="w-3.5 h-3.5" />
+                                    )}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="text-[10px] font-bold uppercase">{statusMeta.label}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default CustomerPage;
+
