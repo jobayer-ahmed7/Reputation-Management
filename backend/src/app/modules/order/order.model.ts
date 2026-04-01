@@ -1,29 +1,38 @@
-import { model, Schema } from "mongoose";
-import { paymentStatus, workingStatus } from "./order.constant";
-import { TOrder } from "./order.interface";
-
+import { model, Schema } from 'mongoose';
+import { paymentStatus, workingStatus } from './order.constant';
+import { TOrder } from './order.interface';
 
 const orderSchema = new Schema<TOrder>(
   {
-    orderId: { type: String, required: [true, "Order ID is required"] },
-    orderedService:{ type: Schema.Types.ObjectId, ref: "Service",  required: [true, "Product is required"] },
-    user: { type: Schema.Types.ObjectId, ref: "User", required: [true, "User is required"] },
-    totalPrice: { type: Number, required: [true, "Total price is required"] },
-    links: { type: [String], required: [true, "Links are required"] },
+    orderId: { type: String, required: [true, 'Order ID is required'] },
+    orderedService: {
+      type: Schema.Types.ObjectId,
+      ref: 'Service',
+      required: [true, 'Product is required'],
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User is required'],
+    },
+    totalPrice: { type: Number, required: [true, 'Total price is required'] },
+    links: { type: [String], required: [true, 'Links are required'] },
     cancelRequested: { type: Boolean, default: false },
     workingStatus: {
       type: String,
       enum: workingStatus,
-      default: "PENDING",
-    }, 
+      default: 'PENDING',
+    },
     paymentStatus: {
       type: String,
       enum: paymentStatus,
-      default: "UNPAID",
+      default: 'UNPAID',
     },
-    paymentMethod: { type: String, required: [true, "Payment method is required"] },
+    paymentMethod: {
+      type: String,
+      required: [true, 'Payment method is required'],
+    },
     transactionId: String,
-
 
     isDeleted: { type: Boolean, default: false },
   },
@@ -32,4 +41,4 @@ const orderSchema = new Schema<TOrder>(
   },
 );
 
-export const Order = model<TOrder>("Order", orderSchema);
+export const Order = model<TOrder>('Order', orderSchema);

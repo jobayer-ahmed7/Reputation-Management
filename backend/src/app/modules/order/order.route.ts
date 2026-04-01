@@ -9,7 +9,7 @@ const router = express.Router();
 
 // create order
 router.post(
-  "/create-order",
+  '/create-order',
   auth(USER_ROLE.admin, USER_ROLE.customer),
   validateRequest(OrderValidation.orderValidationSchema),
   OrderControllers.createOrder,
@@ -17,7 +17,6 @@ router.post(
 
 // get all orders
 router.get('/', OrderControllers.getAllOrder);
-
 
 // get order by user id
 

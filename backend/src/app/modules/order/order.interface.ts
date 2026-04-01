@@ -1,12 +1,10 @@
-import { Types } from "mongoose";
-import { paymentStatus, workingStatus } from "./order.constant";
+import { Types } from 'mongoose';
+import { paymentStatus, workingStatus } from './order.constant';
 
 export type TWorkingStatus = (typeof workingStatus)[number];
 export type TPaymentStatus = (typeof paymentStatus)[number];
 
-
-
-export type TOrder = { 
+export type TOrder = {
   orderId: string;
   orderedService: Types.ObjectId;
   user: Types.ObjectId;
@@ -18,6 +16,6 @@ export type TOrder = {
   paymentMethod: string;
   transactionId?: string;
   isDeleted?: boolean;
-  createdAt?: Date; 
+  createdAt?: Date;
   updatedAt?: Date;
 };

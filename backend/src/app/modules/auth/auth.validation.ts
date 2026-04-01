@@ -7,7 +7,7 @@ const loginValidationSchema = z.object({
       .min(1, { message: 'Please provide an email address' })
       .email({ message: 'Invalid email address' }),
 
-    password: z 
+    password: z
       .string()
       .min(1, { message: 'Please provide a password' })
       .min(4, { message: 'Password must be at least 4 characters' })

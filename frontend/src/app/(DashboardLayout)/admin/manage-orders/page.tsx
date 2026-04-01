@@ -35,6 +35,7 @@ import {
 import { getAllOrders, updateOrderStatus, updateOrderPaymentStatus } from "@/services/order";
 import { TOrder, TWorkingStatus, workingStatus, paymentStatus, TPaymentStatus } from "@/types/order";
 import { toast } from "sonner";
+import Loading from "@/components/shared/Loading";
 import {
   Dialog,
   DialogContent,
@@ -94,6 +95,7 @@ import {
 
 const ManageOrder = () => {
   const [orders, setOrders] = useState<TOrder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const pageSize = 5;
@@ -107,6 +109,7 @@ const ManageOrder = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       try {
         const res = await getAllOrders();
         console.log(res);
@@ -115,6 +118,8 @@ const ManageOrder = () => {
         }
       } catch (error) {
         console.error("Failed to fetch orders:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchOrders();
@@ -206,6 +211,8 @@ const ManageOrder = () => {
   const startIndex =
     filteredOrders.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endIndex = Math.min(startIndex + pageSize - 1, filteredOrders.length);
+
+  if (loading) return <Loading />;
 
   return (
     <main className="py-8 space-y-6">

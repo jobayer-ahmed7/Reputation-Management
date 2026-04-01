@@ -2,25 +2,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { NextFunction, Request, Response } from "express";
-import HttpStatus from "http-status";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import config from "../config";
-import { User } from "../modules/user/user.model";
-import catchAsync from "../utils/catchAsync";
-import { TUserRole } from "../modules/user/user.interface";
-import AppError from "../errors/AppError";
+import { NextFunction, Request, Response } from 'express';
+import HttpStatus from 'http-status';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import config from '../config';
+import { User } from '../modules/user/user.model';
+import catchAsync from '../utils/catchAsync';
+import { TUserRole } from '../modules/user/user.interface';
+import AppError from '../errors/AppError';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split(' ')[1];
     // const secret = config.jwt_access_secret;
     // console.log('token', token);
     // console.log('secret', secret);
     // console.log('body', req.body);
 
     if (!token) {
-      throw new AppError(HttpStatus.UNAUTHORIZED, "You are not authorized!😎"); 
+      throw new AppError(HttpStatus.UNAUTHORIZED, 'You are not authorized!😎');
     }
 
     let decode: any;
@@ -30,24 +30,21 @@ const auth = (...requiredRoles: TUserRole[]) => {
         config.jwt_access_secret as string,
       ) as JwtPayload;
     } catch (err: any) {
-      throw new AppError(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
-
+      throw new AppError(HttpStatus.UNAUTHORIZED, 'UNAUTHORIZED');
     }
     // console.log('decoded token:', decode);
 
-    const { role, email} = decode;
-    const user = await User.findOne({ email }).select("status role");
+    const { role, email } = decode;
+    const user = await User.findOne({ email }).select('status role');
 
     if (!user) {
-      throw new AppError(HttpStatus.NOT_FOUND, "This user is not found !");
+      throw new AppError(HttpStatus.NOT_FOUND, 'This user is not found !');
     }
-
-
 
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(
         HttpStatus.UNAUTHORIZED,
-        "You are not authorized  hi!",
+        'You are not authorized  hi!',
       );
     }
 

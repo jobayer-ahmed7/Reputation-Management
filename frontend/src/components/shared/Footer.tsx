@@ -4,8 +4,8 @@ import Link from "next/link";
 const Footer = () => {
   const aboutLinks = [
     { name: "About Us", href: "about-us" },
-    { name: "Blogs", href: "#" },
-    { name: "Contact Us", href: "#" },
+    // { name: "Blogs", href: "#" },
+    // { name: "Contact Us", href: "#" },
   ];
 
   const policyLinks = [

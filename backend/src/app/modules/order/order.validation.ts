@@ -1,23 +1,25 @@
-import { z } from "zod";
-import { paymentStatus, workingStatus } from "./order.constant";
-
-
+import { z } from 'zod';
+import { paymentStatus, workingStatus } from './order.constant';
 
 const orderValidationSchema = z.object({
   body: z.object({
     orderId: z.string().optional(),
     orderedService: z.string(),
     user: z.string(),
-    totalPrice: z.number().min(0, "Total price cannot be negative").optional(),
-    links: z.array(z.string()).min(1, "At least one link is required"),
+    totalPrice: z.number().min(0, 'Total price cannot be negative').optional(),
+    links: z.array(z.string()).min(1, 'At least one link is required'),
     cancelRequested: z.boolean().optional(),
-    workingStatus: z.enum([...workingStatus] as [string, ...string[]]).optional(),
-    paymentStatus: z.enum([...paymentStatus] as [string, ...string[]]).optional(),
-    paymentMethod: z.string({ required_error: "Payment method is required" }),
+    workingStatus: z
+      .enum([...workingStatus] as [string, ...string[]])
+      .optional(),
+    paymentStatus: z
+      .enum([...paymentStatus] as [string, ...string[]])
+      .optional(),
+    paymentMethod: z.string().min(2, 'Payment method is required'),
     transactionId: z.string().optional(),
     isDeleted: z.boolean().optional(),
-  })
-}); 
+  }),
+});
 
 const updateOrderValidationSchema = z.object({
   body: z.object({
@@ -26,12 +28,16 @@ const updateOrderValidationSchema = z.object({
     totalPrice: z.number().optional(),
     links: z.array(z.string()).optional(),
     cancelRequested: z.boolean().optional(),
-    workingStatus: z.enum([...workingStatus] as [string, ...string[]]).optional(),
-    paymentStatus: z.enum([...paymentStatus] as [string, ...string[]]).optional(),
+    workingStatus: z
+      .enum([...workingStatus] as [string, ...string[]])
+      .optional(),
+    paymentStatus: z
+      .enum([...paymentStatus] as [string, ...string[]])
+      .optional(),
     paymentMethod: z.string().optional(),
     transactionId: z.string().optional().optional(),
     isDeleted: z.boolean().optional().optional(),
-  })
+  }),
 });
 export const OrderValidation = {
   orderValidationSchema,
